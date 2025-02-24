@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Header from "../../widgets/header/Header";
 
-const ArticlePage = () => {
+const MyStudyPage = () => {
   return (
     <div className="flex flex-col w-full h-screen bg-gray-100">
       <Header />
@@ -43,4 +43,4 @@ const ArticlePage = () => {
   );
 };
 
-export default ArticlePage;
+export default MyStudyPage;
