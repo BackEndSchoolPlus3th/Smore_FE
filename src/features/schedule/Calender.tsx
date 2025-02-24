@@ -15,7 +15,9 @@ const Calender: React.FC = () => {
         plugins: [dayGridPlugin, interactionPlugin],
         initialView: "dayGridMonth",
         headerToolbar: {
-          center: "addEventButton",
+          left: "prevYear,prev,next,nextYear today",
+          center: "title",
+          right: "addEventButton",
         },
         customButtons: {
           addEventButton: {
@@ -40,7 +42,7 @@ const Calender: React.FC = () => {
         extendedProps: { content: event.content },
         start: event.startdate,
         end: event.endDate,
-        allDay: true,
+        allDay: event.allDay,
       });
     }
     setShowPopup(false); // 모달 닫기

@@ -10,7 +10,7 @@ const AddEventPage: React.FC<AddEventPageProps> = ({ onSubmit, onCancel }) => {
   const [content, setContent] = useState("");
   const [startdate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [allDay, setAllDay] = useState(false); // ✅ All Day 설정
+  const [allDay, setAllDay] = useState(false); // All Day 설정
 
   const handleSubmit = () => {
     if (!title || !startdate) {
@@ -18,18 +18,8 @@ const AddEventPage: React.FC<AddEventPageProps> = ({ onSubmit, onCancel }) => {
       return;
     }
 
-    let start = startdate;
-    let end = endDate;
-
-    // ✅ All Day일 경우, 시간은 00:00:00으로 설정
-    if (allDay) {
-      start = `${startdate}T00:00:00`; // 00:00:00으로 설정
-      if (endDate) {
-        end = `${endDate}T00:00:00`; // 종료일자도 00:00:00으로 설정
-      }
-    }
-
-    onSubmit({ title, content, startdate: start, endDate: end, allDay });
+    // All Day일 경우, 날짜만 전달
+    onSubmit({ title, content, startdate, endDate, allDay });
   };
 
   return (
@@ -46,16 +36,16 @@ const AddEventPage: React.FC<AddEventPageProps> = ({ onSubmit, onCancel }) => {
         종일(All Day)
       </label>
 
-      <label>시작 날짜 및 시간:</label>
+      <label>시작 날짜:</label>
       <input 
-        type={allDay ? "date" : "datetime-local"} // ✅ All Day 설정에 따라 타입 변경
+        type={allDay ? "date" : "datetime-local"} // All Day일 때는 "date", 아니면 "datetime-local"
         value={startdate} 
         onChange={(e) => setStartDate(e.target.value)} 
       />
 
-      <label>종료 날짜 및 시간:</label>
+      <label>종료 날짜:</label>
       <input 
-        type={allDay ? "date" : "datetime-local"} // ✅ All Day 설정에 따라 타입 변경
+        type={allDay ? "date" : "datetime-local"} // All Day일 때는 "date", 아니면 "datetime-local"
         value={endDate} 
         onChange={(e) => setEndDate(e.target.value)} 
       />

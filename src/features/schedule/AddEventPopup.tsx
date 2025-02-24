@@ -5,7 +5,7 @@ import AddEventPage from "../../pages/schedule/AddEventPage";
 interface AddEventPopupProps {
   isOpen: boolean;
   onClose: () => void;
-  onAddEvent: (event: { title: string; content?: string; startdate: string; endDate?: string }) => void;
+  onAddEvent: (event: { title: string; content?: string; startdate: string; endDate?: string; allDay: boolean }) => void;
 }
 
 const AddEventPopup: React.FC<AddEventPopupProps> = ({ isOpen, onClose, onAddEvent }) => {
