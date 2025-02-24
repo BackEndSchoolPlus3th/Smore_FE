@@ -18,7 +18,7 @@ const Calender: React.FC = () => {
           left: "prevYear,prev,next,nextYear today",
           center: "title",
           right: "addEventButton",
-        },
+        },        
         customButtons: {
           addEventButton: {
             text: "Add Event",
@@ -27,6 +27,12 @@ const Calender: React.FC = () => {
             },
           },
         },
+        dayMaxEventRows: true, // for all non-TimeGrid views
+        views: {
+          timeGrid: {
+            dayMaxEventRows: 6 // adjust to 6 only for timeGridWeek/timeGridDay
+          }
+        }
       });
 
       newCalendar.render();
@@ -35,7 +41,7 @@ const Calender: React.FC = () => {
   }, []);
 
   // 팝업에서 추가된 이벤트를 캘린더에 적용하고 모달 닫기
-  const handleAddEvent = (event: { title: string; content?: string; startdate: string; endDate?: string }) => {
+  const handleAddEvent = (event: { title: string; content?: string; startdate: string; endDate?: string; allDay?: boolean }) => {
     if (calendar) {
       calendar.addEvent({
         title: event.title,
