@@ -4,6 +4,7 @@ import './App.css';
 import MainPage from '../pages/main/MainPage.tsx';
 import MyStudyPage from '../pages/article/MyStudyPage.jsx';
 import ChatPage from '../pages/chat/ChatPage.tsx';
+import Calender from '../features/schedule/calender/Calender.tsx';
 
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
                     <Route path="/" element={<MainPage />} />
                     <Route path="/article" element={<MyStudyPage />} />
                     <Route path="/chat" element={<ChatPage />} />
+                    <Route path="/schedules" element={<Calender />} />
                 </Routes>
             </div>
         </Router>
