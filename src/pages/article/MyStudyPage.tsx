@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import Header from "../../widgets/header/Header";
+// import React, { useState } from "react";
+import Header from "../../widgets/header/Header.tsx";
 
 const MyStudyPage = () => {
   return (
