@@ -4,7 +4,7 @@ import './App.css';
 import MainPage from '../pages/main/MainPage.tsx';
 import MyStudyPage from '../pages/article/MyStudyPage.jsx';
 import ChatPage from '../pages/chat/ChatPage.tsx';
-import Calender from '../features/schedule/calender/Calender.tsx';
+import Calender from '../features/schedule/Calender.tsx';
 
 
 function App() {
