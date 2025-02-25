@@ -1,11 +1,7 @@
 // import React, { useState } from "react";
-import Header from '../../widgets/header/Header.tsx';
-
-const RecruitmentPage = () => {
+const StudyArticlePage = () => {
     return (
         <div className="flex flex-col w-full h-screen bg-gray-100">
-            <Header />
-
             <div className="flex flex-1">
                 {/* 사이드바 */}
                 <div className="w-1/5 bg-gray-400 p-4">
@@ -57,4 +53,4 @@ const RecruitmentPage = () => {
     );
 };
 
-export default RecruitmentPage;
+export default StudyArticlePage;

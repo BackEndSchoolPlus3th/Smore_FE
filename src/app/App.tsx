@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
-import { RecruitmentPage, ChatPage } from '../pages';
+import { RecruitmentPage, StudyArticlePage, ChatPage } from '../pages';
 import { Header } from '../widgets';
 
 function App() {
@@ -11,6 +11,10 @@ function App() {
                 <Routes>
                     <Route path="/" element={<RecruitmentPage />} />
                     <Route path="/chat" element={<ChatPage />} />
+                    <Route
+                        path="/:studyId/article"
+                        element={<StudyArticlePage />}
+                    />
                 </Routes>
             </div>
         </Router>
