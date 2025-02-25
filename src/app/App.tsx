@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
 import { RecruitmentPage, StudyArticlePage, ChatPage } from '../pages';
 import { Header } from '../widgets';
+import LoginPage from '../pages/member/LoginPage';
 
 function App() {
     return (
@@ -15,6 +16,8 @@ function App() {
                         path="/:studyId/article"
                         element={<StudyArticlePage />}
                     />
+                    <Route path="/login" element={<LoginPage />} />
+                    
                 </Routes>
             </div>
         </Router>
