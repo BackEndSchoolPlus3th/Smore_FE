@@ -9,7 +9,7 @@ const Calender: React.FC = () => {
   const calendarRef = useRef<HTMLDivElement>(null);
   const [showAddEventPopup, setShowAddEventPopup] = useState(false);
   const [showEventDetailPopup, setShowEventDetailPopup] = useState(false);
-  const [selectedEvent, setSelectedEvent] = useState<any>(null); // 선택된 이벤트의 정보를 저장
+  const [selectedEvent, setSelectedEvent] = useState<EventApi | null>(null); // EventApi 타입으로 변경
   const [calendar, setCalendar] = useState<Calendar | null>(null);
 
   useEffect(() => {
@@ -37,16 +37,9 @@ const Calender: React.FC = () => {
           }
         },
         eventClick: function (info) {
-          setSelectedEvent({
-            title: info.event.title,
-            content: info.event.extendedProps.content,
-            startdate: info.event.start.toISOString(),
-            endDate: info.event.end?.toISOString(),
-            // allDay: info.event.allDay,
-          });
-          setShowEventDetailPopup(true); // 모달 열기
+          setSelectedEvent(info.event); // EventApi 객체 저장
+          setShowEventDetailPopup(true);
         },
-
       });
 
       newCalendar.render();
@@ -57,15 +50,29 @@ const Calender: React.FC = () => {
   // 팝업에서 추가된 이벤트를 캘린더에 적용하고 모달 닫기
   const handleAddEvent = (event: { title: string; content?: string; startdate: string; endDate?: string; allDay?: boolean }) => {
     if (calendar) {
-      calendar.addEvent({
+      const newEvent = calendar.addEvent({
         title: event.title,
         extendedProps: { content: event.content },
         start: event.startdate,
         end: event.endDate,
         allDay: event.allDay,
       });
+
+      if (newEvent) {
+        setSelectedEvent(newEvent); // 추가된 이벤트 저장
+      }
     }
-    setShowAddEventPopup(false); // 모달 닫기
+    setShowAddEventPopup(false);
+  };
+
+  const handleDeleteEvent = () => {
+    if (!selectedEvent) return; // 선택된 이벤트가 없으면 실행 안 함
+  
+    if (window.confirm("정말 삭제하시겠습니까?")) {
+      selectedEvent.remove(); // FullCalendar에서 삭제
+      setShowEventDetailPopup(false);
+      setSelectedEvent(null);
+    }
   };
 
   return (
@@ -83,6 +90,7 @@ const Calender: React.FC = () => {
           isOpen={showEventDetailPopup}
           event={selectedEvent}
           onClose={() => setShowEventDetailPopup(false)} // 팝업 닫기
+          onDelete={handleDeleteEvent} // 삭제 기능 연결
         />
       )}
     </>

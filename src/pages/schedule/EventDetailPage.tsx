@@ -9,9 +9,14 @@ interface EventDetailPageProps {
     // allDay: boolean;
   };
   onClose: () => void;
+  onDelete: () => void;
 }
 
-const EventDetailPage: React.FC<EventDetailPageProps> = ({ event, onClose }) => {
+const EventDetailPage: React.FC<EventDetailPageProps> = ({ event, onClose, onDelete }) => {
+  const handleDelete = () => {
+    onDelete(); // 그냥 삭제 함수 실행 (window.confirm 제거)
+  };
+  
   return (
     <div style={formStyle}>
       <h2>일정 상세보기</h2>
@@ -29,10 +34,10 @@ const EventDetailPage: React.FC<EventDetailPageProps> = ({ event, onClose }) => 
           <strong>종료 날짜:</strong> {event.endDate}
         </div>
       )}
-      {/* <div>
-        <strong>종일:</strong> {event.allDay ? "예" : "아니오"}
-      </div> */}
-      <button onClick={onClose}>닫기</button>
+      <div style={{ display: "flex", gap: "10px" }}>
+        <button onClick={onClose}>닫기</button>
+        <button onClick={handleDelete}>삭제</button>
+      </div>
     </div>
   );
 };
