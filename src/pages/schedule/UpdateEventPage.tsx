@@ -7,16 +7,19 @@ interface UpdateEventPageProps {
   onUpdate: (updatedEvent: { title: string; content?: string; startdate:string; endDate?: string; allDay: boolean }) => void;
 }
 
+// 로컬 시간 변환 함수
+const formatDateTimeLocal = (date: Date | null) => {
+    if (!date) return ""; // null이면 빈 문자열 반환
+    const offset = new Date().getTimezoneOffset() * 60000;
+    return new Date(date.getTime() - offset).toISOString().slice(0, 16);
+  };
+
 const UpdateEventPage: React.FC<UpdateEventPageProps> = ({ event, onClose, onUpdate }) => {
   const [title, setTitle] = useState(event.title);
   const [content, setContent] = useState(event.extendedProps.content || "");
   
-  const [startdate, setStartDate] = useState(
-    event.start ? new Date(event.start).toLocaleDateString() : ""
-  );
-  const [endDate, setEndDate] = useState(
-    event.end ? new Date(event.end).toLocaleDateString() : ""
-  );
+  const [startdate, setStartDate] = useState(formatDateTimeLocal(event.start));
+  const [endDate, setEndDate] = useState(formatDateTimeLocal(event.end ?? null));
   
   const [allDay, setAllDay] = useState(event.allDay); // All Day 설정
 
