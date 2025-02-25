@@ -5,15 +5,14 @@ import {
     StudyArticlePage,
     ChatPage,
     CalenderPage,
+    LoginPage,
 } from '../pages';
 import { Header } from '../widgets';
-import LoginPage from '../pages/member/LoginPage';
-import Calender from '../features/schedule/Calender.tsx';
 
 function App() {
     return (
         <Router>
-            <div className="App">
+            <div className="App bg-light-gray">
                 <Header />
                 <Routes>
                     <Route path="/" element={<RecruitmentPage />} />
