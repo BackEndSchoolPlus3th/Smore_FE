@@ -2,11 +2,14 @@ import React, { useEffect, useRef, useState } from "react";
 import { Calendar } from "@fullcalendar/core";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import AddEventPopup from "./AddEventPopup"; // 팝업 컴포넌트
+import AddEventPopup from "./AddEventPopup";
+import EventDetailPopup from "./EventDetailPopup";
 
 const Calender: React.FC = () => {
   const calendarRef = useRef<HTMLDivElement>(null);
-  const [showPopup, setShowPopup] = useState(false);
+  const [showAddEventPopup, setShowAddEventPopup] = useState(false);
+  const [showEventDetailPopup, setShowEventDetailPopup] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState<any>(null); // 선택된 이벤트의 정보를 저장
   const [calendar, setCalendar] = useState<Calendar | null>(null);
 
   useEffect(() => {
@@ -23,7 +26,7 @@ const Calender: React.FC = () => {
           addEventButton: {
             text: "Add Event",
             click: function () {
-              setShowPopup(true); // 모달 열기
+              setShowAddEventPopup(true); // 모달 열기
             },
           },
         },
@@ -32,7 +35,18 @@ const Calender: React.FC = () => {
           timeGrid: {
             dayMaxEventRows: 6 // adjust to 6 only for timeGridWeek/timeGridDay
           }
-        }
+        },
+        eventClick: function (info) {
+          setSelectedEvent({
+            title: info.event.title,
+            content: info.event.extendedProps.content,
+            startdate: info.event.start.toISOString(),
+            endDate: info.event.end?.toISOString(),
+            // allDay: info.event.allDay,
+          });
+          setShowEventDetailPopup(true); // 모달 열기
+        },
+
       });
 
       newCalendar.render();
@@ -51,17 +65,24 @@ const Calender: React.FC = () => {
         allDay: event.allDay,
       });
     }
-    setShowPopup(false); // 모달 닫기
+    setShowAddEventPopup(false); // 모달 닫기
   };
 
   return (
     <>
       <div ref={calendarRef}></div>
-      {showPopup && (
+      {showAddEventPopup  && (
         <AddEventPopup
-          isOpen={showPopup} 
-          onClose={() => setShowPopup(false)}
+          isOpen={showAddEventPopup} 
+          onClose={() => setShowAddEventPopup(false)}          
           onAddEvent={handleAddEvent} // 이벤트 추가 시 모달 닫기
+        />
+      )}
+      {showEventDetailPopup && selectedEvent && (
+        <EventDetailPopup
+          isOpen={showEventDetailPopup}
+          event={selectedEvent}
+          onClose={() => setShowEventDetailPopup(false)} // 팝업 닫기
         />
       )}
     </>
