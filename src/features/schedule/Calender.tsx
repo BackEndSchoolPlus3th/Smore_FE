@@ -5,7 +5,6 @@ import interactionPlugin from "@fullcalendar/interaction";
 import AddEventPopup from "./AddEventPopup";
 import EventDetailPopup from "./EventDetailPopup";
 import UpdateEventPopup from "./UpdateEventPopup";
-import EventDetailPage from "../../pages/schedule/EventDetailPage";
 
 const Calender: React.FC = () => {
   const calendarRef = useRef<HTMLDivElement>(null);
@@ -19,6 +18,7 @@ const Calender: React.FC = () => {
     if (calendarRef.current) {
       const newCalendar = new Calendar(calendarRef.current, {
         plugins: [dayGridPlugin, interactionPlugin],
+        timeZone: 'local',
         initialView: "dayGridMonth",
         headerToolbar: {
           left: "prevYear,prev,next,nextYear today",
@@ -90,7 +90,11 @@ const Calender: React.FC = () => {
       selectedEvent.setProp("title", updatedEvent.title);
       selectedEvent.setExtendedProp("content", updatedEvent.content);
       selectedEvent.setStart(updatedEvent.startdate);
-      selectedEvent.setEnd(updatedEvent.endDate);
+      if (updatedEvent.endDate) {
+        selectedEvent.setEnd(updatedEvent.endDate);
+      } else {
+        selectedEvent.setEnd(null); // 종료 날짜 없을 경우 제거
+      }
       selectedEvent.setAllDay(updatedEvent.allDay ?? false);
     
       setShowUpdateEventPopup(false);

@@ -6,7 +6,7 @@ interface UpdateEventPopupProps {
   isOpen: boolean;
   event: any;
   onClose: () => void;
-  onUpdate: (updatedEvent: { title: string; content?: string }) => void;
+  onUpdate: (updatedEvent: { title: string; content?: string; startdate:string; endDate?: string; allDay: boolean }) => void;
 }
 
 const UpdateEventPopup: React.FC<UpdateEventPopupProps> = ({ isOpen, event, onClose, onUpdate }) => {

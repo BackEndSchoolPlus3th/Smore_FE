@@ -1,7 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
-import MainPage from '../pages/main/MainPage.tsx';
-import MyStudyPage from '../pages/article/MyStudyPage.jsx';
 
 import { RecruitmentPage, StudyArticlePage, ChatPage } from '../pages';
 import { Header } from '../widgets';

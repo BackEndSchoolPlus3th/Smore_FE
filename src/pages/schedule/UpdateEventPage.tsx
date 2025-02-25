@@ -10,8 +10,14 @@ interface UpdateEventPageProps {
 const UpdateEventPage: React.FC<UpdateEventPageProps> = ({ event, onClose, onUpdate }) => {
   const [title, setTitle] = useState(event.title);
   const [content, setContent] = useState(event.extendedProps.content || "");
-  const [startdate, setstartdate] = useState(event.extendedProps.startdate);
-  const [endDate, setEndDate] = useState(event.extendedProps.endDate || "");
+  
+  const [startdate, setStartDate] = useState(
+    event.start ? new Date(event.start).toLocaleDateString() : ""
+  );
+  const [endDate, setEndDate] = useState(
+    event.end ? new Date(event.end).toLocaleDateString() : ""
+  );
+  
   const [allDay, setAllDay] = useState(event.allDay); // All Day 설정
 
   const handleUpdate = () => {
@@ -36,7 +42,7 @@ const UpdateEventPage: React.FC<UpdateEventPageProps> = ({ event, onClose, onUpd
       종일 (All Day)
       </label>
       <label>시작 날짜</label>
-      <input type={allDay ? "date" : "datetime-local"} value={startdate} onChange={(e) => setstartdate(e.target.value)} />    
+      <input type={allDay ? "date" : "datetime-local"} value={startdate} onChange={(e) => setStartDate(e.target.value)} />    
       <label>종료 날짜</label>  
       <input type={allDay ? "date" : "datetime-local"} value={endDate} onChange={(e) => setEndDate(e.target.value)} />        
         
