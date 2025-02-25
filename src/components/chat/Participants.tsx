@@ -4,7 +4,7 @@ const Participants: React.FC = () => {
     const participants = ["김철수", "이영희", "홍길동", "박모모"];
 
     return (
-        <div className="w-1/5 bg-yellow-200 p-4">
+        <div className="w-1/5 bg-light-lavender p-4">
             <h2 className="text-lg font-bold mb-2">참여자</h2>
             <ul>
                 {participants.map((user, index) => (
