@@ -1,18 +1,15 @@
-
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
-import MainPage from '../pages/main/MainPage.tsx';
-import MyStudyPage from '../pages/article/MyStudyPage.jsx';
-import ChatPage from '../pages/chat/ChatPage.tsx';
-
+import { RecruitmentPage, ChatPage } from '../pages';
+import { Header } from '../widgets';
 
 function App() {
     return (
         <Router>
             <div className="App">
+                <Header />
                 <Routes>
-                    <Route path="/" element={<MainPage />} />
-                    <Route path="/article" element={<MyStudyPage />} />
+                    <Route path="/" element={<RecruitmentPage />} />
                     <Route path="/chat" element={<ChatPage />} />
                 </Routes>
             </div>
