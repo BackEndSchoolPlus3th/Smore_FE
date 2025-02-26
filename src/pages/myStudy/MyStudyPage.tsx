@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Header from "../../widgets/header/Header";
 
 const MyStudyPage = () => {
   const navigate = useNavigate();
@@ -15,23 +14,26 @@ const MyStudyPage = () => {
   };
 
   const goToStudyMainPage = () => {
-    navigate("/MyStudy");
+    navigate("/mystudy");
 };
 const goToSchedulePage = () => {
-    navigate("/MyStudySchedule");
+    navigate("/mystudyschedule");
 };
 const goToDocumentPage = () => {
-    navigate("/MyStudyDocument");
+    navigate("/document");
 };
 const goToStudyArticlePage = () => {
-    navigate("/MyStudyArticle");
+    navigate("/study/:studyId/article");
 };
 const goToSettingPage = () => {
-    navigate("/MyStudySetting");
+    navigate("/studysetting");
 };
-const goToEditPage = () => {
-    navigate("/MyStudyEdit");
+const goToStudyEditPage = () => {
+    navigate("/studyedit");
 };
+const goToStudyArticleDetailPage = () => {
+  navigate("/studydetail");
+}
 
   const handleExitClick = () => {
     const userConfirmed = window.confirm("탈퇴하시겠습니까?");
@@ -63,8 +65,6 @@ const goToEditPage = () => {
 
   return (
     <div className="flex flex-col w-full h-screen bg-gray-100">
-      <Header />
-
       <div className="flex flex-1">
         {/* 사이드바 */}
         <div className={`w-1/5 bg-gray-400 p-4 transition-all duration-300 ${isSidebarOpen ? 'block' : 'hidden'}`}>

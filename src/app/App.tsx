@@ -1,27 +1,36 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
-import MainPage from '../pages/main/MainPage.tsx';
-import ChatPage from '../pages/chat/ChatPage.tsx';
-import MyStudyPage from '../pages/MyStudy/MyStudyPage.jsx';
-import MyStudyEditPage from '../pages/MyStudy/MyStudyEditPage.jsx';
-import MyStudyDetailPage from '../pages/MyStudy/MyStudyDetailPage.jsx';
-import MyStudyDocumentPage from '../pages/MyStudy/MyStudyDocumentPage.jsx';
-import MyStudyArticlePage from '../pages/MyStudy/MyStudyArticlePage.jsx';
-import MyStudySettingPage from '../pages/MyStudy/MyStudySettingPage.jsx';
+
+import {MyStudyPage, MyStudyEditPage, MyStudyDetailPage, MyStudyDocumentPage, MyStudyArticlePage, MyStudySettingPage } from "../pages";
+import  ChatPage from '../pages/chat/ChatPage';
+import RecruitmentPage from '../pages/main/MainPage';
+import CalenderPage from '../pages/schedule/CalenderPage';
+import Header from '../widgets/header/Header';
+
 
 function App() {
     return (
         <Router>
             <div className="App">
+            <Header />
                 <Routes>
-                    <Route path="/" element={<MainPage />} />
-                    <Route path="/MyStudy" element={<MyStudyPage />} />
-                    <Route path="/Chat" element={<ChatPage />} />
-                    <Route path="/StudyEdit" element={<MyStudyEditPage />} />
-                    <Route path="/StudyDetail" element={<MyStudyDetailPage />} />
-                    <Route path="/Document" element={<MyStudyDocumentPage />} />
-                    <Route path="/StudyArticle" element={<MyStudyArticlePage />} />
-                    <Route path="/StudySetting" element={<MyStudySettingPage />} />
+                    <Route path="/mystudy" element={<MyStudyPage />} />
+                    <Route path="/studyedit" element={<MyStudyEditPage />} />
+                    <Route path="/studydetail" element={<MyStudyDetailPage />} />
+                    <Route path="/document" element={<MyStudyDocumentPage />} />
+                    <Route path="/studysetting" element={<MyStudySettingPage />} />
+
+                    <Route path="/" element={<RecruitmentPage />} />
+                    <Route path="/chat" element={<ChatPage />} />
+
+                    <Route
+                        path="/study/:studyId/schedules"
+                        element={<CalenderPage />}
+                    />
+                    <Route
+                        path="/study/:studyId/article"
+                        element={<MyStudyArticlePage />}
+                    />
                 </Routes>
             </div>
         </Router>

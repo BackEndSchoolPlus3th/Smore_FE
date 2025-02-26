@@ -13,7 +13,7 @@ const Header = () => {
   };
 
   const goToStudyMainPage = () => {
-    navigate("/StudyMain");
+    navigate("/mystudy");
   };
 
   const goToLoginPage = () => {
