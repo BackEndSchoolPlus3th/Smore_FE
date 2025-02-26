@@ -12,8 +12,8 @@ const Header = () => {
     navigate("/chat");
   };
 
-  const goToArticlePage = () => {
-    navigate("/article");
+  const goToStudyMainPage = () => {
+    navigate("/StudyMain");
   };
 
   const goToLoginPage = () => {
@@ -28,7 +28,7 @@ const Header = () => {
       <div className="flex items-center space-x-4">
         <button
           className="text-lg font-semibold cursor-pointer"
-          onClick={goToArticlePage}
+          onClick={goToStudyMainPage}
         >
           내스터디
         </button>
