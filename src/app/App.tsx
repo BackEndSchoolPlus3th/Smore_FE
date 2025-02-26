@@ -2,15 +2,20 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
 
 import {MyStudyPage, MyStudyEditPage, MyStudyDetailPage, MyStudyDocumentPage, MyStudyArticlePage, MyStudySettingPage } from "../pages";
-import  ChatPage from '../pages/chat/ChatPage';
-import RecruitmentPage from '../pages/main/MainPage';
-import CalenderPage from '../pages/schedule/CalenderPage';
-import Header from '../widgets/header/Header';
+import {
+    RecruitmentPage,
+    ChatPage,
+    CalenderPage,
+    LoginPage,
+} from '../pages';
+import {Header} from '../widgets';
+
 
 
 function App() {
     return (
         <Router>
+
             <div className="App">
             <Header />
                 <Routes>
@@ -31,6 +36,12 @@ function App() {
                         path="/study/:studyId/article"
                         element={<MyStudyArticlePage />}
                     />
+
+                    <Route
+                        path="/study/:studyId/schedules"
+                        element={<CalenderPage />}
+                    />
+                    <Route path="/login" element={<LoginPage />} />
                 </Routes>
             </div>
         </Router>

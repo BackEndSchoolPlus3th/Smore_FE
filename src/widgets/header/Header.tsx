@@ -1,9 +1,10 @@
 // import React from "react";
 import { useNavigate } from "react-router-dom";
-
+import { useState } from "react";
+import AlarmPage from "../../pages/alarm/AlarmPage.tsx";
 const Header = () => {
   const navigate = useNavigate();
-
+  const [isAlarm, setIsAlarm] = useState(false);
   const goToMainPage = () => {
     navigate("/");
   };
@@ -38,7 +39,10 @@ const Header = () => {
         >
           채팅페이지
         </button>
-        <div className="text-lg font-semibold cursor-pointer">알림</div>
+        <button onClick={() => setIsAlarm(true)} className="text-lg font-semibold cursor-pointer">
+          🔔
+          </button>
+          <AlarmPage isOpen={isAlarm} onClose={() => setIsAlarm(false)} />
         <button
           className="px-4 py-2 bg-gray-500 text-white rounded cursor-pointer"
           onClick={goToLoginPage}
