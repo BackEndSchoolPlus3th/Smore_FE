@@ -26,13 +26,13 @@ const EventDetailPage: React.FC<EventDetailPageProps> = ({ event, onClose, onDel
       </div>
       <div>
         <strong>시작 날짜:</strong>{" "}
-        {event.allDay ? event.start.toLocaleDateString() : event.start.toLocaleString()}
+        {event.start?.toString()}
       </div>
       {event.end && (
         <div>
           <strong>종료 날짜:</strong>{" "}
-          {event.allDay ? event.end.toLocaleDateString() : event.end.toLocaleString()}
-        </div>
+          {event.end?.toString() || ""}
+     </div>
       )}
       <div style={{ display: "flex", gap: "10px" }}>
         <button onClick={onClose}>닫기</button>

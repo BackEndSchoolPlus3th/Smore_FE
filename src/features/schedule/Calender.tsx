@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Calendar, EventApi } from "@fullcalendar/core";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
+import momentTimezonePlugin from '@fullcalendar/moment-timezone';
 import AddEventPopup from "./AddEventPopup";
 import EventDetailPopup from "./EventDetailPopup";
 import UpdateEventPopup from "./UpdateEventPopup";
@@ -17,8 +18,9 @@ const Calender: React.FC = () => {
   useEffect(() => {
     if (calendarRef.current) {
       const newCalendar = new Calendar(calendarRef.current, {
-        plugins: [dayGridPlugin, interactionPlugin],
-        timeZone: 'Asia/seoul',
+        locale: 'ko', // 한국어 설정
+        plugins: [dayGridPlugin, interactionPlugin, momentTimezonePlugin],
+        timeZone: 'Asia/Seoul', // 한국 시간대 설정
         eventTimeFormat: { hour: 'numeric', minute: '2-digit', timeZoneName: 'short' },
         initialView: "dayGridMonth",
         headerToolbar: {
