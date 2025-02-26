@@ -1,1 +1,33 @@
 @import 'tailwindcss';
+
+.bg-light-gray {
+    background-color: #fbfbfb; /* 밝은 배경 (기본 배경) */
+}
+
+.bg-light-blue {
+    background-color: #e8f9ff; /* 기본 테마 배경 */
+}
+
+.bg-light-purple {
+    background-color: #c4d9ff; /* 보조 색상 */
+}
+
+.bg-light-violet {
+    background-color: #c5baff; /* 강조 색상 (연한 톤) */
+}
+
+.bg-light-lavender {
+    background-color: #f5efff; /* 강조 색상 */
+}
+
+.bg-muted-purple {
+    background-color: #e5d9f2; /* 부드러운 중립 색상 */
+}
+
+.bg-bright-purple {
+    background-color: #a294f9; /* 강조 색상 */
+}
+
+.bg-dark-purple {
+    background-color: #7743db; /* 진한 포인트 색상 */
+}
