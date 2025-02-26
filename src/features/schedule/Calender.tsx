@@ -97,9 +97,6 @@ const Calender: React.FC = () => {
       let startDateTime = updatedEvent.startdate;
       let endDateTime = updatedEvent.endDate ?? null;
 
-      // allDay true
-
-      // allDay false
   
 
       // 🔹 allDay 업데이트
