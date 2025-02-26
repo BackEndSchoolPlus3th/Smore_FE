@@ -1,12 +1,17 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
 
-import {MyStudyPage, MyStudyEditPage, MyStudyDetailPage, MyStudyDocumentPage, MyStudyArticlePage, MyStudySettingPage } from "../pages";
 import {
     RecruitmentPage,
     ChatPage,
     CalenderPage,
     LoginPage,
+    MyStudyPage,
+    MyStudyEditPage,
+    MyStudyDetailPage,
+    MyStudyDocumentPage,
+    MyStudyArticlePage,
+    MyStudySettingPage,
 } from '../pages';
 import {Header} from '../widgets';
 
