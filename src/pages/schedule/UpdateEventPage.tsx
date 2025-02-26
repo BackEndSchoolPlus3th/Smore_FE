@@ -29,7 +29,12 @@ const UpdateEventPage: React.FC<UpdateEventPageProps> = ({ event, onClose, onUpd
       return;
     }
 
-    onUpdate({ title, content, startdate, endDate, allDay });
+    // // 📌 allDay가 true일 때, startdate와 endDate를 'YYYY-MM-DD' 형식으로 변환
+    // const formattedStart = allDay ? startdate.split("T")[0] : startdate;
+    // const formattedEnd = allDay && endDate ? endDate.split("T")[0] : endDate;
+    
+
+    onUpdate({ title, content, startdate: startdate, endDate: endDate, allDay });
     onClose(); // 팝업 닫기
   };
 

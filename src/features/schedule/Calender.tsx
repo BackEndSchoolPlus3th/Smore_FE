@@ -18,7 +18,8 @@ const Calender: React.FC = () => {
     if (calendarRef.current) {
       const newCalendar = new Calendar(calendarRef.current, {
         plugins: [dayGridPlugin, interactionPlugin],
-        timeZone: 'local',
+        timeZone: 'Asia/seoul',
+        eventTimeFormat: { hour: 'numeric', minute: '2-digit', timeZoneName: 'short' },
         initialView: "dayGridMonth",
         headerToolbar: {
           left: "prevYear,prev,next,nextYear today",
@@ -65,6 +66,7 @@ const Calender: React.FC = () => {
         setSelectedEvent(newEvent); 
       }
     }
+    console.log("New Event:", event);
     setShowAddEventPopup(false);
   };
 
@@ -79,24 +81,37 @@ const Calender: React.FC = () => {
     }
   };
 
-  // 일정 수정
-
+  // 수정 팝업 열기기
   const handleEventDetailUpdate = () => {
     setShowUpdateEventPopup(true); // 수정 팝업 열기
   };
 
+  // 일정 수정
   const handleUpdateEvent = (updatedEvent: { title: string; content?: string; startdate: string; endDate?: string; allDay?: boolean }) => {
     if (selectedEvent) {
       selectedEvent.setProp("title", updatedEvent.title);
       selectedEvent.setExtendedProp("content", updatedEvent.content);
-      selectedEvent.setStart(updatedEvent.startdate);
-      if (updatedEvent.endDate) {
-        selectedEvent.setEnd(updatedEvent.endDate);
-      } else {
-        selectedEvent.setEnd(null); // 종료 날짜 없을 경우 제거
-      }
+  
+      let startDateTime = updatedEvent.startdate;
+      let endDateTime = updatedEvent.endDate ?? null;
+
+      // allDay true
+
+      // allDay false
+  
+
+      // 🔹 allDay 업데이트
       selectedEvent.setAllDay(updatedEvent.allDay ?? false);
-    
+      
+      // 🔹 FullCalendar에서 allDay가 바뀔 때는 start/end를 먼저 설정해야 반영됨
+      selectedEvent.setStart(startDateTime);
+      console.log("startDateTime", startDateTime);
+      selectedEvent.setEnd(endDateTime);
+      console.log("endDateTime", endDateTime);
+  
+      
+  
+      console.log("Updated Event:", selectedEvent);
       setShowUpdateEventPopup(false);
       setShowEventDetailPopup(false);
     }
