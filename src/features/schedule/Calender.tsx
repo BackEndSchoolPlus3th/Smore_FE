@@ -115,7 +115,7 @@ const Calender: React.FC = () => {
 
       // 서버로 저장 요청
     try {
-      const response = await axios.post("http://localhost:8090/api/v1/study/1/schedules", {
+      const response = await apiClient.post("v1/study/1/schedules", {
         title: event.title,
         startDate: event.startdate,
         endDate: event.endDate || event.startdate, // endDate가 없을 경우 startdate로 설정
@@ -123,23 +123,60 @@ const Calender: React.FC = () => {
       });
 
       console.log("서버 응답:", response.data);
+
+      // 서버에서 일정 목록 다시 조회
+      const newEvent = await apiClient.get("/v1/study/1/schedules");  
+      console.log("newEvent", newEvent);
+
+      const formattedEvents = newEvent.map((event: any) => ({
+        id: event.id,
+        title: event.title,
+        start: event.startDate,
+        end: event.endDate,
+        allDay: event.allDay,
+        extendedProps: {
+          content: event.content,
+        },
+        }));
+
+        setEvents(formattedEvents);
+
     } catch (error) {
       console.error("스케줄 저장 실패:", error);
     }
 
     setShowAddEventPopup(false);
+
   };
 
   // 일정 삭제
-  const handleDeleteEvent = () => {
+  const handleDeleteEvent = async () => {
     if (!selectedEvent) return;
   
     if (window.confirm("정말 삭제하시겠습니까?")) {
-      selectedEvent.remove();
-      setShowEventDetailPopup(false);
-      setSelectedEvent(null);
+      try {
+
+        await axios.delete(`http://localhost:8090/api/v1/study/1/schedules`,{
+          data: {
+            id: selectedEvent.id}
+      });
+
+        selectedEvent.remove();
+        setShowEventDetailPopup(false);
+        setSelectedEvent(null);
+      }
+      catch (error) {
+        if(error.response) {
+        console.error("스케줄 삭제 실패:", error.response.data);
+        alert("스케줄 삭제에 실패했습니다.");
+      } else {
+        console.error("서버 요청 실패:", error.message);
+        alert("서버 요청에 실패했습니다.");
+      }
     }
-  };
+    };
+  }
+
 
   // 수정 팝업 열기
   const handleEventDetailUpdate = () => {
