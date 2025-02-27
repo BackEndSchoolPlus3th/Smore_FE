@@ -156,7 +156,7 @@ const Calender: React.FC = () => {
     if (window.confirm("정말 삭제하시겠습니까?")) {
       try {
 
-        await axios.delete(`http://localhost:8090/api/v1/study/1/schedules`,{
+        await apiClient.delete(`v1/study/1/schedules`,{
           data: {
             id: selectedEvent.id}
       });
