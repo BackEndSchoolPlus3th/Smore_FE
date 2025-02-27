@@ -7,20 +7,24 @@ interface UpdateEventPageProps {
   onUpdate: (updatedEvent: { title: string; content?: string; startdate:string; endDate?: string; allDay: boolean }) => void;
 }
 
-// // 로컬 시간 변환 함수
-// const formatDateTimeLocal = (date: Date | null) => {
-//     if (!date) return ""; // null이면 빈 문자열 반환
-//     const offset = new Date().getTimezoneOffset() * 60000;
-//     return new Date(date.getTime() - offset).toISOString().slice(0, 16);
-//   };
 
 const UpdateEventPage: React.FC<UpdateEventPageProps> = ({ event, onClose, onUpdate }) => {
   const [title, setTitle] = useState(event.title);
   const [content, setContent] = useState(event.extendedProps.content || "");
+
+  const formatDateTime = (date: Date | null) => 
+    // date ? new Date(date).toString().replace(/\sGMT.*/, "") : "";
+    date ? new Date(date).toISOString().slice(0, 16) : "";  
+
+  // console.log("event.start", event.start);
+  // console.log("event.end", event.end);
+
+  const [startDate, setStartDate] = useState(formatDateTime(event.start));
+  const [endDate, setEndDate] = useState(formatDateTime(event.end ?? null));
   
-  const [startdate, setStartDate] = useState(event.start);
-  const [endDate, setEndDate] = useState(event.end ?? null);
-  
+  console.log("formatDateTime.start", formatDateTime(event.start));
+  console.log("formatDateTime.end", formatDateTime(event.end ?? null));
+
   const [allDay, setAllDay] = useState(event.allDay); // All Day 설정
 
   const handleUpdate = () => {
@@ -30,8 +34,8 @@ const UpdateEventPage: React.FC<UpdateEventPageProps> = ({ event, onClose, onUpd
     }
 
 
-    onUpdate({ title, content, startdate: startdate, endDate: endDate, allDay });
-    onClose(); // 팝업 닫기
+    onUpdate({ title, content, startDate: startDate, endDate: endDate, allDay });
+    onClose(); 
   };
 
   return (
@@ -44,7 +48,7 @@ const UpdateEventPage: React.FC<UpdateEventPageProps> = ({ event, onClose, onUpd
       
       
       <label>시작 날짜</label>
-      <input type={allDay ? "date" : "datetime-local"} value={startdate} onChange={(e) => setStartDate(e.target.value)} />    
+      <input type={allDay ? "date" : "datetime-local"} value={startDate} onChange={(e) => setStartDate(e.target.value)} />    
       <label>종료 날짜</label>  
       <input type={allDay ? "date" : "datetime-local"} value={endDate} onChange={(e) => setEndDate(e.target.value)} />        
         

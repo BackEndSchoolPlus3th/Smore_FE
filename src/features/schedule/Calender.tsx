@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import axios from "axios";
 
 import { Calendar, EventApi } from "@fullcalendar/core";
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -10,6 +9,7 @@ import AddEventPopup from "./AddEventPopup";
 import EventDetailPopup from "./EventDetailPopup";
 import UpdateEventPopup from "./UpdateEventPopup";
 import { apiClient } from "../../shared";
+import { all } from "axios";
 
 const Calender: React.FC = () => {
   const calendarRef = useRef<HTMLDivElement>(null);
@@ -52,9 +52,9 @@ const Calender: React.FC = () => {
     // FullCalendar 초기화
     if (calendarRef.current) {
       const newCalendar = new Calendar(calendarRef.current, {
-        // locale: 'ko', // 한국어 설정
+        locale: 'ko', // 한국어 설정
         plugins: [dayGridPlugin, interactionPlugin, momentTimezonePlugin],
-        // timeZone: 'Asia/Seoul', // 한국 시간대 설정
+        timeZone: 'Asia/Seoul', // 한국 시간대 설정
         eventTimeFormat: { hour: 'numeric', minute: '2-digit' },
         initialView: "dayGridMonth",
         headerToolbar: {
@@ -120,6 +120,7 @@ const Calender: React.FC = () => {
         startDate: event.startdate,
         endDate: event.endDate || event.startdate, // endDate가 없을 경우 startdate로 설정
         content: event.content || "", // content가 없을 경우 빈 문자열 처리
+        allDay: event.allDay || false, // allDay가 없을 경우 false로 설정
       });
 
       console.log("서버 응답:", response.data);
