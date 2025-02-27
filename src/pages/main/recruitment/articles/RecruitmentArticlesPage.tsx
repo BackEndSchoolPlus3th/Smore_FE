@@ -4,6 +4,7 @@ import {
     RecruitmentArticleProps,
 } from '../../../../entities';
 import './RecruitmentArticlesPageStyle.css';
+import { apiClient } from '../../../../shared';
 
 const RecruitmentArticlesPage: React.FC = () => {
     const [recruitmentArticles, setRecruitmentArticles] = useState<
@@ -130,7 +131,36 @@ const RecruitmentArticlesPage: React.FC = () => {
                 clipCount: 16,
             },
         ]);
+
+        const hashTags = ['프론트', 'react', 'javascript'];
+        fetchRecruitmentArticles({ hashTags, page: 1, size: 12 });
     }, []);
+
+    interface FetchRecruitmentArticlesParams {
+        hashTags: string[];
+        page: number;
+        size: number;
+    }
+
+    const fetchRecruitmentArticles = async ({
+        hashTags,
+        page,
+        size,
+    }: FetchRecruitmentArticlesParams): Promise<void> => {
+        try {
+            // axios의 get 메서드에 params 옵션으로 해시태그 배열과 페이지 정보를 전달
+            const response = await apiClient.get('/v1/recruitmentArticles', {
+                params: {
+                    hashTags,
+                    page,
+                    size,
+                },
+            });
+            setRecruitmentArticles(response.data);
+        } catch (error) {
+            console.error('모집글 조회 에러:', error);
+        }
+    };
 
     return (
         <div className="flex flex-col gap-4 p-4 w-full">

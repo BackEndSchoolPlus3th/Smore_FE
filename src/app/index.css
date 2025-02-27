@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 
+/* 기본 레이아웃 */
 #root {
     background-color: #fbfbfb;
     padding: 0;
@@ -8,8 +9,9 @@
     overflow: auto;
 }
 
+/* 배경 색상 정의 */
 .bg-light-gray {
-    background-color: #fbfbfb; /* 밝은 배경 (기본 배경) */
+    background-color: #fbfbfb; /* 기본 밝은 배경 */
 }
 
 .bg-light-blue {
@@ -38,105 +40,4 @@
 
 .bg-dark-purple {
     background-color: #7743db; /* 진한 포인트 색상 */
-}
-
-/* 마크다운 컨테이너 */
-.markdown-body {
-    font-family: sans-serif;
-    line-height: 1.6;
-    color: #333;
-}
-
-/* 헤딩 스타일 */
-.markdown-body h1,
-.markdown-body h2,
-.markdown-body h3,
-.markdown-body h4,
-.markdown-body h5,
-.markdown-body h6 {
-    font-weight: bold;
-    margin-top: 1.2em;
-    margin-bottom: 0.6em;
-    line-height: 1.2;
-}
-
-/* 크기 조정 예시 */
-.markdown-body h1 {
-    font-size: 2em; /* 예: 2배 크기 */
-}
-.markdown-body h2 {
-    font-size: 1.75em;
-}
-.markdown-body h3 {
-    font-size: 1.5em;
-}
-
-/* 본문 스타일 */
-.markdown-body p {
-    margin-bottom: 1em;
-}
-
-/* 리스트 스타일 */
-.markdown-body ul,
-.markdown-body ol {
-    margin-left: 1.5em;
-    margin-bottom: 1em;
-}
-.markdown-body li {
-    margin-bottom: 0.5em;
-}
-
-/* 인라인 코드 스타일 */
-.markdown-body code {
-    background-color: #f5f5f5;
-    padding: 0.2em 0.4em;
-    border-radius: 4px;
-    font-family: 'Fira Code', monospace;
-    font-size: 0.95em;
-}
-
-/* 코드 블록 스타일 */
-.markdown-body pre {
-    background-color: #f5f5f5;
-    padding: 1em;
-    overflow-x: auto;
-    border-radius: 4px;
-    margin-bottom: 1em;
-}
-.markdown-body pre code {
-    background-color: transparent; /* pre에 이미 배경을 주었으므로 중복 제거 */
-    padding: 0;
-}
-
-/* 인용구 스타일 */
-.markdown-body blockquote {
-    border-left: 4px solid #ccc;
-    margin: 1em 0;
-    padding-left: 1em;
-    color: #666;
-}
-
-/* 테이블 스타일 */
-.markdown-body table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 1em;
-}
-.markdown-body th,
-.markdown-body td {
-    border: 1px solid #ccc;
-    padding: 0.5em;
-}
-.markdown-body th {
-    background-color: #f0f0f0;
-    font-weight: bold;
-}
-
-/* 링크 스타일 */
-.markdown-body a {
-    color: #0070f3;
-    text-decoration: underline;
-}
-.markdown-body a:hover {
-    text-decoration: none;
 }

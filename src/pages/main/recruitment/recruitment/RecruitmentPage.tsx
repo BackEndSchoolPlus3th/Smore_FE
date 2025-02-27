@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { MarkdownRenderer } from '../../../../shared';
+import { FaRegHeart, FaHeart } from 'react-icons/fa';
 
 interface RecruitmentContentsProps {
     title: string;
@@ -18,32 +19,19 @@ interface RecruitmentContentsProps {
 const RecuitmentContentPage: React.FC = () => {
     const [recruitmentContent, setRecruitmentContent] =
         useState<RecruitmentContentsProps | null>(null);
+    const [isClipped, setIsClipped] = useState(false);
+
+    const handleClip = () => {
+        setIsClipped(!isClipped);
+    };
 
     useEffect(() => {
         // API로부터 모집글 데이터를 가져온다.
         // setRecruitmentContent(response.data);
         setRecruitmentContent({
             title: '프론트엔드 스터디 모집',
-            content: `
-# 프론트엔드 스터디 모집
-
-React와 TypeScript를 함께 공부할 스터디원을 모집합니다. 
-
-### 스터디 소개
-- **주제**: React와 TypeScript
-- **기간**: 2021-09-01 ~ 2021-09-30
-- **장소**: 서울
-
-### 스터디 목표
-- React 기본 개념 이해
-- TypeScript와 함께 사용하는 방법 학습
-- 프로젝트를 통한 실습
-
-### 지원 방법
-- 아래 지원하기 버튼을 눌러 지원해주세요.
-
-많은 참여 부탁드립니다!
-`,
+            content:
+                '# MarkdownRenderer 테스트 페이지\n\nMarkdownRenderer 컴포넌트의 **모든 기능**을 실험하기 위한 예제입니다. 아래에서는 다양한 Markdown 요소를 사용하여 스타일이 어떻게 적용되는지 확인할 수 있습니다.\n\n## 헤딩\n### h3 헤딩 예제\n#### h4 헤딩 예제\n##### h5 헤딩 예제\n###### h6 헤딩 예제\n\n## 텍스트 스타일\n이 문단에서는 **굵은 텍스트**, *기울임 텍스트* 그리고 `인라인 코드`를 사용하여 다양한 텍스트 스타일을 보여줍니다.\n\n## 리스트\n\n### 순서 없는 리스트\n- 항목 1\n- 항목 2\n  - 하위 항목 A\n  - 하위 항목 B\n\n### 순서 있는 리스트\n1. 첫 번째 항목\n2. 두 번째 항목\n3. 세 번째 항목\n\n## 코드 블록\n다음은 JavaScript 예제 코드입니다:\n\n```\n// 두 수를 더하는 함수\nfunction add(a, b) {\n\treturn a + b;\n}\nconsole.log(add(2, 3)); // 결과: 5\n```\n코드 블럭 끝',
             region: '서울',
             imageUrls: [
                 'https://picsum.photos/300/200',
@@ -60,13 +48,19 @@ React와 TypeScript를 함께 공부할 스터디원을 모집합니다.
     }, []);
 
     return (
-        <div>
+        <div className="flex flex-row">
             {/** 모집글 상세 페이지 */}
             {/** 찜하기 버튼 */}
             <div>
                 {/** 찜하기 버튼 박스 */}
                 <div>
-                    <div></div>
+                    <div>
+                        {isClipped ? (
+                            <FaHeart onClick={handleClip} />
+                        ) : (
+                            <FaRegHeart onClick={handleClip} />
+                        )}
+                    </div>
                 </div>
             </div>
             {/** 제목, 이미지들, 내용 */}

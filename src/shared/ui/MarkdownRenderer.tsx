@@ -1,14 +1,14 @@
-// MarkdownRenderer.tsx
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { materialDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { dark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 interface MarkdownRendererProps {
     content: string;
-    // 추가적인 클래스명을 전달할 옵션
     className?: string;
 }
 
-// code 컴포넌트에서 사용할 타입 선언 (node를 선택적으로)
 type CodeProps = {
     node?: any;
     inline?: boolean;
@@ -24,6 +24,31 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
         <div className={className}>
             <ReactMarkdown
                 components={{
+                    // 수정된 p 컴포넌트
+                    p: ({ node, children, ...props }) => {
+                        // 공백만 있는 텍스트 노드를 필터링
+                        const childrenArray = React.Children.toArray(
+                            children
+                        ).filter((child) =>
+                            typeof child === 'string'
+                                ? child.trim() !== ''
+                                : true
+                        );
+
+                        // 만약 자식 중 하나라도 <pre> 태그가 있다면, fragment로 감싸서 반환
+                        if (
+                            childrenArray.some(
+                                (child) =>
+                                    React.isValidElement(child) &&
+                                    child.type === 'pre'
+                            )
+                        ) {
+                            return <>{children}</>;
+                        }
+
+                        return <p {...props}>{children}</p>;
+                    },
+
                     // 헤딩에 커스텀 클래스 적용
                     h1: ({ node, ...props }) => (
                         <h1 className="markdown-h1" {...props} />
@@ -43,10 +68,6 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
                     h6: ({ node, ...props }) => (
                         <h6 className="markdown-h6" {...props} />
                     ),
-                    // 본문 단락
-                    p: ({ node, ...props }) => (
-                        <p className="markdown-p" {...props} />
-                    ),
                     // 리스트
                     ul: ({ node, ...props }) => (
                         <ul className="markdown-ul" {...props} />
@@ -57,31 +78,25 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
                     li: ({ node, ...props }) => (
                         <li className="markdown-li" {...props} />
                     ),
-                    // 인라인 코드와 코드 블록 구분 (CodeProps 사용)
-                    code: ({
-                        node,
-                        inline,
-                        className,
-                        children,
-                        ...props
-                    }: CodeProps) =>
-                        inline ? (
-                            <code
-                                className={`markdown-inline-code ${className || ''}`}
-                                {...props}
+                    // 인라인 코드와 코드 블록 구분
+                    code({ className, children, ...rest }) {
+                        const match = /language-(\w+)/.exec(className || '');
+                        return match ? (
+                            <SyntaxHighlighter
+                                PreTag="div"
+                                language={match[1]}
+                                style={materialDark}
+                                {...rest}
                             >
+                                {String(children)}
+                            </SyntaxHighlighter>
+                        ) : (
+                            <code {...rest} className={className}>
                                 {children}
                             </code>
-                        ) : (
-                            <pre className="markdown-pre">
-                                <code
-                                    className="markdown-code-block"
-                                    {...props}
-                                >
-                                    {children}
-                                </code>
-                            </pre>
-                        ),
+                        );
+                    },
+
                     // 인용구
                     blockquote: ({ node, ...props }) => (
                         <blockquote
@@ -99,7 +114,6 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
                     td: ({ node, ...props }) => (
                         <td className="markdown-td" {...props} />
                     ),
-                    // 필요에 따라 더 많은 태그 커스터마이징 가능
                 }}
             >
                 {content}
