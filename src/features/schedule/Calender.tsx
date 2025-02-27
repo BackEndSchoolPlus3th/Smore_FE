@@ -1,11 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
+import axios from "axios";
+
 import { Calendar, EventApi } from "@fullcalendar/core";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import momentTimezonePlugin from '@fullcalendar/moment-timezone';
+
 import AddEventPopup from "./AddEventPopup";
 import EventDetailPopup from "./EventDetailPopup";
 import UpdateEventPopup from "./UpdateEventPopup";
+import { apiClient } from "../../shared";
 
 const Calender: React.FC = () => {
   const calendarRef = useRef<HTMLDivElement>(null);
@@ -14,14 +18,44 @@ const Calender: React.FC = () => {
   const [showEventDetailPopup, setShowEventDetailPopup] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<EventApi | null>(null); // EventApi 타입으로 변경
   const [calendar, setCalendar] = useState<Calendar | null>(null);
+  const [events, setEvents] = useState([]);
 
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await apiClient.get("/v1/study/1/schedules");      
+      
+        console.log("response", response);
+
+        // FullCalendar에서 사용할 형식으로 변환
+        const formattedEvents = response.map((event: any) => ({
+        id: event.id,
+        title: event.title,
+        start: event.startDate,
+        end: event.endDate,
+        allDay: event.allDay,
+        extendedProps: {
+          content: event.content,
+        },
+        }));
+
+        setEvents(formattedEvents);
+      } catch (error) {
+        console.error("API 요청 실패:", error);
+      }
+    };
+  
+  
+  
+    fetchData();
+      
+    // FullCalendar 초기화
     if (calendarRef.current) {
       const newCalendar = new Calendar(calendarRef.current, {
-        locale: 'ko', // 한국어 설정
+        // locale: 'ko', // 한국어 설정
         plugins: [dayGridPlugin, interactionPlugin, momentTimezonePlugin],
-        timeZone: 'Asia/Seoul', // 한국 시간대 설정
-        eventTimeFormat: { hour: 'numeric', minute: '2-digit', timeZoneName: 'short' },
+        // timeZone: 'Asia/Seoul', // 한국 시간대 설정
+        eventTimeFormat: { hour: 'numeric', minute: '2-digit' },
         initialView: "dayGridMonth",
         headerToolbar: {
           left: "prevYear,prev,next,nextYear today",
@@ -46,6 +80,7 @@ const Calender: React.FC = () => {
           setSelectedEvent(info.event); // EventApi 객체 저장
           setShowEventDetailPopup(true);
         },
+        events: events,
       });
 
       newCalendar.render();
@@ -53,8 +88,16 @@ const Calender: React.FC = () => {
     }
   }, []);
 
+  // events 상태값이 변경될 때마다 FullCalendar에 반영
+  useEffect(() => {
+    if (calendar) {
+      calendar.removeAllEvents();
+      events.forEach(event => calendar.addEvent(event));
+    }
+  }, [events, calendar]);
+
   // 일정 추가
-  const handleAddEvent = (event: { title: string; content?: string; startdate: string; endDate?: string; allDay?: boolean }) => {
+  const handleAddEvent = async (event: { title: string; content?: string; startdate: string; endDate?: string; allDay?: boolean }) => {
     if (calendar) {
       const newEvent = calendar.addEvent({
         title: event.title,
@@ -69,6 +112,21 @@ const Calender: React.FC = () => {
       }
     }
     console.log("New Event:", event);
+
+      // 서버로 저장 요청
+    try {
+      const response = await axios.post("http://localhost:8090/api/v1/study/1/schedules", {
+        title: event.title,
+        startDate: event.startdate,
+        endDate: event.endDate || event.startdate, // endDate가 없을 경우 startdate로 설정
+        content: event.content || "", // content가 없을 경우 빈 문자열 처리
+      });
+
+      console.log("서버 응답:", response.data);
+    } catch (error) {
+      console.error("스케줄 저장 실패:", error);
+    }
+
     setShowAddEventPopup(false);
   };
 
@@ -83,9 +141,9 @@ const Calender: React.FC = () => {
     }
   };
 
-  // 수정 팝업 열기기
+  // 수정 팝업 열기
   const handleEventDetailUpdate = () => {
-    setShowUpdateEventPopup(true); // 수정 팝업 열기
+    setShowUpdateEventPopup(true); 
   };
 
   // 일정 수정
@@ -99,10 +157,7 @@ const Calender: React.FC = () => {
 
   
 
-      // 🔹 allDay 업데이트
-      selectedEvent.setAllDay(updatedEvent.allDay ?? false);
       
-      // 🔹 FullCalendar에서 allDay가 바뀔 때는 start/end를 먼저 설정해야 반영됨
       selectedEvent.setStart(startDateTime);
       console.log("startDateTime", startDateTime);
       selectedEvent.setEnd(endDateTime);

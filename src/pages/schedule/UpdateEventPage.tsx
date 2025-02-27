@@ -40,7 +40,9 @@ const UpdateEventPage: React.FC<UpdateEventPageProps> = ({ event, onClose, onUpd
       <label>제목</label>
       <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
       <label>내용</label>
-      <textarea value={content} onChange={(e) => setContent(e.target.value)} />      
+      <textarea value={content} onChange={(e) => setContent(e.target.value)} />
+      
+      
       <label>시작 날짜</label>
       <input type={allDay ? "date" : "datetime-local"} value={startdate} onChange={(e) => setStartDate(e.target.value)} />    
       <label>종료 날짜</label>  
