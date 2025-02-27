@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-    baseURL: import.meta.env.BASE_URL + '/api',
+    baseURL: import.meta.env.VITE_API_BASE_URL + '/api',
     headers: {
         'Content-Type': 'application/json',
     },
@@ -16,9 +16,7 @@ apiClient.interceptors.request.use(
         }
         return config;
     },
-    (error) => {
-        return Promise.reject(error);
-    }
+    (error) => Promise.reject(error)
 );
 
 apiClient.interceptors.response.use(
@@ -37,8 +35,9 @@ apiClient.interceptors.response.use(
             return Promise.reject(new Error(msg));
         }
 
-        // 성공인 경우 data만 반환하여 이후 then()에서 바로 사용 가능
-        return data;
+        // 성공인 경우 code와 data를 함께 반환
+        response.data = { code: statusCode, msg, data };
+        return response.data;
     },
     (error) => Promise.reject(error)
 );
