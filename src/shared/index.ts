@@ -1,3 +1,4 @@
+export { default as MarkdownRenderer } from './ui/MarkdownRenderer';
 export { default as apiClient } from './api/ApiClient';
 
 // types

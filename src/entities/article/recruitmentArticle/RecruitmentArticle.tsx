@@ -2,6 +2,7 @@ import React from 'react';
 import { RecruitmentArticleProps } from './RecruitmentArticleProb';
 import { FaHeart } from 'react-icons/fa6';
 import './RecruitmentArticleStyle.css';
+import { Link } from 'react-router-dom';
 
 const RecruitmentArticle: React.FC<RecruitmentArticleProps> = ({
     id,
@@ -13,7 +14,10 @@ const RecruitmentArticle: React.FC<RecruitmentArticleProps> = ({
     clipCount,
 }: RecruitmentArticleProps) => {
     return (
-        <div className="RecruitmentArticleContainer bg-light-blue p-4 bg-white shadow-lg rounded-lg w-96 h-96">
+        <Link
+            to={`/recruitment/${id}`}
+            className="RecruitmentArticleContainer w-full h-full"
+        >
             {/* 썸네일, 내용 */}
             <div className="flex flex-col space-y-4">
                 {/* 썸네일 */}
@@ -47,7 +51,7 @@ const RecruitmentArticle: React.FC<RecruitmentArticleProps> = ({
                     <div className="text-sm">{clipCount}</div>
                 </div>
             </div>
-        </div>
+        </Link>
     );
 };
 
