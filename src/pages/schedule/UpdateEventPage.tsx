@@ -14,7 +14,7 @@ const UpdateEventPage: React.FC<UpdateEventPageProps> = ({ event, onClose, onUpd
 
   const formatDateTime = (date: Date | null) => 
     // date ? new Date(date).toString().replace(/\sGMT.*/, "") : "";
-    date ? new Date(date).toISOString().slice(0, 16) : "";  
+    date ? new Date(date).toLocaleString().slice(0, 16) : "";  
 
   // console.log("event.start", event.start);
   // console.log("event.end", event.end);
