@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { EventApi } from "@fullcalendar/core";
+import moment from "moment";
 
 interface UpdateEventPageProps {
   event: EventApi;
@@ -12,20 +13,21 @@ const UpdateEventPage: React.FC<UpdateEventPageProps> = ({ event, onClose, onUpd
   const [title, setTitle] = useState(event.title);
   const [content, setContent] = useState(event.extendedProps.content || "");
 
-  const formatDateTime = (date: Date | null) => 
-    // date ? new Date(date).toString().replace(/\sGMT.*/, "") : "";
-    date ? new Date(date).toLocaleString().slice(0, 16) : "";  
+  const formatDateTime = (date: Date | null, allDay:boolean) => {
+    if(!date) return "";
+    return allDay 
+    ? moment(new Date(date).toISOString()).format("YYYY-MM-DD")  
+    : moment(new Date(date).toISOString()).format("YYYY-MM-DDTHH:mm");
+  };  
 
-  // console.log("event.start", event.start);
-  // console.log("event.end", event.end);
 
-  const [startDate, setStartDate] = useState(formatDateTime(event.start));
-  const [endDate, setEndDate] = useState(formatDateTime(event.end ?? null));
+  const [startDate, setStartDate] = useState(formatDateTime(event.start, event.allDay));
+  const [endDate, setEndDate] = useState(formatDateTime(event.end ?? null, event.allDay));
   
-  console.log("formatDateTime.start", formatDateTime(event.start));
-  console.log("formatDateTime.end", formatDateTime(event.end ?? null));
+  console.log("formatDateTime.start", formatDateTime(event.start, event.allDay));
+  console.log("formatDateTime.end", formatDateTime(event.end ?? null, event.allDay));
 
-  const [allDay, setAllDay] = useState(event.allDay); // All Day 설정
+  const [allDay, setAllDay] = useState(event.allDay);
 
   const handleUpdate = () => {
     if (!title.trim()) {
