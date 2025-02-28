@@ -48,7 +48,7 @@ apiClient.interceptors.request.use(
 );
 
 apiClient.interceptors.response.use(
-    (response: AxiosResponse) => {
+    (response) => {
         // 서버 응답 객체에서 resultCode, msg, data를 구조 분해로 추출
         const { resultCode, msg, data } = response.data;
         const statusCode = parseInt(resultCode, 10);
@@ -90,10 +90,7 @@ apiClient.interceptors.response.use(
         };
 
         // 기존 AxiosResponse의 필드들을 유지하면서 data만 교체
-        return {
-            ...response,
-            data: apiResponse,
-        } as AxiosResponse<ApiResponse<typeof data>>;
+        return apiResponse;
     },
     (error) => Promise.reject(error)
 );

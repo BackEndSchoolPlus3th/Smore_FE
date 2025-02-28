@@ -8,9 +8,9 @@ const RecruitmentArticle: React.FC<RecruitmentArticleProps> = ({
     id,
     title,
     content,
-    thumbnailUrl,
-    writer,
-    writerProfileUrl,
+    imageUrl,
+    writerName,
+    writerProfileImageUrl,
     clipCount,
 }: RecruitmentArticleProps) => {
     return (
@@ -23,7 +23,7 @@ const RecruitmentArticle: React.FC<RecruitmentArticleProps> = ({
                 {/* 썸네일 */}
                 <div className="w-full h-48 overflow-hidden rounded-lg">
                     <img
-                        src={thumbnailUrl}
+                        src={imageUrl}
                         alt={title}
                         className="object-cover w-full h-full"
                     />
@@ -39,11 +39,11 @@ const RecruitmentArticle: React.FC<RecruitmentArticleProps> = ({
                 {/* 작성자 */}
                 <div className="flex items-center space-x-2">
                     <img
-                        src={writerProfileUrl}
-                        alt={writer}
+                        src={writerProfileImageUrl}
+                        alt={writerName}
                         className="w-8 h-8 rounded-full"
                     />
-                    <div className="text-sm font-medium">{writer}</div>
+                    <div className="text-sm font-medium">{writerName}</div>
                 </div>
                 {/* 좋아요 */}
                 <div className="flex items-center space-x-2">
