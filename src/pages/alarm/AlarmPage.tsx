@@ -1,6 +1,6 @@
 import React from "react";
 import "./AlarmPage.css";
-
+import { apiClient } from "../../shared";
 // 🔹 Props 타입 정의
 interface AlarmPageProps {
   isOpen: boolean;
@@ -10,6 +10,19 @@ interface AlarmPageProps {
 const AlarmPage: React.FC<AlarmPageProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null; // isOpen이 false이면 렌더링 안 함
 
+  const handleClick = async () => {
+  try {
+    const response = await apiClient.post(
+      "/member/check",
+    
+    );
+    console.log("response ",response);
+   
+  } catch (error) {
+    console.error("로그인 실패:", error);
+  
+  }}
+  
   return (
     <div className="overlay" onClick={onClose}>
       <div className="popup" onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}>
@@ -18,7 +31,7 @@ const AlarmPage: React.FC<AlarmPageProps> = ({ isOpen, onClose }) => {
           <div className="notification">
             사용자A님이 스터디A에 지원하였습니다.
             <div className="buttons">
-              <button className="accept">수락</button>
+              <button className="accept" onClick={handleClick}>수락</button>
               <button className="reject">거절</button>
             </div>
           </div>
@@ -32,6 +45,7 @@ const AlarmPage: React.FC<AlarmPageProps> = ({ isOpen, onClose }) => {
           <div className="notification">사용자C님이 당신을 언급했습니다.</div>
           <div className="notification">사용자D님이 당신을 언급했습니다.</div>
           <div className="notification">사용자E님이 당신을 언급했습니다.</div>
+          
         </div>
       </div>
     </div>
