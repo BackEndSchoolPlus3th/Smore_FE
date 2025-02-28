@@ -1,17 +1,20 @@
 import React from "react";
+import { EventApi } from "@fullcalendar/core";
 
 interface EventDetailPageProps {
-  event: {
-    title: string;
-    content?: string;
-    startdate: string;
-    endDate?: string;
-    // allDay: boolean;
-  };
+  event: EventApi;
   onClose: () => void;
+  onDelete: () => void;
+  onUpdate: () => void; 
 }
 
-const EventDetailPage: React.FC<EventDetailPageProps> = ({ event, onClose }) => {
+const EventDetailPage: React.FC<EventDetailPageProps> = ({ event, onClose, onDelete, onUpdate }) => {
+ 
+
+  const handleDelete = () => {
+    onDelete(); 
+  };
+  
   return (
     <div style={formStyle}>
       <h2>일정 상세보기</h2>
@@ -19,20 +22,26 @@ const EventDetailPage: React.FC<EventDetailPageProps> = ({ event, onClose }) => 
         <strong>제목:</strong> {event.title}
       </div>
       <div>
-        <strong>내용:</strong> {event.content}
+        <strong>내용:</strong> {event.extendedProps.content || "없음"}
       </div>
       <div>
-        <strong>시작 날짜:</strong> {event.startdate}
+        <strong>시작 날짜:</strong>{" "}
+        {event.allDay ? event.start?.toLocaleDateString() 
+        : event.start?.toLocaleString()}
+        
       </div>
-      {event.endDate && (
+      {event.end && (
         <div>
-          <strong>종료 날짜:</strong> {event.endDate}
-        </div>
+          <strong>종료 날짜:</strong>{" "}
+          {event.allDay ? event.end?.toLocaleDateString() 
+          : event.end?.toLocaleString()}
+     </div>
       )}
-      {/* <div>
-        <strong>종일:</strong> {event.allDay ? "예" : "아니오"}
-      </div> */}
-      <button onClick={onClose}>닫기</button>
+      <div style={{ display: "flex", gap: "10px" }}>
+        <button onClick={onClose}>닫기</button>
+        <button onClick={onUpdate}>수정</button>
+        <button onClick={handleDelete}>삭제</button>
+      </div>
     </div>
   );
 };

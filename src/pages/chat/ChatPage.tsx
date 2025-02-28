@@ -11,7 +11,7 @@ const ChatPage: React.FC = () => {
 
             {/* 중앙 채팅 영역 */}
             <div className="flex-1 flex flex-col bg-muted-purple">
-                <h1 className="p-4 text-lg font-bold border-b">채팅방</h1>
+                <h1 className="p-4 text-lg font-bold">채팅방</h1>
                 <Chat />
             </div>
 
