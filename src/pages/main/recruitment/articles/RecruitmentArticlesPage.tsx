@@ -5,11 +5,20 @@ import {
 } from '../../../../entities';
 import './RecruitmentArticlesPageStyle.css';
 import { apiClient } from '../../../../shared';
+import { PagingButton } from '../../../../widgets';
 
 const RecruitmentArticlesPage: React.FC = () => {
     const [recruitmentArticles, setRecruitmentArticles] = useState<
         RecruitmentArticleProps[]
     >([]);
+    const [page, setPage] = useState(1);
+    const [size, setSize] = useState(12);
+    const [hashTags, setHashTags] = useState<string[]>([]);
+    const [searchKeyword, setSearchKeyword] = useState('');
+    const [isEndPage, setIsEndPage] = useState(false);
+    const [endPage, setEndPage] = useState(0);
+
+    console.log('page: ', page);
 
     useEffect(() => {
         setRecruitmentArticles([
@@ -18,18 +27,18 @@ const RecruitmentArticlesPage: React.FC = () => {
                 title: '프론트엔드 스터디 모집',
                 content:
                     'React와 TypeScript를 함께 공부할 스터디원을 모집합니다.',
-                thumbnailUrl: 'https://picsum.photos/400/200',
+                thumbnailUrl: 'https://picsum.photos/400/200?random=1',
                 writer: '이영희',
-                writerProfileUrl: 'https://picsum.photos/50/50',
+                writerProfileUrl: 'https://picsum.photos/50/50?random=1',
                 clipCount: 5,
             },
             {
                 id: 2,
                 title: '백엔드 스터디 모집',
                 content: 'Spring Boot와 JPA를 공부할 스터디원을 모집합니다.',
-                thumbnailUrl: 'https://picsum.photos/400/200',
+                thumbnailUrl: 'https://picsum.photos/400/200?random=1',
                 writer: '박철수',
-                writerProfileUrl: 'https://picsum.photos/50/50',
+                writerProfileUrl: 'https://picsum.photos/50/50?random=1',
                 clipCount: 8,
             },
             {
@@ -37,9 +46,9 @@ const RecruitmentArticlesPage: React.FC = () => {
                 title: '알고리즘 스터디 모집',
                 content:
                     '매주 알고리즘 문제를 풀고 리뷰할 스터디원을 모집합니다.',
-                thumbnailUrl: 'https://picsum.photos/400/200',
+                thumbnailUrl: 'https://picsum.photos/400/200?random=1',
                 writer: '김민수',
-                writerProfileUrl: 'https://picsum.photos/50/50',
+                writerProfileUrl: 'https://picsum.photos/50/50?random=1',
                 clipCount: 12,
             },
             {
@@ -47,9 +56,9 @@ const RecruitmentArticlesPage: React.FC = () => {
                 title: '데이터베이스 스터디 모집',
                 content:
                     'SQL과 데이터베이스 설계를 공부할 스터디원을 모집합니다.',
-                thumbnailUrl: 'https://picsum.photos/400/200',
+                thumbnailUrl: 'https://picsum.photos/400/200?random=1',
                 writer: '최지우',
-                writerProfileUrl: 'https://picsum.photos/50/50',
+                writerProfileUrl: 'https://picsum.photos/50/50?random=1',
                 clipCount: 7,
             },
             {
@@ -57,9 +66,9 @@ const RecruitmentArticlesPage: React.FC = () => {
                 title: '모바일 앱 개발 스터디 모집',
                 content:
                     'Flutter를 이용한 모바일 앱 개발을 공부할 스터디원을 모집합니다.',
-                thumbnailUrl: 'https://picsum.photos/400/200',
+                thumbnailUrl: 'https://picsum.photos/400/200?random=1',
                 writer: '정다은',
-                writerProfileUrl: 'https://picsum.photos/50/50',
+                writerProfileUrl: 'https://picsum.photos/50/50?random=1',
                 clipCount: 9,
             },
             {
@@ -67,18 +76,18 @@ const RecruitmentArticlesPage: React.FC = () => {
                 title: '머신러닝 스터디 모집',
                 content:
                     'Python과 TensorFlow를 이용한 머신러닝을 공부할 스터디원을 모집합니다.',
-                thumbnailUrl: 'https://picsum.photos/400/200',
+                thumbnailUrl: 'https://picsum.photos/400/200?random=1',
                 writer: '한지민',
-                writerProfileUrl: 'https://picsum.photos/50/50',
+                writerProfileUrl: 'https://picsum.photos/50/50?random=1',
                 clipCount: 15,
             },
             {
                 id: 7,
                 title: '클라우드 컴퓨팅 스터디 모집',
                 content: 'AWS와 Azure를 공부할 스터디원을 모집합니다.',
-                thumbnailUrl: 'https://picsum.photos/400/200',
+                thumbnailUrl: 'https://picsum.photos/400/200?random=1',
                 writer: '이준호',
-                writerProfileUrl: 'https://picsum.photos/50/50',
+                writerProfileUrl: 'https://picsum.photos/50/50?random=1',
                 clipCount: 11,
             },
             {
@@ -86,9 +95,9 @@ const RecruitmentArticlesPage: React.FC = () => {
                 title: 'DevOps 스터디 모집',
                 content:
                     'CI/CD와 Docker, Kubernetes를 공부할 스터디원을 모집합니다.',
-                thumbnailUrl: 'https://picsum.photos/400/200',
+                thumbnailUrl: 'https://picsum.photos/400/200?random=1',
                 writer: '김하늘',
-                writerProfileUrl: 'https://picsum.photos/50/50',
+                writerProfileUrl: 'https://picsum.photos/50/50?random=1',
                 clipCount: 6,
             },
             {
@@ -96,9 +105,9 @@ const RecruitmentArticlesPage: React.FC = () => {
                 title: '보안 스터디 모집',
                 content:
                     '네트워크 보안과 해킹 방어를 공부할 스터디원을 모집합니다.',
-                thumbnailUrl: 'https://picsum.photos/400/200',
+                thumbnailUrl: 'https://picsum.photos/400/200?random=1',
                 writer: '박서준',
-                writerProfileUrl: 'https://picsum.photos/50/50',
+                writerProfileUrl: 'https://picsum.photos/50/50?random=1',
                 clipCount: 13,
             },
             {
@@ -106,9 +115,9 @@ const RecruitmentArticlesPage: React.FC = () => {
                 title: '게임 개발 스터디 모집',
                 content:
                     'Unity와 Unreal Engine을 공부할 스터디원을 모집합니다.',
-                thumbnailUrl: 'https://picsum.photos/400/200',
+                thumbnailUrl: 'https://picsum.photos/400/200?random=1',
                 writer: '오세훈',
-                writerProfileUrl: 'https://picsum.photos/50/50',
+                writerProfileUrl: 'https://picsum.photos/50/50?random=1',
                 clipCount: 10,
             },
             {
@@ -116,25 +125,26 @@ const RecruitmentArticlesPage: React.FC = () => {
                 title: '블록체인 스터디 모집',
                 content:
                     '블록체인 기술과 스마트 계약을 공부할 스터디원을 모집합니다.',
-                thumbnailUrl: 'https://picsum.photos/400/200',
+                thumbnailUrl: 'https://picsum.photos/400/200?random=1',
                 writer: '홍길동',
-                writerProfileUrl: 'https://picsum.photos/50/50',
+                writerProfileUrl: 'https://picsum.photos/50/50?random=1',
                 clipCount: 14,
             },
             {
                 id: 12,
                 title: '로봇공학 스터디 모집',
                 content: '로봇공학과 ROS를 공부할 스터디원을 모집합니다.',
-                thumbnailUrl: 'https://picsum.photos/400/200',
+                thumbnailUrl: 'https://picsum.photos/400/200?random=1',
                 writer: '이순신',
-                writerProfileUrl: 'https://picsum.photos/50/50',
+                writerProfileUrl: 'https://picsum.photos/50/50?random=1',
                 clipCount: 16,
             },
         ]);
 
         const hashTags = ['프론트', 'react', 'javascript'];
         fetchRecruitmentArticles({ hashTags, page: 1, size: 12 });
-    }, []);
+        setEndPage(page - 1 - ((page - 1) % 10) + 10);
+    }, [page]);
 
     interface FetchRecruitmentArticlesParams {
         hashTags: string[];
@@ -177,19 +187,28 @@ const RecruitmentArticlesPage: React.FC = () => {
             </div>
             {/* 게시글 목록 */}
             <div className=" items-center w-full">
-                <div className="container flex flex-wrap gap-4 w-full">
+                <div className=" flex flex-wrap gap-4 w-full justify-center">
                     {recruitmentArticles.map((article) => (
-                        <RecruitmentArticle key={article.id} {...article} />
+                        <div
+                            className="recruitment-article-card card bg-light-lavender p-4 bg-white shadow-lg rounded-lg w-80 min-w-80 h-96"
+                            key={article.id}
+                        >
+                            <RecruitmentArticle {...article} />
+                        </div>
                     ))}
                 </div>
             </div>
             {/* 페이지네이션 */}
             <div className="flex justify-center items-center w-full">
-                <div>1</div>
-                <div>2</div>
-                <div>3</div>
-                <div>4</div>
-                <div>5</div>
+                <PagingButton
+                    switchPage={(page) => {
+                        setPage(page);
+                        fetchRecruitmentArticles({ hashTags, page, size });
+                    }}
+                    currentPage={page}
+                    endPage={endPage}
+                    isEndPage={isEndPage}
+                />
             </div>
         </div>
     );

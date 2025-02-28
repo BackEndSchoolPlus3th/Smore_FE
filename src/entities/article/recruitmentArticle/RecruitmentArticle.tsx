@@ -16,7 +16,7 @@ const RecruitmentArticle: React.FC<RecruitmentArticleProps> = ({
     return (
         <Link
             to={`/recruitment/${id}`}
-            className="RecruitmentArticleContainer bg-light-lavender p-4 bg-white shadow-lg rounded-lg w-96 h-96"
+            className="RecruitmentArticleContainer w-full h-full"
         >
             {/* 썸네일, 내용 */}
             <div className="flex flex-col space-y-4">
