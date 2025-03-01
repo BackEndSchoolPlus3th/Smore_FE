@@ -55,7 +55,11 @@ apiClient.interceptors.response.use(
 
         // 개발 환경인 경우 서버 메시지 출력
         if (import.meta.env.DEV) {
-            console.log(msg);
+            console.log('response:::', response);
+            console.log('statusCode:::', statusCode);
+            console.log('msg:::', msg);
+            console.log('data:::', data);
+            console.log('config:::', response.config);
         }
 
         // if(statusCode==401){
@@ -82,15 +86,15 @@ apiClient.interceptors.response.use(
             return Promise.reject(new Error(msg));
         }
 
-        // 성공인 경우, 기존 response 객체의 data만 가공하여 ApiResponse 형식으로 대체
-        const apiResponse: ApiResponse<typeof data> = {
-            code: statusCode,
-            msg,
-            data,
-        };
+        // // 성공인 경우, 기존 response 객체의 data만 가공하여 ApiResponse 형식으로 대체
+        // const apiResponse: ApiResponse<typeof data> = {
+        //     code: statusCode,
+        //     msg,
+        //     data,
+        // };
 
         // 기존 AxiosResponse의 필드들을 유지하면서 data만 교체
-        return apiResponse;
+        return response.data;
     },
     (error) => Promise.reject(error)
 );
