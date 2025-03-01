@@ -6,13 +6,8 @@ import {
 import './RecruitmentArticlesPageStyle.css';
 import { apiClient, ApiResponse } from '../../../../shared';
 import { PagingButton } from '../../../../widgets';
-interface FetchRecruitmentArticlesParams {
-    hashTags?: string;
-    page: number;
-    size?: number;
-}
 
-const pagesPerBlock: number = 10;
+const pagesPerBlock = 10;
 
 const RecruitmentArticlesPage: React.FC = () => {
     // 캐시: 블록 번호 => 게시글 배열
@@ -26,13 +21,7 @@ const RecruitmentArticlesPage: React.FC = () => {
     const [page, setPage] = useState(1);
     const [endPage, setEndPage] = useState(0);
     const [pageSize, setPageSize] = useState(12);
-    const [currentBlock, setCurrentBlock] = useState(
-        Math.floor((page - 1) / pagesPerBlock)
-    );
 
-    const [recruitmentArticles, setRecruitmentArticles] = useState<
-        RecruitmentArticleProps[]
-    >([]);
     const [hashTags, setHashTags] = useState('');
     const [searchKeyword, setSearchKeyword] = useState('');
     const [isEndPage, setIsEndPage] = useState(false);
@@ -49,17 +38,22 @@ const RecruitmentArticlesPage: React.FC = () => {
                 },
             });
             const blockData: RecruitmentArticleProps[] = response.data; // 10페이지 내용
+            console.log('fetchBlockArticles.blockData:', blockData);
             // 캐시에 저장
             setArticlesCache((prevCache) => ({
                 ...prevCache,
                 [block]: blockData,
             }));
+            console.log('fetchBlockArticles.articlesCache:', articlesCache);
             // 현재 페이지에 해당하는 데이터 슬라이싱
             const startIndex = ((page - 1) % pagesPerBlock) * pageSize;
             const slicedData = blockData.slice(
                 startIndex,
                 startIndex + pageSize
             );
+            console.log('fetchBlockArticles.page:', page);
+            console.log('fetchBlockArticles.startIndex:', startIndex);
+            console.log('fetchBlockArticles.slicedData:', slicedData);
             setDisplayedArticles(slicedData);
         } catch (error) {
             console.error('모집글 조회 에러:', error);
@@ -68,12 +62,20 @@ const RecruitmentArticlesPage: React.FC = () => {
 
     // 페이지 변경 시 호출
     const handlePageChange = (page: number) => {
+        const newEndPage =
+            page - 1 - ((page - 1) % pagesPerBlock) + pagesPerBlock;
+        const newCurrentBlock = Math.floor((page - 1) / pagesPerBlock);
+
+        console.log('handlePageChange.page:', page);
+        console.log('handlePageChange.newEndPage:', newEndPage);
+        console.log('handlePageChange.newCurrentBlock:', newCurrentBlock);
+
         setPage(page);
-        setEndPage(page - 1 - ((page - 1) % 10) + 10);
+        setEndPage(newEndPage);
 
         // 캐시에 현재 블록의 데이터가 이미 있으면 슬라이싱만 진행
-        if (articlesCache[currentBlock]) {
-            const blockData = articlesCache[currentBlock];
+        if (articlesCache[newCurrentBlock]) {
+            const blockData = articlesCache[newCurrentBlock];
             const startIndex = ((page - 1) % pagesPerBlock) * pageSize;
             const slicedData = blockData.slice(
                 startIndex,
@@ -82,14 +84,13 @@ const RecruitmentArticlesPage: React.FC = () => {
             setDisplayedArticles(slicedData);
         } else {
             // 캐시에 없으면 API 호출하여 블록 데이터 받아오기
-            fetchBlockArticles(currentBlock);
+            fetchBlockArticles(page);
         }
     };
 
     useEffect(() => {
         setHashTags('프론트,react,javascript');
         handlePageChange(page);
-        setEndPage(page - 1 - ((page - 1) % 10) + 10);
     }, [page, hashTags]);
 
     return (
