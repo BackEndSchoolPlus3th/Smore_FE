@@ -9,7 +9,7 @@ import AddEventPopup from "./AddEventPopup";
 import EventDetailPopup from "./EventDetailPopup";
 import UpdateEventPopup from "./UpdateEventPopup";
 import { apiClient } from "../../shared";
-import { all } from "axios";
+import moment from "moment";
 
 const Calender: React.FC = () => {
   const calendarRef = useRef<HTMLDivElement>(null);
@@ -111,7 +111,13 @@ const Calender: React.FC = () => {
         setSelectedEvent(newEvent); 
       }
     }
+   
     console.log("New Event:", event);
+    console.log("Type of title:", typeof event.title, event.title);
+    console.log("Type of start:", typeof event.startdate, event.startdate);
+    console.log("Type of end:", typeof event.endDate, event.endDate);
+    console.log("Type of allDay:", typeof event.allDay, event.allDay);
+    console.log("Type of content:", typeof event.content, event.content);
 
       // 서버로 저장 요청
     try {
@@ -190,26 +196,44 @@ const Calender: React.FC = () => {
       selectedEvent.setProp("title", updatedEvent.title);
       selectedEvent.setExtendedProp("content", updatedEvent.content);
   
+      
+      
       let startDateTime = updatedEvent.startdate;
       let endDateTime = updatedEvent.endDate ?? null;
+    
+    if (selectedEvent.allDay) {
+      startDateTime = moment(startDateTime).format("YYYY-MM-DD");
+      endDateTime = endDateTime ? moment(endDateTime).format("YYYY-MM-DD") : null;
+    } else {
+      startDateTime = moment(startDateTime).format("YYYY-MM-DDTHH:mm:ss");
+      endDateTime = endDateTime ? moment(endDateTime).format("YYYY-MM-DDTHH:mm:ss") : null;
+    }
+      
 
       selectedEvent.setStart(startDateTime);
       selectedEvent.setEnd(endDateTime);
-  
-      // 서버에 patch 요청
-      await apiClient.patch(`v1/study/1/schedules`,{
-        data: {
-          id: selectedEvent.id,
-        }
 
-          // {
-          //   title: event.title,
-          //   startDate: event.startdate,
-          //   endDate: event.endDate || event.startdate, // endDate가 없을 경우 startdate로 설정
-          //   content: event.content || "", // content가 없을 경우 빈 문자열 처리
-          //   allDay: event.allDay || false, // allDay가 없을 경우 false로 설정
-          // });
-    });
+      console.log("New Event:", selectedEvent);
+      console.log("Type of id:", typeof selectedEvent.id, selectedEvent.id);
+      console.log("Type of title:", typeof selectedEvent.title, selectedEvent.title);
+      console.log("Type of start:", typeof selectedEvent.start, selectedEvent.start);
+      console.log("Type of end:", typeof selectedEvent.end, selectedEvent.end);
+
+      console.log("Type of start:", typeof startDateTime, startDateTime);
+      console.log("Type of end:", typeof endDateTime, endDateTime);
+      console.log("Type of allDay:", typeof selectedEvent.allDay, selectedEvent.allDay);
+      console.log("Type of content:", typeof selectedEvent.extendedProps.content, selectedEvent.extendedProps.content);
+
+
+      // 서버에 put 요청
+      await apiClient.put(`v1/study/1/schedules`,{        
+        id: selectedEvent.id,
+        title: updatedEvent.title || selectedEvent.title,
+        startDate: startDateTime ,
+        endDate: endDateTime || startDateTime, 
+        content: updatedEvent.content || selectedEvent.extendedProps.content || "", 
+        allDay: selectedEvent.allDay, 
+        });
       
   
       console.log("Updated Event:", selectedEvent);

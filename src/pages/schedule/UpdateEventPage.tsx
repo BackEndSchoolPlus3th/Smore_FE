@@ -5,7 +5,7 @@ import moment from "moment";
 interface UpdateEventPageProps {
   event: EventApi;
   onClose: () => void;
-  onUpdate: (updatedEvent: { title: string; content?: string; startdate:string; endDate?: string; allDay: boolean }) => void;
+  onUpdate: (updatedEvent: { title: string; content?: string; startDate:string; endDate?: string; allDay: boolean }) => void;
 }
 
 
@@ -16,16 +16,14 @@ const UpdateEventPage: React.FC<UpdateEventPageProps> = ({ event, onClose, onUpd
   const formatDateTime = (date: Date | null, allDay:boolean) => {
     if(!date) return "";
     return allDay 
-    ? moment(new Date(date).toISOString()).format("YYYY-MM-DD")  
-    : moment(new Date(date).toISOString()).format("YYYY-MM-DDTHH:mm");
+    ? moment(date).format("YYYY-MM-DD")   
+    : moment(date).format("YYYY-MM-DDTHH:mm:ss");
   };  
 
 
   const [startDate, setStartDate] = useState(formatDateTime(event.start, event.allDay));
   const [endDate, setEndDate] = useState(formatDateTime(event.end ?? null, event.allDay));
   
-  console.log("formatDateTime.start", formatDateTime(event.start, event.allDay));
-  console.log("formatDateTime.end", formatDateTime(event.end ?? null, event.allDay));
 
   const [allDay, setAllDay] = useState(event.allDay);
 
