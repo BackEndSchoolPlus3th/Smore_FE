@@ -1,7 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { MarkdownRenderer } from '../../../../shared';
-import { FaRegHeart, FaHeart } from 'react-icons/fa';
+import { FaRegHeart, FaHeart, FaSpinner } from 'react-icons/fa';
+import debounce from 'lodash/debounce';
+import { apiClient } from '../../../../shared';
+import { set } from 'lodash';
 
 interface RecruitmentContentsProps {
     id: number;
@@ -17,6 +20,7 @@ interface RecruitmentContentsProps {
     maxMember: number;
     hashTags?: string;
     clipCount: number;
+    isClipped: boolean;
     writerName: string;
     writerProfileImageUrl?: string;
 }
@@ -26,9 +30,86 @@ const RecuitmentContentPage: React.FC = () => {
     const [recruitmentContent, setRecruitmentContent] =
         useState<RecruitmentContentsProps>({} as RecruitmentContentsProps);
     const [isClipped, setIsClipped] = useState(false);
+    const [isProcessing, setIsProcessing] = useState(false);
+
+    const fetchClipPost = async () => {
+        try {
+            const response = await apiClient.post(
+                '/v1/recruitmentArticle/clip',
+                {
+                    recruitmentArticleId: recruitmentContent.id,
+                }
+            );
+            setIsClipped(true);
+            recruitmentContent.clipCount++;
+            console.log('클립 추가:', response.data);
+        } catch (error) {
+            console.error('클립 추가 에러:', error);
+        }
+    };
+
+    const fetchClipDelete = async () => {
+        try {
+            const response = await apiClient.delete(
+                '/v1/recruitmentArticle/clip',
+                {
+                    params: {
+                        recruitmentArticleId: recruitmentContent.id,
+                    },
+                }
+            );
+            setIsClipped(false);
+            recruitmentContent.clipCount--;
+        } catch (error) {
+            console.error('클립 삭제 에러:', error);
+        }
+    };
+
+    // 모집글 상세조회
+    const fetchRecruitmentContent = async () => {
+        try {
+            const response = await apiClient.get(
+                `/v1/recruitmentArticles/detail`,
+                {
+                    params: {
+                        recruitmentArticleId: recruitmentId,
+                    },
+                }
+            );
+            setRecruitmentContent(response.data);
+            setIsClipped(response.data.isClipped);
+        } catch (error) {
+            console.error('모집글 조회 에러:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchRecruitmentContent();
+    }, [recruitmentId]);
+
+    // 실제 서버 요청을 보내는 함수(예시로 상태만 토글)
+    const sendClipRequest = useCallback(() => {
+        // API 요청 코드 삽입 (예: axios.post(...))
+        if (isClipped) {
+            fetchClipDelete();
+        } else {
+            fetchClipPost();
+        }
+    }, [isClipped]);
+
+    // debounce 적용: 500ms 동안 빠른 연속 클릭 무시 + 요청 후 isProcessing false로 처리
+    const debouncedClip = useCallback(
+        debounce(() => {
+            sendClipRequest();
+            setIsProcessing(false);
+        }, 500),
+        [sendClipRequest]
+    );
 
     const handleClip = () => {
-        setIsClipped(!isClipped);
+        if (isProcessing) return; // 이미 처리 중이면 무시
+        setIsProcessing(true);
+        debouncedClip();
     };
 
     useEffect(() => {
@@ -51,6 +132,7 @@ const RecuitmentContentPage: React.FC = () => {
             maxMember: 5,
             hashTags: '프론트엔드,스터디,모집',
             clipCount: 5,
+            isClipped: false,
             writerName: '이영희',
             writerProfileImageUrl: 'https://picsum.photos/50/50',
         });
@@ -61,10 +143,16 @@ const RecuitmentContentPage: React.FC = () => {
             {/** 찜하기 버튼 */}
             <div className="lg:w-1/4 flex flex-col items-center gap-4">
                 <div
-                    className="sticky top-80 flex flex-col items-center gap-2 border-2 border-gray-300 rounded-full p-4 w-24 h-24 cursor-pointer transition-transform transform hover:scale-110"
+                    className={`sticky top-80 flex flex-col items-center gap-2 border-2 border-gray-300 rounded-full p-4 w-24 h-24 transition-transform transform ${
+                        isProcessing
+                            ? 'cursor-not-allowed'
+                            : 'cursor-pointer hover:scale-110'
+                    }`}
                     onClick={handleClip}
                 >
-                    {isClipped ? (
+                    {isProcessing ? (
+                        <FaSpinner className="text-blue-500 text-5xl animate-spin" />
+                    ) : isClipped ? (
                         <FaHeart className="text-red-500 text-5xl" />
                     ) : (
                         <FaRegHeart className="text-gray-500 text-5xl" />
