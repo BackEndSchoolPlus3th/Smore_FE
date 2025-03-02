@@ -25,6 +25,7 @@ const RecruitmentArticlesPage: React.FC = () => {
     const [hashTags, setHashTags] = useState('');
     const [searchKeyword, setSearchKeyword] = useState('');
     const [isEndPage, setIsEndPage] = useState(false);
+    const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
 
     // API 호출 함수 (한 블록 단위로 호출)
     const fetchBlockArticles = async (page: number) => {
@@ -55,8 +56,10 @@ const RecruitmentArticlesPage: React.FC = () => {
             console.log('fetchBlockArticles.startIndex:', startIndex);
             console.log('fetchBlockArticles.slicedData:', slicedData);
             setDisplayedArticles(slicedData);
+            setIsLoading(false); // 데이터 로딩 완료
         } catch (error) {
             console.error('모집글 조회 에러:', error);
+            setIsLoading(false); // 에러 발생 시 로딩 상태 해제
         }
     };
 
@@ -82,8 +85,10 @@ const RecruitmentArticlesPage: React.FC = () => {
                 startIndex + pageSize
             );
             setDisplayedArticles(slicedData);
+            setIsLoading(false); // 데이터 로딩 완료
         } else {
             // 캐시에 없으면 API 호출하여 블록 데이터 받아오기
+            setIsLoading(true); // 데이터 로딩 시작
             fetchBlockArticles(page);
         }
     };
@@ -103,20 +108,31 @@ const RecruitmentArticlesPage: React.FC = () => {
                     {/* 제목, 내용, 작성자 선택 드롭박스 */}
                     <div></div>
                     {/* 검색창 */}
+                    {/* 제목, 소개글, 내용, 해시태그 */}
                     <input type="text" placeholder="검색어를 입력하세요" />
                 </div>
             </div>
             {/* 게시글 목록 */}
             <div className=" items-center w-full">
                 <div className=" flex flex-wrap gap-4 w-full justify-center">
-                    {displayedArticles.map((article) => (
-                        <div
-                            className="recruitment-article-card card bg-light-lavender p-4 bg-white shadow-lg rounded-lg w-80 min-w-80 h-96"
-                            key={article.id}
-                        >
-                            <RecruitmentArticle {...article} />
-                        </div>
-                    ))}
+                    {isLoading
+                        ? Array.from({ length: pageSize }).map((_, index) => (
+                              <div
+                                  className="recruitment-article-card card bg-light-lavender p-4 bg-white shadow-lg rounded-lg w-80 min-w-80 h-96"
+                                  key={index}
+                              >
+                                  {/* 빈 컴포넌트 */}
+                                  <div className="animate-pulse bg-light-lavender h-full w-full rounded"></div>
+                              </div>
+                          ))
+                        : displayedArticles.map((article) => (
+                              <div
+                                  className="recruitment-article-card card bg-light-lavender p-4 bg-white shadow-lg rounded-lg w-80 min-w-80 h-96"
+                                  key={article.id}
+                              >
+                                  <RecruitmentArticle {...article} />
+                              </div>
+                          ))}
                 </div>
             </div>
             {/* 페이지네이션 */}
