@@ -15,7 +15,7 @@ interface RecruitmentContentsProps {
     startDate: string;
     endDate: string;
     isRecruiting: boolean;
-    createDate: string;
+    createdDate: string;
     maxMember: number;
     hashTags?: string;
     clipCount: number;
@@ -68,7 +68,7 @@ const RecuitmentContentPage: React.FC = () => {
             startDate: '',
             endDate: '',
             isRecruiting: false,
-            createDate: '',
+            createdDate: '',
             maxMember: 0,
             hashTags: '',
             clipCount: 0,
@@ -79,9 +79,9 @@ const RecuitmentContentPage: React.FC = () => {
     }, [recruitmentId]);
 
     return (
-        <div className="flex flex-col lg:flex-row gap-8 p-4">
+        <div className="flex flex-col lg:flex-row gap-8 p-4 h-full">
             {isLoading ? (
-                <div className="flex justify-center items-center w-full h-s">
+                <div className="flex justify-center items-center w-full h-full">
                     <FaSpinner className="text-blue-500 text-5xl animate-spin" />
                 </div>
             ) : (
@@ -95,9 +95,9 @@ const RecuitmentContentPage: React.FC = () => {
                         />
                     </div>
                     {/** 모집글 상세 페이지 */}
-                    <div className="lg:w-2/4 flex flex-col items-center gap-4">
+                    <div className="lg:w-2/4 flex flex-col items-center gap-8 p-6 bg-white rounded-lg shadow-lg">
                         {/** 제목, 짧은 소개글, 작성날짜 */}
-                        <div className="text-center mb-8">
+                        <div className="text-center mb-8 w-full border-b border-gray-200 pb-4">
                             <h1 className="text-4xl font-extrabold text-gray-900 mb-4">
                                 {recruitmentContent.title}
                             </h1>
@@ -105,14 +105,14 @@ const RecuitmentContentPage: React.FC = () => {
                                 {recruitmentContent.introduction}
                             </p>
                             <p className="text-sm text-gray-500">
-                                {recruitmentContent.createDate &&
+                                {recruitmentContent.createdDate &&
                                     new Date(
-                                        recruitmentContent.createDate
+                                        recruitmentContent.createdDate
                                     ).toLocaleDateString()}
                             </p>
                         </div>
                         {/** 이미지들 */}
-                        <div className="flex flex-wrap justify-center">
+                        <div className="flex flex-wrap justify-center w-full border-b border-gray-200 pb-4">
                             {recruitmentContent.imageUrls
                                 ?.split(',')
                                 .map((url, index) => (
@@ -120,12 +120,12 @@ const RecuitmentContentPage: React.FC = () => {
                                         key={index}
                                         src={url}
                                         alt="recruitment"
-                                        className="w-full h-auto object-contain"
+                                        className="w-full h-auto"
                                     />
                                 ))}
                         </div>
                         {/** 내용 */}
-                        <div className="prose">
+                        <div className="prose max-w-none w-full  pb-4">
                             {recruitmentContent?.content && (
                                 <MarkdownRenderer
                                     content={recruitmentContent.content}

@@ -1,5 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import './App.css';
+import '../ui/App.css';
+import '../ui/markdownStyle.css';
+import '../ui/scrollbar.css';
 
 import {
     ChatPage,
@@ -16,8 +18,8 @@ import {
     RecruitmentContentPage,
     NewRecruitmentPage,
     ErrorPage,
-} from '../pages';
-import { Header } from '../widgets';
+} from '../../pages';
+import { Header } from '../../widgets';
 
 function App() {
     return (

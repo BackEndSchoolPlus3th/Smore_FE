@@ -65,7 +65,12 @@ refreshApiClient.interceptors.request.use(
     }
 );
 apiClient.interceptors.response.use(
-    (response) => response.data,
+    (response) => {
+        if (import.meta.env.DEV) {
+            console.log('data::::', response.data);
+        }
+        return response.data;
+    },
     async (error) => {
         const originalRequest = error.config;
         const navigate = useNavigate();

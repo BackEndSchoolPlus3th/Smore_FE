@@ -1,0 +1,15 @@
+html,
+body,
+#root {
+    background-color: #fbfbfb;
+    min-height: 100%;
+    min-width: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+}
+
+.App {
+    min-width: 100%;
+    min-height: 100%;
+}

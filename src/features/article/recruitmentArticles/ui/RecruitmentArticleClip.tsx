@@ -71,7 +71,7 @@ export const RecruitmentArticleClip: React.FC<RecruitmentArticleClipProps> = ({
 
     return (
         <div
-            className={`sticky top-80 flex flex-col items-center gap-2 border-2 border-gray-300 rounded-full p-4 w-24 h-24 transition-transform transform ${
+            className={`sticky top-80 flex flex-col items-center gap-2 border-2 border-gray-300 rounded-full p-4 w-24 h-24 transition-transform transform bg-white ${
                 isProcessing
                     ? 'cursor-not-allowed'
                     : 'cursor-pointer hover:scale-110'
