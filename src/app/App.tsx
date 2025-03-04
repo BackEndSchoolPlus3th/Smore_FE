@@ -14,6 +14,7 @@ import {
     RecruitmentArticlesPage,
     StudyArticlePage,
     RecruitmentContentPage,
+    NewRecruitmentPage,
 } from '../pages';
 import { Header } from '../widgets';
 
@@ -54,6 +55,11 @@ function App() {
                     <Route
                         path="/study/:studyId/schedules"
                         element={<CalenderPage />}
+                    />
+
+                    <Route
+                        path="/study/:studyId/article/recruitment/new"
+                        element={<NewRecruitmentPage />}
                     />
                     <Route path="/login" element={<LoginPage />} />
                 </Routes>

@@ -25,7 +25,7 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
             <ReactMarkdown
                 components={{
                     // 수정된 p 컴포넌트
-                    p: ({ node, children, ...props }) => {
+                    p: ({ children, ...props }) => {
                         // 공백만 있는 텍스트 노드를 필터링
                         const childrenArray = React.Children.toArray(
                             children
@@ -50,32 +50,32 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
                     },
 
                     // 헤딩에 커스텀 클래스 적용
-                    h1: ({ node, ...props }) => (
+                    h1: ({ ...props }) => (
                         <h1 className="markdown-h1" {...props} />
                     ),
-                    h2: ({ node, ...props }) => (
+                    h2: ({ ...props }) => (
                         <h2 className="markdown-h2" {...props} />
                     ),
-                    h3: ({ node, ...props }) => (
+                    h3: ({ ...props }) => (
                         <h3 className="markdown-h3" {...props} />
                     ),
-                    h4: ({ node, ...props }) => (
+                    h4: ({ ...props }) => (
                         <h4 className="markdown-h4" {...props} />
                     ),
-                    h5: ({ node, ...props }) => (
+                    h5: ({ ...props }) => (
                         <h5 className="markdown-h5" {...props} />
                     ),
-                    h6: ({ node, ...props }) => (
+                    h6: ({ ...props }) => (
                         <h6 className="markdown-h6" {...props} />
                     ),
                     // 리스트
-                    ul: ({ node, ...props }) => (
+                    ul: ({ ...props }) => (
                         <ul className="markdown-ul" {...props} />
                     ),
-                    ol: ({ node, ...props }) => (
+                    ol: ({ ...props }) => (
                         <ol className="markdown-ol" {...props} />
                     ),
-                    li: ({ node, ...props }) => (
+                    li: ({ ...props }) => (
                         <li className="markdown-li" {...props} />
                     ),
                     // 인라인 코드와 코드 블록 구분
@@ -98,20 +98,20 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
                     },
 
                     // 인용구
-                    blockquote: ({ node, ...props }) => (
+                    blockquote: ({ ...props }) => (
                         <blockquote
                             className="markdown-blockquote"
                             {...props}
                         />
                     ),
                     // 테이블 관련 태그
-                    table: ({ node, ...props }) => (
+                    table: ({ ...props }) => (
                         <table className="markdown-table" {...props} />
                     ),
-                    th: ({ node, ...props }) => (
+                    th: ({ ...props }) => (
                         <th className="markdown-th" {...props} />
                     ),
-                    td: ({ node, ...props }) => (
+                    td: ({ ...props }) => (
                         <td className="markdown-td" {...props} />
                     ),
                 }}
