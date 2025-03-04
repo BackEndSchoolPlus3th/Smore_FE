@@ -13,3 +13,6 @@ export { default as RecruitmentContentPage } from './main/recruitment/recruitmen
 
 // 새 소개 작성 페이지
 export { default as NewRecruitmentPage } from './study/article/recruitment/NewRecruitmentPage';
+
+// 에러 페이지
+export { default as ErrorPage } from './error/ErrorPage';

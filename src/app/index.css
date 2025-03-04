@@ -1,11 +1,5 @@
 @import 'tailwindcss';
 
-/* 기본 레이아웃 */
-#root {
-    background-color: #fbfbfb;
-    min-height: 100%;
-}
-
 /* 배경 색상 정의 */
 .bg-light-gray {
     background-color: #fbfbfb; /* 기본 밝은 배경 */

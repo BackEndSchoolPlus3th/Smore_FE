@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const getCookie = (name: string) => {
     const matches = document.cookie.match(
@@ -67,6 +68,7 @@ apiClient.interceptors.response.use(
     (response) => response.data,
     async (error) => {
         const originalRequest = error.config;
+        const navigate = useNavigate();
 
         // 401 에러이고 refreshToken이 존재할 경우 토큰 재발급 시도
         if (error.response?.status === 401 && !originalRequest._retry) {
@@ -102,6 +104,11 @@ apiClient.interceptors.response.use(
                 return Promise.reject(refreshError);
             }
         }
+
+        // // 400번대 에러 발생 시 에러 페이지로 이동
+        // if (error.response?.status >= 400 && error.response?.status < 500) {
+        //     navigate('/error');
+        // }
 
         return Promise.reject(error);
     }

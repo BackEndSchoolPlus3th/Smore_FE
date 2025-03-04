@@ -15,6 +15,7 @@ import {
     StudyArticlePage,
     RecruitmentContentPage,
     NewRecruitmentPage,
+    ErrorPage,
 } from '../pages';
 import { Header } from '../widgets';
 
@@ -62,6 +63,8 @@ function App() {
                         element={<NewRecruitmentPage />}
                     />
                     <Route path="/login" element={<LoginPage />} />
+
+                    <Route path="/error" element={<ErrorPage />} />
                 </Routes>
             </div>
         </Router>
