@@ -3,9 +3,10 @@ export interface RecruitmentArticleProps {
     title: string;
     introduction: string;
     region: string;
-    imageUrl: string;
+    thumbnailUrl: string;
     isRecruiting: boolean;
     writerName: string;
     writerProfileImageUrl: string;
     clipCount: number;
+    hashTags: string;
 }

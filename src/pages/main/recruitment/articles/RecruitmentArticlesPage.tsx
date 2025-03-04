@@ -4,8 +4,11 @@ import {
     RecruitmentArticleProps,
 } from '../../../../entities';
 import './RecruitmentArticlesPageStyle.css';
-import { apiClient, ApiResponse } from '../../../../shared';
 import { PagingButton } from '../../../../widgets';
+import {
+    RecruitmentArticleSearch,
+    fetchRecruitmentArticles,
+} from '../../../../features';
 
 const pagesPerBlock = 10;
 
@@ -22,61 +25,56 @@ const RecruitmentArticlesPage: React.FC = () => {
     const [endPage, setEndPage] = useState(0);
     const [pageSize, setPageSize] = useState(12);
 
-    const [hashTags, setHashTags] = useState('');
-    const [searchKeyword, setSearchKeyword] = useState('');
+    // 검색 관련 상태: 각 검색 필드는 기본값을 빈 문자열로 초기화 (필요시 기본 해시태그 값 설정 가능)
+    const [searchParams, setSearchParams] = useState({
+        title: '',
+        content: '',
+        introduction: '',
+        hashTags: '',
+        region: '',
+    });
     const [isEndPage, setIsEndPage] = useState(false);
-    const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
+    const [isLoading, setIsLoading] = useState(true);
 
-    // API 호출 함수 (한 블록 단위로 호출)
+    // API 호출 함수 (한 블록 단위)
     const fetchBlockArticles = async (page: number) => {
         const block = Math.floor((page - 1) / pagesPerBlock);
         try {
-            const response = await apiClient.get('/v1/recruitmentArticles', {
-                params: {
-                    hashTags: hashTags,
+            const blockData: RecruitmentArticleProps[] =
+                await fetchRecruitmentArticles({
+                    ...searchParams,
                     page: page,
                     size: pageSize,
-                },
-            });
-            const blockData: RecruitmentArticleProps[] = response.data; // 10페이지 내용
-            console.log('fetchBlockArticles.blockData:', blockData);
+                });
             // 캐시에 저장
             setArticlesCache((prevCache) => ({
                 ...prevCache,
                 [block]: blockData,
             }));
-            console.log('fetchBlockArticles.articlesCache:', articlesCache);
             // 현재 페이지에 해당하는 데이터 슬라이싱
             const startIndex = ((page - 1) % pagesPerBlock) * pageSize;
             const slicedData = blockData.slice(
                 startIndex,
                 startIndex + pageSize
             );
-            console.log('fetchBlockArticles.page:', page);
-            console.log('fetchBlockArticles.startIndex:', startIndex);
-            console.log('fetchBlockArticles.slicedData:', slicedData);
             setDisplayedArticles(slicedData);
-            setIsLoading(false); // 데이터 로딩 완료
+            setIsLoading(false);
         } catch (error) {
             console.error('모집글 조회 에러:', error);
-            setIsLoading(false); // 에러 발생 시 로딩 상태 해제
+            setIsLoading(false);
         }
     };
 
-    // 페이지 변경 시 호출
+    // 페이지 변경 시 호출되는 함수
     const handlePageChange = (page: number) => {
         const newEndPage =
             page - 1 - ((page - 1) % pagesPerBlock) + pagesPerBlock;
         const newCurrentBlock = Math.floor((page - 1) / pagesPerBlock);
 
-        console.log('handlePageChange.page:', page);
-        console.log('handlePageChange.newEndPage:', newEndPage);
-        console.log('handlePageChange.newCurrentBlock:', newCurrentBlock);
-
         setPage(page);
         setEndPage(newEndPage);
 
-        // 캐시에 현재 블록의 데이터가 이미 있으면 슬라이싱만 진행
+        // 캐시에 데이터가 있으면 슬라이싱만 진행
         if (articlesCache[newCurrentBlock]) {
             const blockData = articlesCache[newCurrentBlock];
             const startIndex = ((page - 1) % pagesPerBlock) * pageSize;
@@ -85,49 +83,59 @@ const RecruitmentArticlesPage: React.FC = () => {
                 startIndex + pageSize
             );
             setDisplayedArticles(slicedData);
-            setIsLoading(false); // 데이터 로딩 완료
+            setIsLoading(false);
         } else {
-            // 캐시에 없으면 API 호출하여 블록 데이터 받아오기
-            setIsLoading(true); // 데이터 로딩 시작
+            // 없으면 API 호출
+            setIsLoading(true);
             fetchBlockArticles(page);
         }
     };
 
+    // 검색 실행 시 호출 (RecruitmentArticleSearch에서 전달)
+    const onSearch = (newParam: { [key: string]: string }) => {
+        // 새로운 검색 파라미터가 전달되면 다른 필드는 초기화하고 해당 필드만 갱신
+        setArticlesCache({});
+        setSearchParams({
+            title: '',
+            content: '',
+            introduction: '',
+            hashTags: '',
+            region: '',
+            ...newParam,
+        });
+        setPage(1);
+        handlePageChange(1);
+    };
+
     useEffect(() => {
-        setHashTags('프론트,react,javascript');
+        // 검색 파라미터나 페이지가 변경되면 데이터 로드
         handlePageChange(page);
-    }, [page, hashTags]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [page, searchParams]);
 
     return (
         <div className="flex flex-col gap-4 p-4 w-full">
             <div className="flex justify-between items-center w-full">
-                <div>
-                    <h1>스터디 모집 게시판</h1>
-                </div>
-                <div>
-                    {/* 제목, 내용, 작성자 선택 드롭박스 */}
-                    <div></div>
-                    {/* 검색창 */}
-                    {/* 제목, 소개글, 내용, 해시태그 */}
-                    <input type="text" placeholder="검색어를 입력하세요" />
-                </div>
+                <p className="text-2xl font-bold text-dark-purple">
+                    스터디 모집 게시판
+                </p>
+                <RecruitmentArticleSearch onSearch={onSearch} />
             </div>
             {/* 게시글 목록 */}
-            <div className=" items-center w-full">
-                <div className=" flex flex-wrap gap-4 w-full justify-center">
+            <div className="items-center w-full">
+                <div className="flex flex-wrap gap-4 w-full justify-center">
                     {isLoading
                         ? Array.from({ length: pageSize }).map((_, index) => (
                               <div
                                   className="recruitment-article-card card bg-light-lavender p-4 bg-white shadow-lg rounded-lg w-80 min-w-80 h-96"
                                   key={index}
                               >
-                                  {/* 빈 컴포넌트 */}
                                   <div className="animate-pulse bg-light-lavender h-full w-full rounded"></div>
                               </div>
                           ))
                         : displayedArticles.map((article) => (
                               <div
-                                  className="recruitment-article-card card bg-light-lavender p-4 bg-white shadow-lg rounded-lg w-80 min-w-80 h-96"
+                                  className="recruitment-article-card card bg-light-lavender p-4 bg-white shadow-lg rounded-lg w-80 min-w-80 h-110"
                                   key={article.id}
                               >
                                   <RecruitmentArticle {...article} />
