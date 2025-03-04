@@ -79,16 +79,26 @@ const PagingButton: React.FC<PagingButtonProps> = ({
 
     return (
         <div className="flex gap-2 items-center">
-            {canBeforeBlock ? (
-                <FaAngleDoubleLeft onClick={handleBeforeBlock} />
-            ) : (
-                <div></div>
-            )}
-            {canBeforePage ? (
-                <FaAngleLeft onClick={handleBeforePage} />
-            ) : (
-                <div></div>
-            )}
+            <div className="flex justify-center">
+                {canBeforeBlock ? (
+                    <FaAngleDoubleLeft
+                        onClick={handleBeforeBlock}
+                        className="cursor-pointer w-7 h-7 p-1"
+                    />
+                ) : (
+                    <div className="w-7 h-7 p-1"></div>
+                )}
+            </div>
+            <div className="flex justify-center">
+                {canBeforePage ? (
+                    <FaAngleLeft
+                        onClick={handleBeforePage}
+                        className="cursor-pointer w-7 h-7 p-1"
+                    />
+                ) : (
+                    <div className="w-7 h-7 p-1"></div>
+                )}
+            </div>
             {Array.from(
                 { length: endPage - startPage + 1 },
                 (_, i) => i + startPage
@@ -96,24 +106,32 @@ const PagingButton: React.FC<PagingButtonProps> = ({
                 <button
                     key={'paging' + pageButton}
                     onClick={() => handleSwitchPage(pageButton)}
-                    style={{
-                        fontWeight: page === pageButton ? 'bold' : 'normal',
-                    }}
+                    className={`w-8 p-1 rounded justify-center text-align-center aspect-square ${page === pageButton ? 'font-bold bg-bright-purple text-white' : 'bg-muted-purple cursor-pointer'}`}
+                    style={{ aspectRatio: '1 / 1' }}
                 >
                     {pageButton}
                 </button>
             ))}
-
-            {canNextPage ? (
-                <FaAngleRight onClick={handleNextPage} />
-            ) : (
-                <div></div>
-            )}
-            {canNextBlock ? (
-                <FaAngleDoubleRight onClick={handleNextBlock} />
-            ) : (
-                <div></div>
-            )}
+            <div className="flex justify-center">
+                {canNextPage ? (
+                    <FaAngleRight
+                        onClick={handleNextPage}
+                        className="cursor-pointer w-7 h-7 p-1"
+                    />
+                ) : (
+                    <div className="w-8 h-8"></div>
+                )}
+            </div>
+            <div className="flex justify-center">
+                {canNextBlock ? (
+                    <FaAngleDoubleRight
+                        onClick={handleNextBlock}
+                        className="cursor-pointer w-7 h-7 p-1"
+                    />
+                ) : (
+                    <div className="w-8 h-8"></div>
+                )}
+            </div>
         </div>
     );
 };
