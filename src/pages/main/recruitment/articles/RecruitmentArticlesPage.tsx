@@ -119,6 +119,7 @@ const RecruitmentArticlesPage: React.FC = () => {
                 <p className="text-2xl font-bold text-dark-purple">
                     스터디 모집 게시판
                 </p>
+                {/* 검색 필드 */}
                 <RecruitmentArticleSearch onSearch={onSearch} />
             </div>
             {/* 게시글 목록 */}
