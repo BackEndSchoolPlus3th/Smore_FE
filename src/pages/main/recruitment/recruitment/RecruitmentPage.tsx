@@ -4,8 +4,7 @@ import { MarkdownRenderer } from '../../../../shared';
 import { FaRegHeart, FaHeart, FaSpinner } from 'react-icons/fa';
 import debounce from 'lodash/debounce';
 import { apiClient } from '../../../../shared';
-import { set } from 'lodash';
-
+import { RecruitmentArticleClip } from '../../../../features';
 interface RecruitmentContentsProps {
     id: number;
     title: string;
@@ -20,7 +19,7 @@ interface RecruitmentContentsProps {
     maxMember: number;
     hashTags?: string;
     clipCount: number;
-    isClipped: boolean;
+    clipped: boolean;
     writerName: string;
     writerProfileImageUrl?: string;
 }
@@ -29,42 +28,8 @@ const RecuitmentContentPage: React.FC = () => {
     const { recruitmentId } = useParams<{ recruitmentId: string }>();
     const [recruitmentContent, setRecruitmentContent] =
         useState<RecruitmentContentsProps>({} as RecruitmentContentsProps);
-    const [isClipped, setIsClipped] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
     const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
-
-    const fetchClipPost = async () => {
-        try {
-            const response = await apiClient.post(
-                '/v1/recruitmentArticle/clip',
-                {
-                    recruitmentArticleId: recruitmentContent.id,
-                }
-            );
-            setIsClipped(true);
-            recruitmentContent.clipCount++;
-            console.log('클립 추가:', response.data);
-        } catch (error) {
-            console.error('클립 추가 에러:', error);
-        }
-    };
-
-    const fetchClipDelete = async () => {
-        try {
-            const response = await apiClient.delete(
-                '/v1/recruitmentArticle/clip',
-                {
-                    params: {
-                        recruitmentArticleId: recruitmentContent.id,
-                    },
-                }
-            );
-            setIsClipped(false);
-            recruitmentContent.clipCount--;
-        } catch (error) {
-            console.error('클립 삭제 에러:', error);
-        }
-    };
 
     // 모집글 상세조회
     const fetchRecruitmentContent = async () => {
@@ -79,7 +44,6 @@ const RecuitmentContentPage: React.FC = () => {
                 }
             );
             setRecruitmentContent(response.data);
-            setIsClipped(response.data.clipped);
         } catch (error) {
             console.error('모집글 조회 에러:', error);
         } finally {
@@ -90,31 +54,6 @@ const RecuitmentContentPage: React.FC = () => {
     useEffect(() => {
         fetchRecruitmentContent();
     }, [recruitmentId]);
-
-    // 실제 서버 요청을 보내는 함수(예시로 상태만 토글)
-    const sendClipRequest = useCallback(() => {
-        // API 요청 코드 삽입 (예: axios.post(...))
-        if (isClipped) {
-            fetchClipDelete();
-        } else {
-            fetchClipPost();
-        }
-    }, [isClipped]);
-
-    // debounce 적용: 500ms 동안 빠른 연속 클릭 무시 + 요청 후 isProcessing false로 처리
-    const debouncedClip = useCallback(
-        debounce(() => {
-            sendClipRequest();
-            setIsProcessing(false);
-        }, 500),
-        [sendClipRequest]
-    );
-
-    const handleClip = () => {
-        if (isProcessing) return; // 이미 처리 중이면 무시
-        setIsProcessing(true);
-        debouncedClip();
-    };
 
     useEffect(() => {
         // API로부터 모집글 데이터를 가져온다.
@@ -133,7 +72,7 @@ const RecuitmentContentPage: React.FC = () => {
             maxMember: 0,
             hashTags: '',
             clipCount: 0,
-            isClipped: false,
+            clipped: false,
             writerName: '',
             writerProfileImageUrl: '',
         });
@@ -142,32 +81,18 @@ const RecuitmentContentPage: React.FC = () => {
     return (
         <div className="flex flex-col lg:flex-row gap-8 p-4">
             {isLoading ? (
-                <div className="flex justify-center items-center w-full h-screen">
+                <div className="flex justify-center items-center w-full h-s">
                     <FaSpinner className="text-blue-500 text-5xl animate-spin" />
                 </div>
             ) : (
                 <>
                     {/** 찜하기 버튼 */}
                     <div className="lg:w-1/4 flex flex-col items-center gap-4">
-                        <div
-                            className={`sticky top-80 flex flex-col items-center gap-2 border-2 border-gray-300 rounded-full p-4 w-24 h-24 transition-transform transform ${
-                                isProcessing
-                                    ? 'cursor-not-allowed'
-                                    : 'cursor-pointer hover:scale-110'
-                            }`}
-                            onClick={handleClip}
-                        >
-                            {isProcessing ? (
-                                <FaSpinner className="text-blue-500 text-5xl animate-spin" />
-                            ) : isClipped ? (
-                                <FaHeart className="text-red-500 text-5xl" />
-                            ) : (
-                                <FaRegHeart className="text-gray-500 text-5xl" />
-                            )}
-                            <span className="text-lg font-semibold text-gray-700">
-                                {recruitmentContent?.clipCount}
-                            </span>
-                        </div>
+                        <RecruitmentArticleClip
+                            articleId={recruitmentContent.id}
+                            initialClipCount={recruitmentContent.clipCount}
+                            initialIsClipped={recruitmentContent.clipped}
+                        />
                     </div>
                     {/** 모집글 상세 페이지 */}
                     <div className="lg:w-2/4 flex flex-col items-center gap-4">
