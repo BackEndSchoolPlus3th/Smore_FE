@@ -28,7 +28,7 @@ const Calender: React.FC = () => {
         console.log("response", response);
 
         // FullCalendar에서 사용할 형식으로 변환
-        const formattedEvents = response.map((event: any) => ({
+        const formattedEvents = response.data.map((event: any) => ({
         id: event.id,
         title: event.title,
         start: event.startDate,
@@ -129,7 +129,7 @@ const Calender: React.FC = () => {
       const newEvent = await apiClient.get("/v1/study/1/schedules");  
       console.log("newEvent", newEvent);
 
-      const formattedEvents = newEvent.map((event: any) => ({
+      const formattedEvents = newEvent.data.map((event: any) => ({
         id: event.id,
         title: event.title,
         start: event.startDate,
@@ -185,7 +185,7 @@ const Calender: React.FC = () => {
   };
 
   // 일정 수정
-  const handleUpdateEvent = (updatedEvent: { title: string; content?: string; startdate: string; endDate?: string; allDay?: boolean }) => {
+  const handleUpdateEvent = async (updatedEvent: { title: string; content?: string; startdate: string; endDate?: string; allDay?: boolean }) => {
     if (selectedEvent) {
       selectedEvent.setProp("title", updatedEvent.title);
       selectedEvent.setExtendedProp("content", updatedEvent.content);
@@ -193,14 +193,23 @@ const Calender: React.FC = () => {
       let startDateTime = updatedEvent.startdate;
       let endDateTime = updatedEvent.endDate ?? null;
 
-  
-
-      
       selectedEvent.setStart(startDateTime);
-      console.log("startDateTime", startDateTime);
       selectedEvent.setEnd(endDateTime);
-      console.log("endDateTime", endDateTime);
   
+      // 서버에 patch 요청
+      await apiClient.patch(`v1/study/1/schedules`,{
+        data: {
+          id: selectedEvent.id,
+        }
+
+          // {
+          //   title: event.title,
+          //   startDate: event.startdate,
+          //   endDate: event.endDate || event.startdate, // endDate가 없을 경우 startdate로 설정
+          //   content: event.content || "", // content가 없을 경우 빈 문자열 처리
+          //   allDay: event.allDay || false, // allDay가 없을 경우 false로 설정
+          // });
+    });
       
   
       console.log("Updated Event:", selectedEvent);
