@@ -7,9 +7,10 @@ interface MarkdownPreviewProps {
 
 const MarkdownPreview: React.FC<MarkdownPreviewProps> = ({ content }) => {
     return (
-        <div className="markdown-preview">
-            <MarkdownRenderer content={content} />
-        </div>
+        <MarkdownRenderer
+            content={content}
+            className="overflow-y-auto markdown-body"
+        />
     );
 };
 

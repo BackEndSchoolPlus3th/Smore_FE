@@ -12,15 +12,13 @@ const TextField: React.FC<TextFieldProps> = ({ content, setContent }) => {
     };
 
     return (
-        <div className="text-field">
-            <textarea
-                value={content}
-                onChange={handleChange}
-                placeholder="Write your content here..."
-                rows={10}
-                className="text-area"
-            />
-        </div>
+        <textarea
+            value={content}
+            onChange={handleChange}
+            placeholder="Write your content here..."
+            rows={35}
+            className="text-area w-full h-full"
+        />
     );
 };
 

@@ -1,4 +1,11 @@
-/* .App {
-    width: 99vw;
-    height: 100vh;
-} */
+html,
+body,
+#root {
+    height: 100%;
+}
+
+.App {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
