@@ -21,7 +21,7 @@ import { Header } from '../widgets';
 function App() {
     return (
         <Router>
-            <div className="App">
+            <div className="App flex flex-col h-full">
                 <Header />
                 <Routes>
                     <Route path="/mystudy" element={<MyStudyPage />} />
