@@ -2,7 +2,6 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
 
 import {
-    RecruitmentPage,
     ChatPage,
     CalenderPage,
     LoginPage,
@@ -12,26 +11,36 @@ import {
     MyStudyDocumentPage,
     MyStudyArticlePage,
     MyStudySettingPage,
+    RecruitmentArticlesPage,
+    StudyArticlePage,
+    RecruitmentContentPage,
 } from '../pages';
-import {Header} from '../widgets';
-
-
+import { Header } from '../widgets';
 
 function App() {
     return (
         <Router>
-
             <div className="App">
-            <Header />
+                <Header />
                 <Routes>
                     <Route path="/mystudy" element={<MyStudyPage />} />
                     <Route path="/studyedit" element={<MyStudyEditPage />} />
-                    <Route path="/studydetail" element={<MyStudyDetailPage />} />
+                    <Route
+                        path="/studydetail"
+                        element={<MyStudyDetailPage />}
+                    />
                     <Route path="/document" element={<MyStudyDocumentPage />} />
-                    <Route path="/studysetting" element={<MyStudySettingPage />} />
+                    <Route
+                        path="/studysetting"
+                        element={<MyStudySettingPage />}
+                    />
 
-                    <Route path="/" element={<RecruitmentPage />} />
+                    <Route path="/" element={<RecruitmentArticlesPage />} />
                     <Route path="/chat" element={<ChatPage />} />
+                    <Route
+                        path="/recruitment/:recruitmentId"
+                        element={<RecruitmentContentPage />}
+                    />
 
                     <Route
                         path="/study/:studyId/schedules"

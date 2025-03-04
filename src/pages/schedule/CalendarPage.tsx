@@ -1,7 +1,7 @@
 // index.tsx
 import React from 'react';
 import ReactDOM from 'react-dom/client';  // React 18 이상에서 사용
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 import Calender from '../../features/schedule/Calender';  // Calender 컴포넌트
 
 const App: React.FC = () => {

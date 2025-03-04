@@ -1,9 +1,11 @@
 export interface RecruitmentArticleProps {
     id: number;
     title: string;
-    content: string;
-    thumbnailUrl: string;
-    writer: string;
-    writerProfileUrl: string;
+    introduction: string;
+    region: string;
+    imageUrl: string;
+    isRecruiting: boolean;
+    writerName: string;
+    writerProfileImageUrl: string;
     clipCount: number;
 }
