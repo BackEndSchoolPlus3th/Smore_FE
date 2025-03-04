@@ -1,5 +1,5 @@
 // import React from "react";
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import AlarmPage from '../../pages/alarm/AlarmPage.tsx';
 import { FaBell } from 'react-icons/fa';
@@ -25,12 +25,13 @@ const Header = () => {
 
     return (
         <div className="flex items-center justify-between bg-muted-purple p-4">
-            <img
-                src="/logo_rectangle.png"
-                alt="logo"
-                className="h-20 cursor-pointer"
-                onClick={goToMainPage}
-            />
+            <Link to="/" className="flex items-center space-x-4 cursor-pointer">
+                <img
+                    src="/logo_rectangle.png"
+                    alt="logo"
+                    className="h-15 rounded rounded-lg"
+                />
+            </Link>
             <div className="flex items-center space-x-4">
                 <button
                     className="text-lg font-semibold cursor-pointer"
@@ -45,7 +46,7 @@ const Header = () => {
                     채팅페이지
                 </button>
                 <FaBell
-                    className="text-2xl"
+                    className="text-2xl cursor-pointer"
                     color="yellow"
                     onClick={() => setIsAlarm(true)}
                 />
