@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 const RecruitmentArticle: React.FC<RecruitmentArticleProps> = ({
     id,
     title,
-    content,
+    introduction,
     imageUrl,
     writerName,
     writerProfileImageUrl,
@@ -31,7 +31,7 @@ const RecruitmentArticle: React.FC<RecruitmentArticleProps> = ({
                 {/* 내용 */}
                 <div className="flex flex-col space-y-2">
                     <div className="text-lg font-semibold">{title}</div>
-                    <div className="text-gray-600">{content}</div>
+                    <div className="text-gray-600">{introduction}</div>
                 </div>
             </div>
             {/* 작성자, 좋아요 */}

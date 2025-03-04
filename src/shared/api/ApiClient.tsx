@@ -46,54 +46,67 @@ apiClient.interceptors.request.use(
         return Promise.reject(error);
     }
 );
-
-apiClient.interceptors.response.use(
-    (response) => {
-        // 서버 응답 객체에서 resultCode, msg, data를 구조 분해로 추출
-        const { resultCode, msg, data } = response.data;
-        const statusCode = parseInt(resultCode, 10);
-
-        // 개발 환경인 경우 서버 메시지 출력
-        if (import.meta.env.DEV) {
-            console.log(msg);
+refreshApiClient.interceptors.request.use(
+    (config) => {
+        const accessToken = localStorage.getItem('accessToken');
+        const refreshToken = getCookie('refreshToken');
+        if (accessToken) {
+            config.headers['authorization'] = `${accessToken}`;
         }
-
-        // if(statusCode==401){
-
-        //     try {
-        //         const response = await refreshApiClient.post('/member/refresh');
-        //         const { accessToken } = response.headers["authorization"];
-
-        //         localStorage.setItem('accessToken', accessToken);
-        //         originalRequest.headers[
-        //             'authorization'
-        //         ] = `${accessToken}`;
-        //         return apiClient(originalRequest);
-        //     } catch (refreshError) {
-        //         // 토큰 재발급 실패시 로그인 페이지로 이동
-        //        // localStorage.removeItem('accessToken');
-        //       //  window.location.href = '/login';
-        //         return Promise.reject(refreshError);
-        //     }
-        // }
-
-        // 에러 코드(400 이상)인 경우, 에러 처리
-        if (statusCode >= 400) {
-            return Promise.reject(new Error(msg));
+        if (refreshToken) {
+            config.headers['Set-Cookie'] = `${refreshToken}`;
         }
-
-        // 성공인 경우, 기존 response 객체의 data만 가공하여 ApiResponse 형식으로 대체
-        const apiResponse: ApiResponse<typeof data> = {
-            code: statusCode,
-            msg,
-            data,
-        };
-
-        // 기존 AxiosResponse의 필드들을 유지하면서 data만 교체
-        return apiResponse;
+        console.log('config::::', config.headers['authorization']);
+        console.log('refreshToken::::', config.headers['Set-Cookie']);
+        return config;
     },
-    (error) => Promise.reject(error)
+    (error) => {
+        return Promise.reject(error);
+    }
 );
+apiClient.interceptors.response.use(
+    (response) => response,
+    async (error) => {
+        const originalRequest = error.config;
+
+        // 401 에러이고 refreshToken이 존재할 경우 토큰 재발급 시도
+        if (error.response?.status === 401 && !originalRequest._retry) {
+            originalRequest._retry = true;
+
+            try {
+                const presentAccessToken = localStorage.getItem("accessToken");
+               // const presentRefreshToken = getCookie('refreshToken');
+                const response = await axios.post(
+                    "http://localhost:8090/api/member/refresh",
+                    {
+                        presentAccessToken
+                    },
+                    {
+                      withCredentials: true, // 쿠키 포함
+                    }
+                  );
+                  const accessToken = response.headers["authorization"];
+                  if(accessToken){
+                    localStorage.setItem("accessToken", accessToken);
+                  }
+                console.log(response);
+                localStorage.setItem('accessToken', accessToken);
+                
+                originalRequest.headers[
+                    'Authorization'
+                ] = `Bearer ${accessToken}`;
+
+                return refreshApiClient(originalRequest);
+            } catch (refreshError) {
+                // 토큰 재발급 실패시 로그인 페이지로 이동
+                localStorage.removeItem('accessToken');
+                //window.location.href = '/login';
+                return Promise.reject(refreshError);
+            }
+        }
+
+        return Promise.reject(error);
+    });
 
 //,
 //     async (error) => {

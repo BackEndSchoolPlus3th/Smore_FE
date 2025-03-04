@@ -37,7 +37,7 @@ const LoginPage = () => {
       if(accessToken){
         localStorage.setItem("accessToken", accessToken);
       }
-
+      window.location.href = '/';
       alert("로그인 성공!");
     } catch (error) {
       console.error("로그인 실패:", error);

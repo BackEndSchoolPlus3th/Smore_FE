@@ -1,7 +1,7 @@
 export interface RecruitmentArticleProps {
     id: number;
     title: string;
-    content: string;
+    introduction: string;
     region: string;
     imageUrl: string;
     isRecruiting: boolean;

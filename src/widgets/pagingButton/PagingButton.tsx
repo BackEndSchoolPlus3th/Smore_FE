@@ -7,19 +7,19 @@ import {
 import { useEffect, useState } from 'react';
 
 // switchPage: 페이지를 전환하는 함수
-// currentPage: 현재 페이지
+// page: 현재 페이지
 // endPage: 끝 페이지
 // isEndPage: 마지막 페이지인지 여부
 interface PagingButtonProps {
-    switchPage: (page: number) => void;
-    currentPage: number;
+    setPage: (pageButton: number) => void;
+    page: number;
     endPage: number;
     isEndPage: boolean;
 }
 
 const PagingButton: React.FC<PagingButtonProps> = ({
-    switchPage,
-    currentPage,
+    setPage,
+    page,
     endPage,
     isEndPage,
 }) => {
@@ -30,13 +30,13 @@ const PagingButton: React.FC<PagingButtonProps> = ({
     const [startPage, setStartPage] = useState(1);
 
     useEffect(() => {
-        if (currentPage === 1) {
+        if (page === 1) {
             setCanBeforePage(false);
         } else {
             setCanBeforePage(true);
         }
 
-        if (currentPage <= 10) {
+        if (page <= 10) {
             setCanBeforeBlock(false);
         } else {
             setCanBeforeBlock(true);
@@ -48,33 +48,33 @@ const PagingButton: React.FC<PagingButtonProps> = ({
             setCanNextBlock(true);
         }
 
-        if (isEndPage && currentPage === endPage) {
+        if (isEndPage && page === endPage) {
             setCanNextPage(false);
         } else {
             setCanNextPage(true);
         }
 
-        setStartPage(Math.floor((currentPage - 1) / 10) * 10 + 1);
-    }, [currentPage, endPage, isEndPage]);
+        setStartPage(Math.floor((page - 1) / 10) * 10 + 1);
+    }, [page, endPage, isEndPage]);
 
-    const handleSwitchPage = (page: number) => {
-        switchPage(page);
+    const handleSwitchPage = (pageButton: number) => {
+        setPage(pageButton);
     };
 
     const handleNextPage = () => {
-        handleSwitchPage(currentPage + 1);
+        handleSwitchPage(page + 1);
     };
 
     const handleBeforePage = () => {
-        handleSwitchPage(currentPage - 1);
+        handleSwitchPage(page - 1);
     };
 
     const handleNextBlock = () => {
-        handleSwitchPage(currentPage - (currentPage % 10) + 10 + 1);
+        handleSwitchPage(page - (page % 10) + 10 + 1);
     };
 
     const handleBeforeBlock = () => {
-        handleSwitchPage(currentPage - (currentPage % 10) - 10 + 1);
+        handleSwitchPage(page - (page % 10) - 10 + 1);
     };
 
     return (
@@ -92,15 +92,15 @@ const PagingButton: React.FC<PagingButtonProps> = ({
             {Array.from(
                 { length: endPage - startPage + 1 },
                 (_, i) => i + startPage
-            ).map((page) => (
+            ).map((pageButton) => (
                 <button
-                    key={'paging' + page}
-                    onClick={() => handleSwitchPage(page)}
+                    key={'paging' + pageButton}
+                    onClick={() => handleSwitchPage(pageButton)}
                     style={{
-                        fontWeight: currentPage === page ? 'bold' : 'normal',
+                        fontWeight: page === pageButton ? 'bold' : 'normal',
                     }}
                 >
-                    {page}
+                    {pageButton}
                 </button>
             ))}
 
