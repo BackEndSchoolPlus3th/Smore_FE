@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import '../ui/App.css';
 import '../ui/markdownStyle.css';
 import '../ui/scrollbar.css';
+import '../ui/text.css';
 
 import {
     ChatPage,
