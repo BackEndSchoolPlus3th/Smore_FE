@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const getCookie = (name: any) => {
+const getCookie = (name: string) => {
     const matches = document.cookie.match(
         new RegExp(
             '(?:^|; )' +
