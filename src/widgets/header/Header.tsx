@@ -24,11 +24,11 @@ const Header = () => {
     };
 
     return (
-        <div className="flex items-center justify-between bg-muted-purple p-4 cursor-pointer">
+        <div className="flex items-center justify-between bg-muted-purple p-4">
             <img
                 src="/logo_rectangle.png"
                 alt="logo"
-                className=" h-20"
+                className="h-20 cursor-pointer"
                 onClick={goToMainPage}
             />
             <div className="flex items-center space-x-4">
