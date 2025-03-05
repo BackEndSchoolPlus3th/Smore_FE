@@ -70,7 +70,7 @@ export const RecruitmentArticleSearch: React.FC<
     };
 
     return (
-        <div className="recruitment-article-search p-4 bg-white shadow-md rounded-md">
+        <div className="recruitment-article-search">
             {/* 검색 필드 */}
             <div className="flex flex-row gap-4 justify-end">
                 <div className="">

@@ -114,8 +114,8 @@ const RecruitmentArticlesPage: React.FC = () => {
     }, [page, searchParams]);
 
     return (
-        <div className="flex flex-col gap-4 p-4 w-full">
-            <div className="flex justify-between items-center w-full">
+        <div className="flex flex-col gap-4 w-full pb-4">
+            <div className="sticky top-0 flex justify-between items-center w-full bg-white shadow p-4">
                 <p className="text-2xl font-bold text-dark-purple">
                     스터디 모집 게시판
                 </p>
