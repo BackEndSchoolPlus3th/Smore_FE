@@ -1,11 +1,13 @@
-import React, { useState, useRef } from 'react';
-import ReactMarkdown from 'react-markdown';
+import React, { useState, useRef, KeyboardEvent } from 'react';
+import { useParams } from 'react-router-dom';
 import Select from 'react-select';
 import './NewRecruitmentStyle.css';
 import { FaBold, FaItalic, FaLink, FaCode, FaImage } from 'react-icons/fa';
-import { MarkdownRenderer } from '../../../../shared';
+import { MdOutlineCancel } from 'react-icons/md';
+import { MarkdownRenderer, apiClient } from '../../../../shared';
 
 const regionOptions = [
+    { value: '전국', label: '전국' },
     { value: '서울', label: '서울' },
     { value: '부산', label: '부산' },
     { value: '대구', label: '대구' },
@@ -26,11 +28,14 @@ const regionOptions = [
 ];
 
 const NewRecruitmentPage: React.FC = () => {
+    const { studyId } = useParams<{ studyId: string }>();
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isClosing, setIsClosing] = useState(false);
     const [introduction, setIntroduction] = useState('');
-    const [hashtags, setHashtags] = useState('');
+    const [hashtagInput, setHashtagInput] = useState('');
+    const [hashtags, setHashtags] = useState<string[]>([]);
     const [region, setRegion] = useState(''); // 선택한 지역 값 (예: '서울')
     const [recruitmentPeriod, setRecruitmentPeriod] = useState({
         start: '',
@@ -38,9 +43,39 @@ const NewRecruitmentPage: React.FC = () => {
     });
     const [thumbnail, setThumbnail] = useState<File | null>(null);
     const textAreaRef = useRef<HTMLTextAreaElement>(null);
+    const [maxMember, setMaxMember] = useState<number>(0);
 
     const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setContent(e.target.value);
+    };
+
+    const handleHashtagKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
+        const newHashtag = hashtagInput.trim().toLowerCase();
+        const hashtagRegex = /^[a-zA-Z0-9가-힣]+$/;
+        if (
+            e.key === 'Enter' &&
+            newHashtag !== '' &&
+            hashtags.length < 5 &&
+            !hashtags.includes(newHashtag) &&
+            hashtagRegex.test(newHashtag)
+        ) {
+            setHashtags([...hashtags, newHashtag]);
+            setHashtagInput('');
+        }
+    };
+
+    const handleRemoveHashtag = (index: number) => {
+        setHashtags(hashtags.filter((_, i) => i !== index));
+    };
+
+    const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setTitle(e.target.value);
+    };
+
+    const handleIntroductionChange = (
+        e: React.ChangeEvent<HTMLInputElement>
+    ) => {
+        setIntroduction(e.target.value);
     };
 
     // 공통 함수: 선택된 텍스트가 있으면 감싸고, 없으면 플레이스홀더를 삽입 후 해당 부분을 선택함.
@@ -126,10 +161,84 @@ const NewRecruitmentPage: React.FC = () => {
         }
     };
 
+    const fetchRecruitmentArticle = async () => {
+        const formData = new FormData();
+        formData.append('title', title);
+        formData.append('content', content);
+        formData.append('introduction', introduction);
+        formData.append('region', region);
+        formData.append('maxMember', maxMember.toString());
+        formData.append(
+            'startDate',
+            new Date(recruitmentPeriod.start).toISOString().split('T')[0]
+        );
+        formData.append(
+            'endDate',
+            new Date(recruitmentPeriod.end).toISOString().split('T')[0]
+        );
+        if (hashtags.length > 0) {
+            formData.append('hashtags', hashtags.join(','));
+        }
+        if (thumbnail) {
+            formData.append('thumbnail', thumbnail);
+        }
+
+        try {
+            await apiClient.post(
+                `/v1/study/${studyId}/recruitmentArticle`,
+                formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                }
+            );
+            closeModal();
+            alert('모집글이 성공적으로 게시되었습니다.');
+        } catch (error) {
+            console.error('모집글 게시 중 오류 발생:', error);
+            alert('모집글 게시 중 오류가 발생했습니다.');
+        }
+    };
+
     // 모달의 "확인" 버튼 클릭 시 실제 게시 처리 로직 추가 가능
-    const handleModalConfirm = () => {
-        // 게시 로직 처리 추가 (예: API 호출 등)
-        setIsModalOpen(false);
+    const handleModalConfirm = async () => {
+        if (
+            !title ||
+            !content ||
+            !introduction ||
+            !region ||
+            !recruitmentPeriod.start ||
+            !recruitmentPeriod.end ||
+            !isEndDateValid()
+        ) {
+            alert('모든 필드를 올바르게 입력해주세요.');
+            return;
+        }
+
+        await fetchRecruitmentArticle();
+    };
+
+    const isEndDateValid = () => {
+        const currentDate = new Date().toISOString().split('T')[0];
+        return (
+            recruitmentPeriod.end > currentDate &&
+            recruitmentPeriod.end > recruitmentPeriod.start
+        );
+    };
+
+    const closeModal = () => {
+        setIsClosing(true);
+        setTimeout(() => {
+            setIsModalOpen(false);
+            setIsClosing(false);
+        }, 300);
+    };
+
+    const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
+        if (e.target === e.currentTarget) {
+            closeModal();
+        }
     };
 
     return (
@@ -152,19 +261,19 @@ const NewRecruitmentPage: React.FC = () => {
 
             {/* 본문 컨텐츠 영역 */}
             <div className="p-4">
-                {/* 제목 입력 */}
-                <input
-                    type="text"
-                    placeholder="제목을 입력하세요"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    className="w-full border border-gray-300 rounded px-3 py-2 mb-4 text-2xl focus:outline-none focus:border-purple-500 bg-white"
-                />
-
                 {/* 에디터와 미리보기 영역 */}
                 <div className="flex flex-row space-x-4">
                     {/* 에디터 영역 */}
                     <div className="flex flex-col w-1/2">
+                        {/* 제목 입력 */}
+                        <input
+                            type="text"
+                            placeholder="제목을 입력하세요"
+                            value={title}
+                            onChange={handleTitleChange}
+                            maxLength={50}
+                            className="w-full border border-gray-300 rounded px-3 py-2 mb-4 text-2xl focus:outline-none focus:border-purple-500 bg-white"
+                        />
                         {/* 간단한 툴바 */}
                         <div className="flex space-x-2 mb-2">
                             <button
@@ -213,7 +322,7 @@ const NewRecruitmentPage: React.FC = () => {
                     </div>
 
                     {/* 미리보기 영역 */}
-                    <div className="w-1/2 h-180 border border-gray-300 rounded p-3 overflow-y-auto bg-white markdown-preview">
+                    <div className="w-1/2 h-196.5 border border-gray-300 rounded p-3 overflow-y-auto bg-white markdown-preview">
                         <MarkdownRenderer content={content} />
                     </div>
                 </div>
@@ -221,8 +330,15 @@ const NewRecruitmentPage: React.FC = () => {
 
             {/* 모달 팝업 */}
             {isModalOpen && (
-                <div className="fixed inset-0 flex items-center justify-center bg-gray-50/75 z-50">
-                    <div className="bg-white rounded-lg shadow-lg max-w-lg w-full p-6">
+                <div
+                    className="fixed inset-0 flex items-center justify-center bg-gray-800/75 z-50"
+                    onClick={handleOverlayClick}
+                >
+                    <div
+                        className={`bg-white rounded-lg shadow-lg max-w-lg w-full p-6 ${
+                            isClosing ? 'modal-slide-down' : 'modal-slide-up'
+                        }`}
+                    >
                         <h2 className="text-2xl font-bold mb-4">{title}</h2>
 
                         {/* 소개글 */}
@@ -233,9 +349,8 @@ const NewRecruitmentPage: React.FC = () => {
                             <input
                                 type="text"
                                 value={introduction}
-                                onChange={(e) =>
-                                    setIntroduction(e.target.value)
-                                }
+                                onChange={handleIntroductionChange}
+                                maxLength={200}
                                 placeholder="소개글을 입력하세요"
                                 className="w-full border border-gray-300 rounded p-2 focus:outline-none focus:border-purple-500"
                             />
@@ -248,11 +363,35 @@ const NewRecruitmentPage: React.FC = () => {
                             </label>
                             <input
                                 type="text"
-                                value={hashtags}
-                                onChange={(e) => setHashtags(e.target.value)}
-                                placeholder="예: 백엔드 java react"
+                                value={hashtagInput}
+                                onChange={(e) =>
+                                    setHashtagInput(e.target.value)
+                                }
+                                onKeyPress={handleHashtagKeyPress}
+                                placeholder="해시태그를 입력하고 엔터를 누르세요"
                                 className="w-full border border-gray-300 rounded p-2 focus:outline-none focus:border-purple-500"
                             />
+                            <div className="flex flex-wrap gap-2 mt-2">
+                                {hashtags.map((hashtag, index) => (
+                                    <div
+                                        key={index}
+                                        className="px-3 py-1 rounded-full text-sm font-semibold bg-muted-purple flex items-center"
+                                    >
+                                        {hashtag}
+                                        <MdOutlineCancel
+                                            className="ml-2 cursor-pointer"
+                                            onClick={() =>
+                                                handleRemoveHashtag(index)
+                                            }
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                            {hashtags.length >= 5 && (
+                                <p className="text-red-500 text-sm mt-2">
+                                    해시태그는 최대 5개까지 추가할 수 있습니다.
+                                </p>
+                            )}
                         </div>
 
                         {/* 지역 (react-select) */}
@@ -327,6 +466,24 @@ const NewRecruitmentPage: React.FC = () => {
                                     className="w-1/2 border border-gray-300 rounded p-2 focus:outline-none focus:border-purple-500"
                                 />
                             </div>
+                            {!isEndDateValid() && (
+                                <p className="text-red-500 text-sm mt-2">
+                                    마감일은 현재 시간과 시작일 이후여야 합니다.
+                                </p>
+                            )}
+                        </div>
+
+                        {/* 최대 인원 */}
+                        <div className="mb-4">
+                            <label className="block text-gray-700 text-sm font-medium mb-2">
+                                최대 인원
+                            </label>
+                            <input
+                                type="number"
+                                value={maxMember}
+                                onChange={(e) => setMaxMember(+e.target.value)}
+                                className="w-full border border-gray-300 rounded p-2 focus:outline-none focus:border-purple-500"
+                            />
                         </div>
 
                         {/* 썸네일 */}
@@ -345,7 +502,7 @@ const NewRecruitmentPage: React.FC = () => {
                         {/* 모달 하단 버튼 */}
                         <div className="flex justify-end space-x-2">
                             <button
-                                onClick={() => setIsModalOpen(false)}
+                                onClick={closeModal}
                                 className="bg-gray-300 hover:bg-gray-400 text-white px-4 py-2 rounded focus:outline-none cursor-pointer"
                             >
                                 취소

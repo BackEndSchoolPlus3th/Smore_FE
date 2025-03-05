@@ -39,3 +39,33 @@ textarea::-webkit-scrollbar-thumb:hover {
 .markdown-preview::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
+
+@keyframes slide-up {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slide-down {
+    from {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+}
+
+.modal-slide-up {
+    animation: slide-up 0.3s ease-out;
+}
+
+.modal-slide-down {
+    animation: slide-down 0.3s ease-out;
+}

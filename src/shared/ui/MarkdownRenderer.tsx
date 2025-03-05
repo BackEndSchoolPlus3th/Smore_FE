@@ -9,13 +9,6 @@ interface MarkdownRendererProps {
     className?: string;
 }
 
-type CodeProps = {
-    node?: any;
-    inline?: boolean;
-    className?: string;
-    children?: React.ReactNode;
-};
-
 const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
     content,
     className = 'markdown-body',
