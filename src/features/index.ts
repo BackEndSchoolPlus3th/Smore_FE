@@ -11,3 +11,6 @@ export {
     clipArticle,
     unclipArticle,
 } from './article/recruitmentArticles/api/clipApi';
+
+// Recruitment Article Page
+export { postRecruitmentArticle } from './article/recruitment/api/recruitmentService';
