@@ -65,6 +65,11 @@ refreshApiClient.interceptors.request.use(
 );
 apiClient.interceptors.response.use(
     (response) => {
+        const accessToken = response.headers['authorization'];
+        if (accessToken) {
+            localStorage.setItem('accessToken', accessToken);
+        }
+
         if (import.meta.env.DEV) {
             console.log('data::::', response.data);
         }
