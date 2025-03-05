@@ -14,3 +14,7 @@ export {
 
 // Recruitment Article Page
 export { postRecruitmentArticle } from './article/recruitment/api/recruitmentService';
+
+// auth
+export { authReducer } from './auth/model/authSlice';
+export { default as LoginForm } from './auth/ui/LoginForm';
