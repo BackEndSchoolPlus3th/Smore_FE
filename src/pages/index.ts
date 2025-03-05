@@ -10,3 +10,4 @@ export { default as MyStudyDocumentPage } from './myStudy/MyStudyDocumentPage';
 export { default as MyStudyArticlePage } from './myStudy/MyStudyArticlePage';
 export { default as MyStudySettingPage } from './myStudy/MyStudySettingPage';
 export { default as RecruitmentContentPage } from './main/recruitment/recruitment/RecruitmentPage';
+export { default as VideoChatPage } from './videoChat/VideoChatPage';

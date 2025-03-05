@@ -14,6 +14,7 @@ import {
     RecruitmentArticlesPage,
     StudyArticlePage,
     RecruitmentContentPage,
+    VideoChatPage,
 } from '../pages';
 import { Header } from '../widgets';
 
@@ -56,6 +57,9 @@ function App() {
                         element={<CalenderPage />}
                     />
                     <Route path="/login" element={<LoginPage />} />
+                    <Route 
+                        path="/study/:studyId/videochat" 
+                        element={<VideoChatPage />} />
                 </Routes>
             </div>
         </Router>
