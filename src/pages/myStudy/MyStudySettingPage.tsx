@@ -1,8 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Sidebar from "../../widgets/sidebar/Sidebar";
+import Navbar from "../../widgets/navbarArticle/Navbar";
 
 const MyStudySettingPage = () => {
     const navigate = useNavigate();
+
+      const [studies, setStudies] = useState([]);
+      const [selectedStudy, setSelectedStudy] = useState(null);
 
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const [isEditingProfile, setIsEditingProfile] = useState(false);
@@ -111,51 +116,41 @@ const MyStudySettingPage = () => {
         return allMembers.filter(member => !allAssignedMembers.includes(member));
     };
 
+    const handleStudySelect = (study) => {
+        setSelectedStudy(study);
+      };
+
     return (
         <div className="flex flex-col w-full h-screen bg-gray-100">
             <div className="flex flex-1">
                 {/* 사이드바 */}
-                <div className={`w-1/5 bg-gray-400 p-4 transition-all duration-300 ${isSidebarOpen ? 'block' : 'hidden'}`}>
-                    <div className="mb-4 text-lg font-bold">스터디 목록</div>
-                    <ul>
-                        {['스터디A', '스터디B', '스터디C', '스터디D'].map((study, index) => (
-                            <li key={index} className="p-2 bg-gray-500 text-white rounded mb-2 text-right flex items-center space-x-2">
-                                <div className="bg-gray-600 w-8 h-8 rounded-full" />
-                                <span>{study}</span>
-                            </li>
-
-                        ))}
-                    </ul>
-                </div>
-
-                {/* 버튼을 클릭하여 사이드바를 열고 닫을 수 있도록 */}
-                <div className="bg-gray-400">
-                    <button
-                        onClick={toggleSidebar}
-                        className="px-4 py-2 bg-gray-500 text-white mb-4 cursor-pointer"
-                    >
-                        {isSidebarOpen ? '=' : '='}
-                    </button>
-                </div>
+                        <Sidebar
+                          studies={studies}
+                          onStudySelect={handleStudySelect}
+                          isSidebarOpen={isSidebarOpen}
+                          toggleSidebar={toggleSidebar}
+                        />
+                
+                        {/* 버튼을 클릭하여 사이드바를 열고 닫을 수 있도록 */}
+                        <div className="bg-muted-purple">
+                          <button
+                            onClick={toggleSidebar}
+                            className="px-4 py-2 bg-dark-purple text-white mb-4"
+                          >
+                            {isSidebarOpen ? '=' : '='}
+                          </button>
+                        </div>
 
                 {/* 메인 콘텐츠 */}
-                <div className="flex-1 pt-0 p-6 bg-gray-200">
+                <div className="flex-1 pt-0 p-6 bg-purple-100">
                     <div>
                         {/* 네브 바 */}
-                        <div className="bg-gray-200 text-white flex justify-between mx-auto mt-0 pb-3">
-                            <div className="flex justify-center w-full">
-                                <button className="px-3 py-1 bg-gray-600 cursor-pointer" onClick={goToStudyMainPage}>메인</button>
-                                <button className="px-3 py-1 bg-gray-600 cursor-pointer" onClick={goToSchedulePage}>캘린더</button>
-                                <button className="px-3 py-1 bg-gray-600 cursor-pointer" onClick={goToDocumentPage}>문서함</button>
-                                <button className="px-3 py-1 bg-gray-600 cursor-pointer" onClick={goToStudyArticlePage}>게시판</button>
-                                <button className="px-3 py-1 bg-gray-600 cursor-pointer" onClick={goToSettingPage}>설정</button>
-                            </div>
-                        </div>
+                        <Navbar />
                     </div>
 
                     <div className="mb-4 flex justify-center space-x-10 items-center">
                         <div className="flex items-center space-x-4 justify-center">
-                            <div className="w-50 h-50 bg-gray-500 rounded-full"></div>
+                            <div className="w-50 h-50 bg-dark-purple rounded-full"></div>
                             <div className="pl-10">
                                 {/* 스터디명 */}
                                 {isEditingProfile ? (
@@ -211,7 +206,7 @@ const MyStudySettingPage = () => {
                                                 setIsEditingProfile(true);
                                             }
                                         }}
-                                        className="px-3 py-1 bg-black text-white rounded"
+                                        className="px-3 py-1 bg-dark-purple text-white rounded"
                                     >
                                         {isEditingProfile ? "저장" : "수정"}
                                     </button>
@@ -237,7 +232,7 @@ const MyStudySettingPage = () => {
                                         <div>{label}</div>
                                         <button
                                             onClick={() => handleAddPerson(key)}
-                                            className={`px-2 py-1 bg-black text-white rounded ${!isEditingPermissions && "cursor-not-allowed opacity-50"}`}
+                                            className={`px-2 py-1 bg-dark-purple text-white rounded ${!isEditingPermissions && "cursor-not-allowed opacity-50"}`}
                                             disabled={!isEditingPermissions} // 수정 모드가 아닐 때는 버튼 비활성화
                                         >
                                             +
@@ -293,7 +288,7 @@ const MyStudySettingPage = () => {
                                         setIsEditingPermissions(true);
                                     }
                                 }}
-                                className="p-1 bg-black text-white rounded cursor-pointer mt-2"
+                                className="p-1 bg-dark-purple text-white rounded cursor-pointer mt-2"
                             >
                                 {isEditingPermissions ? "저장" : "수정"}
                             </button>
