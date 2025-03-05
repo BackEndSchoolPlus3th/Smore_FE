@@ -15,10 +15,7 @@ const RecruitmentArticle: React.FC<RecruitmentArticleProps> = ({
     hashTags,
 }: RecruitmentArticleProps) => {
     return (
-        <Link
-            to={`/recruitment/${id}`}
-            className="RecruitmentArticleContainer w-full h-full flex flex-col justify-between"
-        >
+        <div className="RecruitmentArticleContainer w-full h-full flex flex-col justify-between">
             {/* 썸네일, 내용 */}
             <div className="flex flex-col space-y-4">
                 {/* 썸네일 */}
@@ -66,7 +63,7 @@ const RecruitmentArticle: React.FC<RecruitmentArticleProps> = ({
                     </div>
                 </div>
             </div>
-        </Link>
+        </div>
     );
 };
 

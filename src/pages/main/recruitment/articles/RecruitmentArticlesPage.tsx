@@ -9,6 +9,7 @@ import {
     RecruitmentArticleSearch,
     fetchRecruitmentArticles,
 } from '../../../../features';
+import { Link } from 'react-router-dom';
 
 const pagesPerBlock = 10;
 
@@ -135,12 +136,13 @@ const RecruitmentArticlesPage: React.FC = () => {
                               </div>
                           ))
                         : displayedArticles.map((article) => (
-                              <div
+                              <Link
+                                  to={`/recruitment/${article.id}`}
                                   className="recruitment-article-card card bg-light-lavender p-4 bg-white shadow-lg rounded-lg w-80 min-w-80 h-110"
                                   key={article.id}
                               >
                                   <RecruitmentArticle {...article} />
-                              </div>
+                              </Link>
                           ))}
                 </div>
             </div>
