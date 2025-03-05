@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import Sidebar from "../../widgets/sidebar/Sidebar";
+import Navbar from "../../widgets/navbarArticle/Navbar";
 
 const MyStudyDocumentPage = () => {
   const navigate = useNavigate();
   const [files, setFiles] = useState([]);
+  const [studies, setStudies] = useState([]);
+  const [selectedStudy, setSelectedStudy] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   useEffect(() => {
@@ -44,97 +48,88 @@ const MyStudyDocumentPage = () => {
 
   const goToStudyMainPage = () => {
     navigate("/mystudy");
-};
-const goToSchedulePage = () => {
+  };
+  const goToSchedulePage = () => {
     navigate("/mystudyschedule");
-};
-const goToDocumentPage = () => {
+  };
+  const goToDocumentPage = () => {
     navigate("/document");
-};
-const goToStudyArticlePage = () => {
+  };
+  const goToStudyArticlePage = () => {
     navigate("/study/:studyId/article");
-};
-const goToSettingPage = () => {
+  };
+  const goToSettingPage = () => {
     navigate("/studysetting");
-};
-const goToStudyEditPage = () => {
+  };
+  const goToStudyEditPage = () => {
     navigate("/studyedit");
-};
-const goToStudyArticleDetailPage = () => {
-  navigate("/studydetail");
-}
+  };
+  const goToStudyArticleDetailPage = () => {
+    navigate("/studydetail");
+  }
 
   const handleDownload = (fileName) => {
     alert(`${fileName}을 다운로드합니다.`);
+  };
+
+  const handleStudySelect = (study) => {
+    setSelectedStudy(study);
   };
 
   return (
     <div className="flex flex-col w-full h-screen bg-gray-100">
       <div className="flex flex-1">
         {/* 사이드바 */}
-        <div className={`w-1/5 bg-gray-400 p-4 transition-all duration-300 ${isSidebarOpen ? 'block' : 'hidden'}`}>
-          <div className="mb-4 text-lg font-bold">스터디 목록</div>
-          <ul>
-            {['스터디A', '스터디B', '스터디C', '스터디D'].map((study, index) => (
-              <li key={index} className="p-2 bg-gray-500 text-white rounded mb-2 text-right flex items-center space-x-2">
-                <div className="bg-gray-600 w-8 h-8 rounded-full" />
-                <span>{study}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <Sidebar
+          studies={studies}
+          onStudySelect={handleStudySelect}
+          isSidebarOpen={isSidebarOpen}
+          toggleSidebar={toggleSidebar}
+        />
 
-        {/* 사이드바 열고 닫기 버튼 */}
-        <div className="bg-gray-400">
+      {/* 버튼을 클릭하여 사이드바를 열고 닫을 수 있도록 */}
+      <div className="bg-muted-purple">
           <button
             onClick={toggleSidebar}
-            className="px-4 py-2 bg-gray-500 text-white mb-4"
+            className="px-4 py-2 bg-dark-purple text-white mb-4"
           >
             {isSidebarOpen ? '=' : '='}
           </button>
         </div>
 
-        {/* 메인 콘텐츠 */}
-        <div className="flex-1 pt-0 p-6 bg-gray-200">
-          <div>
-            {/* 네브 바 */}
-            <div className="bg-gray-200 text-white flex justify-between mx-auto mt-0 pb-3">
-              <div className="flex justify-center w-full">
-                <button className="px-3 py-1 bg-gray-600 cursor-pointer" onClick={goToStudyMainPage}>메인</button>
-                <button className="px-3 py-1 bg-gray-600 cursor-pointer" onClick={goToSchedulePage}>캘린더</button>
-                <button className="px-3 py-1 bg-gray-600 cursor-pointer" onClick={goToDocumentPage}>문서함</button>
-                <button className="px-3 py-1 bg-gray-600 cursor-pointer" onClick={goToStudyArticlePage}>게시판</button>
-                <button className="px-3 py-1 bg-gray-600 cursor-pointer" onClick={goToSettingPage}>설정</button>
-              </div>
+      {/* 메인 콘텐츠 */}
+      <div className="flex-1 pt-0 p-6 bg-purple-100">
+        <div>
+          {/* 네브 바 */}
+          <Navbar />
+        </div>
+
+        {/* 문서함 */}
+        <div className="p-4 bg-white shadow rounded">
+          <h2 className="text-xl font-bold mb-4">문서함</h2>
+
+          {files.length === 0 ? (
+            <p>현재 첨부된 파일이 없습니다.</p>
+          ) : (
+            <div className="grid grid-cols-3 gap-4">
+              {files.map((file, index) => (
+                <div key={index} className="bg-white shadow-lg p-6 rounded-lg flex flex-col items-center">
+                  <div className="w-full h-32 bg-dark-purple mb-4"></div>
+                  <div className="text-lg font-semibold mb-2">{file.name}</div>
+                  <button
+                    onClick={() => handleDownload(file.name)}
+                    className="px-4 py-2 bg-dark-purple text-white rounded cursor-pointer"
+                  >
+                    다운로드
+                  </button>
+                </div>
+              ))}
             </div>
-          </div>
-
-          {/* 문서함 */}
-          <div className="p-4 bg-white shadow rounded">
-            <h2 className="text-xl font-bold mb-4">문서함</h2>
-
-            {files.length === 0 ? (
-              <p>현재 첨부된 파일이 없습니다.</p>
-            ) : (
-              <div className="grid grid-cols-3 gap-4">
-                {files.map((file, index) => (
-                  <div key={index} className="bg-white shadow-lg p-6 rounded-lg flex flex-col items-center">
-                    <div className="w-full h-32 bg-gray-300 mb-4"></div>
-                    <div className="text-lg font-semibold mb-2">{file.name}</div>
-                    <button
-                      onClick={() => handleDownload(file.name)}
-                      className="px-4 py-2 bg-black text-white rounded cursor-pointer"
-                    >
-                      다운로드
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          )}
         </div>
       </div>
     </div>
+    </div >
   );
 };
 

@@ -1,15 +1,23 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import Sidebar from "../../widgets/sidebar/Sidebar";
+import Navbar from "../../widgets/navbarArticle/Navbar";
 
 const MyStudyEditPage = () => {
   const navigate = useNavigate();
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [studies, setStudies] = useState([]);
+  const [selectedStudy, setSelectedStudy] = useState(null);
   const [formData, setFormData] = useState({
     title: '',
     content: '',
     files: []
   });
+
+  const handleStudySelect = (study) => {
+    setSelectedStudy(study);
+  };
 
   const contentRef = useRef(null);
 
@@ -19,25 +27,25 @@ const MyStudyEditPage = () => {
 
   const goToStudyMainPage = () => {
     navigate("/mystudy");
-};
-const goToSchedulePage = () => {
+  };
+  const goToSchedulePage = () => {
     navigate("/mystudyschedule");
-};
-const goToDocumentPage = () => {
+  };
+  const goToDocumentPage = () => {
     navigate("/document");
-};
-const goToStudyArticlePage = () => {
+  };
+  const goToStudyArticlePage = () => {
     navigate("/study/:studyId/article");
-};
-const goToSettingPage = () => {
+  };
+  const goToSettingPage = () => {
     navigate("/studysetting");
-};
-const goToStudyEditPage = () => {
+  };
+  const goToStudyEditPage = () => {
     navigate("/studyedit");
-};
-const goToStudyArticleDetailPage = () => {
-  navigate("/studydetail");
-}
+  };
+  const goToStudyArticleDetailPage = () => {
+    navigate("/studydetail");
+  }
 
   // Handle form data change
   const handleChange = (e) => {
@@ -87,41 +95,28 @@ const goToStudyArticleDetailPage = () => {
     <div className="flex flex-col w-full h-screen bg-gray-100">
       <div className="flex flex-1">
         {/* 사이드바 */}
-        <div className={`w-1/5 bg-gray-400 p-4 transition-all duration-300 ${isSidebarOpen ? 'block' : 'hidden'}`}>
-          <div className="mb-4 text-lg font-bold">스터디 목록</div>
-          <ul>
-            {['스터디A', '스터디B', '스터디C', '스터디D'].map((study, index) => (
-              <li key={index} className="p-2 bg-gray-500 text-white rounded mb-2 text-right flex items-center space-x-2">
-                <div className="bg-gray-600 w-8 h-8 rounded-full" />
-                <span>{study}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <Sidebar
+          studies={studies}
+          onStudySelect={handleStudySelect}
+          isSidebarOpen={isSidebarOpen}
+          toggleSidebar={toggleSidebar}
+        />
 
         {/* 버튼을 클릭하여 사이드바를 열고 닫을 수 있도록 */}
-        <div className="bg-gray-400">
+        <div className="bg-muted-purple">
           <button
             onClick={toggleSidebar}
-            className="px-4 py-2 bg-gray-500 text-white mb-4"
+            className="px-4 py-2 bg-dark-purple text-white mb-4"
           >
             {isSidebarOpen ? '=' : '='}
           </button>
         </div>
 
         {/* 메인 콘텐츠 */}
-        <div className="flex-1 pt-0 p-6 bg-gray-200">
+        <div className="flex-1 pt-0 p-6 bg-purple-100">
           <div>
             {/* 네브 바 */}
-            <div className="bg-gray-200 text-white flex justify-between mx-auto mt-0 pb-3">
-              <div className="flex justify-center w-full">
-                <button className="px-3 py-1 bg-gray-600 cursor-pointer" onClick={goToStudyMainPage}>메인</button>
-                <button className="px-3 py-1 bg-gray-600 cursor-pointer" onClick={goToSchedulePage}>캘린더</button>
-                <button className="px-3 py-1 bg-gray-600 cursor-pointer" onClick={goToDocumentPage}>문서함</button>
-                <button className="px-3 py-1 bg-gray-600 cursor-pointer" onClick={goToStudyArticlePage}>게시판</button>
-                <button className="px-3 py-1 bg-gray-600 cursor-pointer" onClick={goToSettingPage}>설정</button>
-              </div>
-            </div>
+            <Navbar />
           </div>
 
           {/* 글쓰기 폼 */}
@@ -186,11 +181,11 @@ const goToStudyArticleDetailPage = () => {
                 )}
               </div>
 
-              {/* 제출 버튼 */}
+              {/* 업롤드 버튼 */}
               <div className="flex justify-end">
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-black text-white font-semibold rounded"
+                  className="px-4 py-2 bg-dark-purple text-white font-semibold rounded"
                 >
                   업로드
                 </button>

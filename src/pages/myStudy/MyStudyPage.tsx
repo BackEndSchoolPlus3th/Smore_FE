@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import Sidebar from "../../widgets/sidebar/Sidebar";
+import Navbar from "../../widgets/navbarArticle/Navbar";
 
 const MyStudyPage = () => {
   const navigate = useNavigate();
@@ -64,48 +66,31 @@ const goToStudyArticleDetailPage = () => {
   };
 
   return (
-    <div className="flex flex-col w-full h-screen bg-gray-100">
+    <div className="flex flex-col w-full h-screen">
       <div className="flex flex-1">
         {/* 사이드바 */}
-        <div className={`w-1/5 bg-gray-400 p-4 transition-all duration-300 ${isSidebarOpen ? 'block' : 'hidden'}`}>
-          <div className="mb-4 text-lg font-bold">스터디 목록</div>
-          <ul>
-            {studies.map((study) => (
-              <li
-              key={study.id}
-              className="p-2 bg-gray-500 text-white rounded mb-2 text-right flex items-center space-x-2 cursor-pointer"
-              onClick={() => handleStudySelect(study)}
-            >
-              <div className="bg-gray-600 w-8 h-8 rounded-full" />
-              <span>{study.title}</span>
-            </li>
-            ))}
-          </ul>
-        </div>
+        <Sidebar
+          studies={studies}
+          onStudySelect={handleStudySelect}
+          isSidebarOpen={isSidebarOpen}
+          toggleSidebar={toggleSidebar}
+        />
 
         {/* 버튼을 클릭하여 사이드바를 열고 닫을 수 있도록 */}
-        <div className="bg-gray-400">
+        <div className="bg-muted-purple">
           <button
             onClick={toggleSidebar}
-            className="px-4 py-2 bg-gray-500 text-white mb-4"
+            className="px-4 py-2 bg-dark-purple text-white mb-4"
           >
             {isSidebarOpen ? '=' : '='}
           </button>
         </div>
 
         {/* 메인 콘텐츠 */}
-        <div className="flex-1 pt-0 p-6 bg-gray-200">
+        <div className="flex-1 pt-0 p-6 bg-purple-100">
           <div>
             {/* 네브 바 */}
-            <div className="bg-gray-200 text-white flex justify-between mx-auto mt-0 pb-3">
-              <div className="flex justify-center w-full">
-                <button className="px-3 py-1 bg-gray-600 cursor-pointer" onClick={goToStudyMainPage}>메인</button>
-                <button className="px-3 py-1 bg-gray-600 cursor-pointer" onClick={goToSchedulePage}>캘린더</button>
-                <button className="px-3 py-1 bg-gray-600 cursor-pointer" onClick={goToDocumentPage}>문서함</button>
-                <button className="px-3 py-1 bg-gray-600 cursor-pointer" onClick={goToStudyArticlePage}>게시판</button>
-                <button className="px-3 py-1 bg-gray-600 cursor-pointer" onClick={goToSettingPage}>설정</button>
-              </div>
-            </div>
+            <Navbar />
           </div>
 
           {/* 선택된 스터디 정보 */}
@@ -123,7 +108,7 @@ const goToStudyArticleDetailPage = () => {
           {/* 글작성 */}
           <div className="mb-2 flex justify-end">
             <button
-              className="px-1 py-1 bg-black text-white font-semibold cursor-pointer rounded"
+              className="px-1 py-1 bg-dark-purple text-white font-semibold cursor-pointer rounded"
               onClick={goToStudyEditPage}
             >
               글작성
@@ -149,7 +134,7 @@ const goToStudyArticleDetailPage = () => {
           
           <div className="flex justify-end">
                 <button
-                  className="px-1 py-1 bg-black text-white font-semibold cursor-pointer rounded mt-2"
+                  className="px-1 py-1 bg-dark-purple text-white font-semibold cursor-pointer rounded mt-2"
                   onClick={handleExitClick}
                 >
                   탈퇴

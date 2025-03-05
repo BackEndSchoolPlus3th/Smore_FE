@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 
 const getCookie = (name: string) => {
     const matches = document.cookie.match(
