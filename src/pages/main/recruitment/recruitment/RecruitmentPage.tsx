@@ -5,6 +5,7 @@ import { FaRegHeart, FaHeart, FaSpinner } from 'react-icons/fa';
 import debounce from 'lodash/debounce';
 import { apiClient } from '../../../../shared';
 import { RecruitmentArticleClip } from '../../../../features';
+
 interface RecruitmentContentsProps {
     id: number;
     title: string;
@@ -24,10 +25,19 @@ interface RecruitmentContentsProps {
     writerProfileImageUrl?: string;
 }
 
+interface CommentProps {
+    id: number;
+    content: string;
+    writerName: string;
+    createdDate: string;
+}
+
 const RecuitmentContentPage: React.FC = () => {
     const { recruitmentId } = useParams<{ recruitmentId: string }>();
     const [recruitmentContent, setRecruitmentContent] =
         useState<RecruitmentContentsProps>({} as RecruitmentContentsProps);
+    const [comments, setComments] = useState<CommentProps[]>([]);
+    const [newComment, setNewComment] = useState('');
     const [isProcessing, setIsProcessing] = useState(false);
     const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
 
@@ -51,48 +61,126 @@ const RecuitmentContentPage: React.FC = () => {
         }
     };
 
-    useEffect(() => {
-        fetchRecruitmentContent();
-    }, [recruitmentId]);
+    // 댓글 목록 조회
+    const fetchComments = async () => {
+        try {
+            const response = await apiClient.get(
+                `/v1/recruitmentArticles/${recruitmentId}/comments`
+            );
+            setComments(response.data);
+        } catch (error) {
+            console.error('댓글 조회 에러:', error);
+        }
+    };
+
+    // 댓글 작성
+    const handleCommentSubmit = async () => {
+        if (!newComment.trim()) return;
+
+        try {
+            setIsProcessing(true);
+            await apiClient.post(
+                `/v1/recruitmentArticles/${recruitmentId}/comments`,
+                { content: newComment }
+            );
+            setNewComment('');
+            fetchComments();
+        } catch (error) {
+            console.error('댓글 작성 에러:', error);
+        } finally {
+            setIsProcessing(false);
+        }
+    };
 
     useEffect(() => {
-        // API로부터 모집글 데이터를 가져온다.
-        // setRecruitmentContent(response.data);
-        setRecruitmentContent({
-            id: 0,
-            title: '',
-            content: '',
-            introduction: '',
-            region: '',
-            imageUrls: '',
-            startDate: '',
-            endDate: '',
-            isRecruiting: false,
-            createdDate: '',
-            maxMember: 0,
-            hashTags: '',
-            clipCount: 0,
-            clipped: false,
-            writerName: '',
-            writerProfileImageUrl: '',
-        });
+        fetchRecruitmentContent();
+        fetchComments();
+        setComments([
+            {
+                id: 1,
+                content: '댓글 내용1',
+                writerName: '작성자1',
+                createdDate: '2021-10-10',
+            },
+            {
+                id: 2,
+                content: '댓글 내용2',
+                writerName: '작성자2',
+                createdDate: '2021-10-11',
+            },
+            {
+                id: 3,
+                content: '댓글 내용3',
+                writerName: '작성자3',
+                createdDate: '2021-10-12',
+            },
+            {
+                id: 4,
+                content: '댓글 내용4',
+                writerName: '작성자4',
+                createdDate: '2021-10-13',
+            },
+            {
+                id: 5,
+                content: '댓글 내용5',
+                writerName: '작성자5',
+                createdDate: '2021-10-14',
+            },
+        ]);
     }, [recruitmentId]);
 
     return (
-        <div className="flex flex-col lg:flex-row gap-8 p-4 h-full">
+        <div className="flex flex-col lg:flex-row gap-8 p-4 min-h-223">
             {isLoading ? (
                 <div className="flex justify-center items-center w-full h-full">
                     <FaSpinner className="text-blue-500 text-5xl animate-spin" />
                 </div>
             ) : (
                 <>
-                    {/** 찜하기 버튼 */}
                     <div className="lg:w-1/4 flex flex-col items-center gap-4">
-                        <RecruitmentArticleClip
-                            articleId={recruitmentContent.id}
-                            initialClipCount={recruitmentContent.clipCount}
-                            initialIsClipped={recruitmentContent.clipped}
-                        />
+                        {/** 댓글 섹션 */}
+                        <div className="sticky top-60 flex flex-col gap-4 border-2 border-gray-300 rounded-lg p-6 w-full shadow-lg bg-white h-110">
+                            <h2 className="text-2xl font-bold text-gray-900 mb-1 border-b border-gray-200 pb-1">
+                                댓글 목록
+                            </h2>
+                            <div className="flex flex-col justify-between h-96 overflow-y-auto">
+                                <div className="flex flex-col gap-4 max-h-full h-full overflow-y-auto">
+                                    {comments.map((comment) => (
+                                        <div
+                                            key={comment.id}
+                                            className="border-b border-gray-200 pb-4"
+                                        >
+                                            <p className="text-gray-700">
+                                                {comment.content}
+                                            </p>
+                                            <p className="text-sm text-gray-500">
+                                                {comment.writerName} -{' '}
+                                                {new Date(
+                                                    comment.createdDate
+                                                ).toLocaleDateString()}
+                                            </p>
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className="flex flex-row gap-4 mt-4 w-full items-center justify-center">
+                                    <input
+                                        className="w-full border border-gray-300 rounded-lg p-2"
+                                        value={newComment}
+                                        onChange={(e) =>
+                                            setNewComment(e.target.value)
+                                        }
+                                        placeholder="댓글을 작성하세요..."
+                                    />
+                                    <button
+                                        className="w-40 bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 font-bold"
+                                        onClick={handleCommentSubmit}
+                                        disabled={isProcessing}
+                                    >
+                                        댓글 작성
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     {/** 모집글 상세 페이지 */}
                     <div className="lg:w-2/4 flex flex-col items-center gap-8 p-6 bg-white rounded-lg shadow-lg">
@@ -137,6 +225,18 @@ const RecuitmentContentPage: React.FC = () => {
                     <div className="lg:w-1/4 flex flex-col items-center gap-4">
                         {/** 기타정보, 지원 버튼 박스 */}
                         <div className="sticky top-60 flex flex-col gap-4 border-2 border-gray-300 rounded-lg p-6 w-full shadow-lg bg-white">
+                            {/** 찜하기 버튼 */}
+                            <div className="flex flex-row w-full justify-center">
+                                <RecruitmentArticleClip
+                                    articleId={recruitmentContent.id}
+                                    initialClipCount={
+                                        recruitmentContent.clipCount
+                                    }
+                                    initialIsClipped={
+                                        recruitmentContent.clipped
+                                    }
+                                />
+                            </div>
                             {/** 해시태그 */}
                             <div className="flex flex-wrap gap-2">
                                 {recruitmentContent?.hashTags &&
