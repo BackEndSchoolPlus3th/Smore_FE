@@ -1,8 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { MarkdownRenderer } from '../../../../shared';
-import { FaRegHeart, FaHeart, FaSpinner } from 'react-icons/fa';
-import debounce from 'lodash/debounce';
+import { FaSpinner } from 'react-icons/fa';
 import { apiClient } from '../../../../shared';
 import { RecruitmentArticleClip } from '../../../../features';
 
@@ -27,7 +26,7 @@ interface RecruitmentContentsProps {
 
 interface CommentProps {
     id: number;
-    content: string;
+    comment: string;
     writerName: string;
     createdDate: string;
 }
@@ -65,7 +64,12 @@ const RecuitmentContentPage: React.FC = () => {
     const fetchComments = async () => {
         try {
             const response = await apiClient.get(
-                `/v1/recruitmentArticles/${recruitmentId}/comments`
+                `/v1/recruitmentArticles/${recruitmentId}/comments`,
+                {
+                    params: {
+                        recruitmentArticleId: recruitmentId,
+                    },
+                }
             );
             setComments(response.data);
         } catch (error) {
@@ -81,7 +85,7 @@ const RecuitmentContentPage: React.FC = () => {
             setIsProcessing(true);
             await apiClient.post(
                 `/v1/recruitmentArticles/${recruitmentId}/comments`,
-                { content: newComment }
+                { comment: newComment }
             );
             setNewComment('');
             fetchComments();
@@ -95,38 +99,6 @@ const RecuitmentContentPage: React.FC = () => {
     useEffect(() => {
         fetchRecruitmentContent();
         fetchComments();
-        setComments([
-            {
-                id: 1,
-                content: '댓글 내용1',
-                writerName: '작성자1',
-                createdDate: '2021-10-10',
-            },
-            {
-                id: 2,
-                content: '댓글 내용2',
-                writerName: '작성자2',
-                createdDate: '2021-10-11',
-            },
-            {
-                id: 3,
-                content: '댓글 내용3',
-                writerName: '작성자3',
-                createdDate: '2021-10-12',
-            },
-            {
-                id: 4,
-                content: '댓글 내용4',
-                writerName: '작성자4',
-                createdDate: '2021-10-13',
-            },
-            {
-                id: 5,
-                content: '댓글 내용5',
-                writerName: '작성자5',
-                createdDate: '2021-10-14',
-            },
-        ]);
     }, [recruitmentId]);
 
     return (
@@ -151,7 +123,7 @@ const RecuitmentContentPage: React.FC = () => {
                                             className="border-b border-gray-200 pb-4"
                                         >
                                             <p className="text-gray-700">
-                                                {comment.content}
+                                                {comment.comment}
                                             </p>
                                             <p className="text-sm text-gray-500">
                                                 {comment.writerName} -{' '}
@@ -176,7 +148,7 @@ const RecuitmentContentPage: React.FC = () => {
                                         onClick={handleCommentSubmit}
                                         disabled={isProcessing}
                                     >
-                                        댓글 작성
+                                        작성
                                     </button>
                                 </div>
                             </div>

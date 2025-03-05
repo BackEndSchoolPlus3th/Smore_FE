@@ -73,7 +73,6 @@ apiClient.interceptors.response.use(
     },
     async (error) => {
         const originalRequest = error.config;
-        const navigate = useNavigate();
 
         // 401 에러이고 refreshToken이 존재할 경우 토큰 재발급 시도
         if (error.response?.status === 401 && !originalRequest._retry) {
