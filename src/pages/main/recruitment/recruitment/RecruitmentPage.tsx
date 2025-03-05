@@ -40,6 +40,18 @@ const RecuitmentContentPage: React.FC = () => {
     const [isProcessing, setIsProcessing] = useState(false);
     const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
 
+    const fetchApply = async () => {
+        try {
+            setIsProcessing(true);
+            const response = await apiClient.post(
+                `/v1/recruitmentArticles/${recruitmentId}/apply`
+            );
+            alert('지원이 완료되었습니다.');
+        } catch (error) {
+            console.error('지원 에러:', error);
+        }
+    };
+
     // 모집글 상세조회
     const fetchRecruitmentContent = async () => {
         try {
@@ -269,6 +281,7 @@ const RecuitmentContentPage: React.FC = () => {
                                               ) < new Date()
                                             : false)
                                     }
+                                    onClick={fetchApply}
                                 >
                                     지원하기
                                 </button>
