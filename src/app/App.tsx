@@ -17,9 +17,11 @@ import {
     NewRecruitmentPage,
 } from '../pages';
 import { Header } from '../widgets';
+import { SSEProvider } from "../shared/sse/SSEProvider.jsx";
 
 function App() {
     return (
+        <SSEProvider>
         <Router>
             <div className="App">
                 <Header />
@@ -65,6 +67,7 @@ function App() {
                 </Routes>
             </div>
         </Router>
+        </SSEProvider>
     );
 }
 

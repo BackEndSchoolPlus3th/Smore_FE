@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from 'axios';
 import "./LoginPage.css"; // CSS 파일을 따로 관리
 import { apiClient } from "../../shared";
 const LoginPage = () => {
   const [email, setEmail] = useState(""); // 이메일 상태
   const [password, setPassword] = useState(""); // 비밀번호 상태
+ 
 
   // 이메일 입력 변경 핸들러
   const handleEmailChange = (e) => {
@@ -22,7 +23,7 @@ const LoginPage = () => {
     console.log(email," ",password);
     try {
       const response = await axios.post(
-        "http://localhost:8090/api/member/login",
+        import.meta.env.VITE_API_BASE_URL + "/api/member/login",
         {
           email,
           password

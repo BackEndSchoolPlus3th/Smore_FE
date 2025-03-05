@@ -33,6 +33,7 @@ const AlarmPage: React.FC<AlarmPageProps> = ({ isOpen, onClose }) => {
             <div className="buttons">
               <button className="accept" onClick={handleClick}>수락</button>
               <button className="reject">거절</button>
+              <button className="reject">채팅</button>
             </div>
           </div>
           <div className="notification">
@@ -40,6 +41,7 @@ const AlarmPage: React.FC<AlarmPageProps> = ({ isOpen, onClose }) => {
             <div className="buttons">
               <button className="accept">수락</button>
               <button className="reject">거절</button>
+              <button className="reject">채팅</button>
             </div>
           </div>
           <div className="notification">사용자C님이 당신을 언급했습니다.</div>
