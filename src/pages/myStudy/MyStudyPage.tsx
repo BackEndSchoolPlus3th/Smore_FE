@@ -15,27 +15,12 @@ const MyStudyPage = () => {
     setIsSidebarOpen(prevState => !prevState);
   };
 
-  const goToStudyMainPage = () => {
-    navigate("/mystudy");
-};
-const goToSchedulePage = () => {
-    navigate("/mystudyschedule");
-};
-const goToDocumentPage = () => {
-    navigate("/document");
-};
-const goToStudyArticlePage = () => {
-    navigate("/study/:studyId/article");
-};
-const goToSettingPage = () => {
-    navigate("/studysetting");
-};
-const goToStudyEditPage = () => {
+  const goToStudyEditPage = () => {
     navigate("/studyedit");
-};
-const goToStudyArticleDetailPage = () => {
-  navigate("/studydetail");
-}
+  };
+  const goToStudyArticleDetailPage = () => {
+    navigate("/studydetail");
+  }
 
   const handleExitClick = () => {
     const userConfirmed = window.confirm("탈퇴하시겠습니까?");
@@ -45,11 +30,31 @@ const goToStudyArticleDetailPage = () => {
     }
   };
 
+  const token = localStorage.getItem("accessToken");
+
+  const fetchStudies = async () => {
+    try {
+        const response = await fetch("http://localhost:8090/api/study/my-studies", {
+            method: "GET",
+            headers: {
+                "Authorization": `${token}`,
+            },
+        });
+
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status}`);
+        }
+
+        const data = await response.json();
+    console.log("서버에서 반환된 데이터:", data); // 데이터 확인
+    setStudies(data);
+  } catch (error) {
+    console.error("스터디 목록 가져오기 실패:", error);
+  }
+};
+
   useEffect(() => {
-    fetch("/api/study/my-studies")
-      .then((response) => response.json())
-      .then((data) => setStudies(data))
-      .catch((error) => console.error("스터디 목록 가져오기 실패:", error));
+    fetchStudies();
   }, []);
 
   useEffect(() => {
@@ -131,15 +136,15 @@ const goToStudyArticleDetailPage = () => {
               <div className="text-center text-gray-500">게시글이 없습니다.</div>
             )}
           </div>
-          
+
           <div className="flex justify-end">
-                <button
-                  className="px-1 py-1 bg-dark-purple text-white font-semibold cursor-pointer rounded mt-2"
-                  onClick={handleExitClick}
-                >
-                  탈퇴
-                </button>
-              </div>
+            <button
+              className="px-1 py-1 bg-dark-purple text-white font-semibold cursor-pointer rounded mt-2"
+              onClick={handleExitClick}
+            >
+              탈퇴
+            </button>
+          </div>
         </div>
       </div>
     </div>

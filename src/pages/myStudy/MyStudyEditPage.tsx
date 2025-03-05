@@ -181,7 +181,7 @@ const MyStudyEditPage = () => {
                 )}
               </div>
 
-              {/* 업롤드 버튼 */}
+              {/* 업로드 버튼 */}
               <div className="flex justify-end">
                 <button
                   type="submit"
