@@ -22,7 +22,8 @@ export async function getToken(): Promise<string> {
         }
 
         const data = await response.json();
-        return data.token;
+
+        return data;
     } catch (error) {
         throw new Error(`Error fetching token: ${(error as Error).message}`);
     }
