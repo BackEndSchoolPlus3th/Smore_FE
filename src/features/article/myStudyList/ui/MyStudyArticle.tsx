@@ -1,18 +1,15 @@
 import React from 'react';
-import { RecruitmentArticleProps } from './RecruitmentArticleProb';
-import { FaHeart } from 'react-icons/fa6';
-import './RecruitmentArticleStyle.css';
-import { Link } from 'react-router-dom';
+import { MyStudyListArticleProps } from '../../../../entities';
 
-const RecruitmentArticle: React.FC<RecruitmentArticleProps> = ({
+const MyStudyArticle: React.FC<MyStudyListArticleProps> = ({
     title,
     introduction,
     thumbnailUrl,
-    writerName,
-    writerProfileImageUrl,
-    clipCount,
+    studyPosition,
     hashTags,
-}: RecruitmentArticleProps) => {
+    memberCnt,
+    registrationDate,
+}: MyStudyListArticleProps) => {
     return (
         <div className="RecruitmentArticleContainer w-full h-full flex flex-col justify-between">
             {/* 썸네일, 내용 */}
@@ -35,7 +32,7 @@ const RecruitmentArticle: React.FC<RecruitmentArticleProps> = ({
             <div>
                 {/* 해시태그 */}
                 <div className="flex flex-wrap gap-2 mt-4">
-                    {hashTags.split(',').map((hashTag, index) => (
+                    {hashTags?.split(',').map((hashTag, index) => (
                         <div
                             key={index}
                             className="px-2 py-1 bg-light-purple rounded-full text-sm"
@@ -44,26 +41,21 @@ const RecruitmentArticle: React.FC<RecruitmentArticleProps> = ({
                         </div>
                     ))}
                 </div>
-                {/* 작성자, 좋아요 */}
+                {/* 가입일, 인원 */}
                 <div className="flex justify-between items-center mt-4">
-                    {/* 작성자 */}
                     <div className="flex items-center space-x-2">
-                        <img
-                            src={writerProfileImageUrl}
-                            alt={writerName}
-                            className="w-8 h-8 rounded-full"
-                        />
-                        <div className="text-sm font-medium">{writerName}</div>
+                        <div className="text-sm font-medium">
+                            {registrationDate}
+                        </div>
+                        <div className="text-sm font-medium">
+                            인원 {memberCnt}명
+                        </div>
                     </div>
-                    {/* 좋아요 */}
-                    <div className="flex items-center space-x-2">
-                        <FaHeart color="red" />
-                        <div className="text-sm">{clipCount}</div>
-                    </div>
+                    <div className="text-sm font-medium">{studyPosition}</div>
                 </div>
             </div>
         </div>
     );
 };
 
-export default RecruitmentArticle;
+export default MyStudyArticle;

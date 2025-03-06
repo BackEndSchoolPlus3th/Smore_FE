@@ -20,3 +20,6 @@ export { default as VideoChatPage } from './videoChat/VideoChatPage';
 
 // 회원가입 페이지
 export { default as SignupPage } from './member/auth/signup/SignupPage';
+
+// 내 스터디 목록 페이지
+export { default as MyStudyListPage } from './main/myStudy/MyStudyListPage';
