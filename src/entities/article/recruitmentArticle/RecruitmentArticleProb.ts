@@ -8,5 +8,5 @@ export interface RecruitmentArticleProps {
     writerName: string;
     writerProfileImageUrl: string;
     clipCount: number;
-    hashTags: string;
+    hashTags: string | null;
 }

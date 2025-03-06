@@ -1,50 +1,31 @@
 import React, { useEffect, useState } from 'react';
-import { RecruitmentArticle, RecruitmentArticleProps } from '../../../entities';
-import './RecruitmentArticlesPageStyle.css';
+import '../../../shared/style/ArticleListPageStyle.css';
 import { PagingButton } from '../../../widgets';
-import { fetchMyStudyList } from '../../../features';
+import { fetchMyStudyList, MyStudyArticle } from '../../../features';
+import { MyStudyListArticleProps } from '../../../entities';
 import { Link } from 'react-router-dom';
 
 const pagesPerBlock = 10;
 
 const MyStudyListPage: React.FC = () => {
-    // 캐시: 블록 번호 => 게시글 배열
-    const [articlesCache, setArticlesCache] = useState<{
-        [key: number]: RecruitmentArticleProps[];
-    }>({});
-    // 현재 화면에 보여질 게시글들
+    // 전체 게시글을 저장
+    const [articles, setArticles] = useState<MyStudyListArticleProps[]>([]);
+    // 현재 페이지에 보여질 게시글들
     const [displayedArticles, setDisplayedArticles] = useState<
-        RecruitmentArticleProps[]
+        MyStudyListArticleProps[]
     >([]);
     const [page, setPage] = useState(1);
-    const [endPage, setEndPage] = useState(0);
-    const [pageSize, setPageSize] = useState(12);
-
+    const [pageSize] = useState(12);
+    // 현재 블록의 마지막 페이지 번호 (페이지 버튼에 사용)
+    const [endPage, setEndPage] = useState(1);
     const [isEndPage, setIsEndPage] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
-    // API 호출 함수 (한 블록 단위)
-    const fetchBlockArticles = async (page: number) => {
-        const block = Math.floor((page - 1) / pagesPerBlock);
+    // 전체 데이터를 한번만 가져오기
+    const fetchArticles = async () => {
         try {
-            const blockData: RecruitmentArticleProps[] = await fetchMyStudyList(
-                {
-                    page: page,
-                    size: pageSize,
-                }
-            );
-            // 캐시에 저장
-            setArticlesCache((prevCache) => ({
-                ...prevCache,
-                [block]: blockData,
-            }));
-            // 현재 페이지에 해당하는 데이터 슬라이싱
-            const startIndex = ((page - 1) % pagesPerBlock) * pageSize;
-            const slicedData = blockData.slice(
-                startIndex,
-                startIndex + pageSize
-            );
-            setDisplayedArticles(slicedData);
+            const data: MyStudyListArticleProps[] = await fetchMyStudyList();
+            setArticles(data);
             setIsLoading(false);
         } catch (error) {
             console.error('모집글 조회 에러:', error);
@@ -52,37 +33,41 @@ const MyStudyListPage: React.FC = () => {
         }
     };
 
-    // 페이지 변경 시 호출되는 함수
-    const handlePageChange = (page: number) => {
-        const newEndPage =
-            page - 1 - ((page - 1) % pagesPerBlock) + pagesPerBlock;
-        const newCurrentBlock = Math.floor((page - 1) / pagesPerBlock);
+    // 전체 게시글 수를 바탕으로 총 페이지 수 계산 (게시글이 없으면 최소 1페이지)
+    const totalPages = articles.length
+        ? Math.ceil(articles.length / pageSize)
+        : 1;
 
-        setPage(page);
-        setEndPage(newEndPage);
+    // 페이지 번호를 변경하고, 표시할 게시글과 페이징 블록 정보 업데이트
+    const handlePageChange = (newPage: number) => {
+        // newPage가 총 페이지 수 범위를 벗어나면 변경하지 않음
+        if (newPage < 1 || newPage > totalPages) return;
 
-        // 캐시에 데이터가 있으면 슬라이싱만 진행
-        if (articlesCache[newCurrentBlock]) {
-            const blockData = articlesCache[newCurrentBlock];
-            const startIndex = ((page - 1) % pagesPerBlock) * pageSize;
-            const slicedData = blockData.slice(
-                startIndex,
-                startIndex + pageSize
-            );
-            setDisplayedArticles(slicedData);
-            setIsLoading(false);
-        } else {
-            // 없으면 API 호출
-            setIsLoading(true);
-            fetchBlockArticles(page);
-        }
+        setPage(newPage);
+        // 현재 페이지가 속한 블록의 시작 페이지 번호
+        const blockStart =
+            Math.floor((newPage - 1) / pagesPerBlock) * pagesPerBlock + 1;
+        // 블록의 끝 페이지 번호는 총 페이지 수를 넘지 않도록 계산
+        const blockEnd = Math.min(blockStart + pagesPerBlock - 1, totalPages);
+        setEndPage(blockEnd);
+        setIsEndPage(newPage === totalPages);
+
+        // 현재 페이지에 해당하는 게시글 슬라이싱
+        const startIndex = (newPage - 1) * pageSize;
+        const slicedData = articles.slice(startIndex, startIndex + pageSize);
+        setDisplayedArticles(slicedData);
     };
 
     useEffect(() => {
-        // 검색 파라미터나 페이지가 변경되면 데이터 로드
-        handlePageChange(page);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [page]);
+        fetchArticles();
+    }, []);
+
+    // 게시글 데이터를 불러온 후 현재 페이지에 맞게 표시 업데이트
+    useEffect(() => {
+        if (articles.length > 0) {
+            handlePageChange(page);
+        }
+    }, [articles]);
 
     return (
         <div className="flex flex-col gap-4 w-full pb-4">
@@ -105,11 +90,15 @@ const MyStudyListPage: React.FC = () => {
                           ))
                         : displayedArticles.map((article) => (
                               <Link
-                                  to={`/recruitment/${article.id}`}
-                                  className="recruitment-article-card card bg-light-lavender p-4 bg-white shadow-lg rounded-lg w-80 min-w-80 h-110"
+                                  to={`/study/${article.id}`}
+                                  className={`recruitment-article-card card p-4 bg-white shadow-lg rounded-lg w-80 min-w-80 h-110 ${
+                                      article.studyPosition === 'LEADER'
+                                          ? 'bg-light-purple'
+                                          : 'bg-light-lavender'
+                                  }`}
                                   key={article.id}
                               >
-                                  <RecruitmentArticle {...article} />
+                                  <MyStudyArticle {...article} />
                               </Link>
                           ))}
                 </div>
@@ -117,7 +106,7 @@ const MyStudyListPage: React.FC = () => {
             {/* 페이지네이션 */}
             <div className="flex justify-center items-center w-full">
                 <PagingButton
-                    setPage={setPage}
+                    setPage={handlePageChange}
                     page={page}
                     endPage={endPage}
                     isEndPage={isEndPage}

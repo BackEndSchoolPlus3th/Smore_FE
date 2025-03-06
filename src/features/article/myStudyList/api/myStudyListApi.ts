@@ -1,17 +1,10 @@
 import { apiClient } from '../../../../shared';
-import { RecruitmentArticleProps } from '../../../../entities';
+import { MyStudyListArticleProps } from '../../../../entities';
 
-interface FetchRecruitmentArticlesParams {
-    page: number;
-    size: number;
-}
-
-export const fetchMyStudyList = async (
-    params: FetchRecruitmentArticlesParams
-): Promise<RecruitmentArticleProps[]> => {
-    const response = await apiClient.get('/api/v1/my-study', {
-        params,
-    });
+export const fetchMyStudyList = async (): Promise<
+    MyStudyListArticleProps[]
+> => {
+    const response = await apiClient.get('/api/v1/my-study');
     console.log('response.data::::', response.data);
     return response.data;
 };

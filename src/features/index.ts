@@ -20,3 +20,4 @@ export { default as SignupForm } from './auth/ui/SignupForm';
 
 // myStudyList
 export { fetchMyStudyList } from './article/myStudyList/api/myStudyListApi';
+export { default as MyStudyArticle } from './article/myStudyList/ui/MyStudyArticle';

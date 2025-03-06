@@ -3,3 +3,5 @@ export { default as RecruitmentArticle } from './article/recruitmentArticle/Recr
 
 // interface
 export type { RecruitmentArticleProps } from './article/recruitmentArticle/RecruitmentArticleProb';
+
+export type { MyStudyListArticleProps } from './article/myStudyList/MyStudyListArticleProps';

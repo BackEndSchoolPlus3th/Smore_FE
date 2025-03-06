@@ -3,7 +3,7 @@ import {
     RecruitmentArticle,
     RecruitmentArticleProps,
 } from '../../../../entities';
-import './RecruitmentArticlesPageStyle.css';
+import '../../../../shared/style/ArticleListPageStyle.css';
 import { PagingButton } from '../../../../widgets';
 import {
     RecruitmentArticleSearch,
