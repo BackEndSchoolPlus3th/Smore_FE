@@ -46,7 +46,7 @@ const RecuitmentContentPage: React.FC = () => {
             const response = await apiClient.post(
                 `/v1/recruitmentArticles/${recruitmentId}/apply`
             );
-            alert('지원이 완료되었습니다.');
+            if (response.status === 200) alert('지원이 완료되었습니다.');
         } catch (error) {
             console.error('지원 에러:', error);
         }
@@ -83,7 +83,11 @@ const RecuitmentContentPage: React.FC = () => {
                     },
                 }
             );
-            setComments(response.data);
+            console.log('댓글 목록 조회 response.data::::', response);
+            if (response.data) {
+                console.log('댓글 목록 조회 response.data::::', response.data);
+                setComments(response.data);
+            }
         } catch (error) {
             console.error('댓글 조회 에러:', error);
         }

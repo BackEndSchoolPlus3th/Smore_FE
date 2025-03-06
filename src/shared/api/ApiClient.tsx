@@ -71,12 +71,18 @@ apiClient.interceptors.response.use(
         }
 
         if (import.meta.env.DEV) {
+            console.log('response::::', response);
             console.log('data::::', response.data);
         }
-        return response.data;
+        return response;
     },
     async (error) => {
         const originalRequest = error.config;
+
+        if (import.meta.env.DEV) {
+            console.error('error::::', error);
+            console.error('error.response::::', error.response);
+        }
 
         // 401 에러이고 refreshToken이 존재할 경우 토큰 재발급 시도
         if (error.response?.status === 401 && !originalRequest._retry) {
@@ -111,48 +117,13 @@ apiClient.interceptors.response.use(
                 //window.location.href = '/login';
                 return Promise.reject(refreshError);
             }
+        } else if (error.response?.status === 409) {
+            // 중복 에러 발생 시 에러 메시지 반환
+            return error;
         }
-
-        // // 400번대 에러 발생 시 에러 페이지로 이동
-        // if (error.response?.status >= 400 && error.response?.status < 500) {
-        //     navigate('/error');
-        // }
 
         return Promise.reject(error);
     }
 );
-
-//,
-//     async (error) => {
-//         const originalRequest = error.config;
-//         const { resultCode, msg, data } = error.response.data;
-//         const statusCode = parseInt(resultCode);
-//         if (import.meta.env.DEV) {
-//             console.log(msg);
-//         }
-//         // 401 에러이고 refreshToken이 존재할 경우 토큰 재발급 시도
-//         if (error.response?.status === 401 && !originalRequest._retry) {
-//             originalRequest._retry = true;
-
-//             try {
-//                 const response = await refreshApiClient.post('/member/refresh');
-//                 const { accessToken } = response.headers["authorization"];
-
-//                 localStorage.setItem('accessToken', accessToken);
-//                 originalRequest.headers[
-//                     'authorization'
-//                 ] = `${accessToken}`;
-
-//                 return apiClient(originalRequest);
-//             } catch (refreshError) {
-//                 // 토큰 재발급 실패시 로그인 페이지로 이동
-//                // localStorage.removeItem('accessToken');
-//               //  window.location.href = '/login';
-//                 return Promise.reject(refreshError);
-//             }
-//         }
-
-//         return Promise.reject(error);
-//     },
 
 export default apiClient;

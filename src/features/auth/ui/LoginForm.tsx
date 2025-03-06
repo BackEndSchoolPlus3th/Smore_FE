@@ -13,9 +13,12 @@ const LoginForm = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const handleSubmit = (e: FormEvent) => {
-        e.preventDefault();
+    const handleLogin = () => {
         dispatch(login({ email, password }));
+    };
+
+    const handleSignup = () => {
+        navigate('/signup');
     };
 
     useEffect(() => {
@@ -30,7 +33,7 @@ const LoginForm = () => {
                 <h1 className="text-2xl font-bold text-center text-gray-900">
                     로그인
                 </h1>
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="space-y-6">
                     <div className="space-y-1">
                         <label
                             htmlFor="email"
@@ -71,8 +74,8 @@ const LoginForm = () => {
                         </p>
                     ) : (
                         <button
-                            type="submit"
-                            className="w-full px-4 py-2 text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                            onClick={handleLogin}
+                            className="w-full px-4 py-2 text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 cursor-pointer"
                         >
                             로그인
                         </button>
@@ -80,7 +83,13 @@ const LoginForm = () => {
                     {auth.error && (
                         <p className="text-center text-red-500">{auth.error}</p>
                     )}
-                </form>
+                    <button
+                        onClick={handleSignup}
+                        className="w-full px-4 py-2 text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 cursor-pointer"
+                    >
+                        회원가입
+                    </button>
+                </div>
             </div>
         </div>
     );
