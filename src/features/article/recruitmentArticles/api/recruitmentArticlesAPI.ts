@@ -14,7 +14,9 @@ interface FetchRecruitmentArticlesParams {
 export const fetchRecruitmentArticles = async (
     params: FetchRecruitmentArticlesParams
 ): Promise<RecruitmentArticleProps[]> => {
-    const response = await apiClient.get('/v1/recruitmentArticles', { params });
+    const response = await apiClient.get('/api/v1/recruitmentArticles', {
+        params,
+    });
     console.log('response.data::::', response.data);
     return response.data;
 };

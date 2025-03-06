@@ -12,7 +12,7 @@ const getCookie = (name: string) => {
 };
 
 const apiClient = axios.create({
-    baseURL: import.meta.env.VITE_API_BASE_URL + '/api',
+    baseURL: import.meta.env.VITE_API_BASE_URL,
     headers: {
         'Content-Type': 'application/json',
     },
@@ -20,7 +20,7 @@ const apiClient = axios.create({
 });
 
 const refreshApiClient = axios.create({
-    baseURL: import.meta.env.VITE_API_BASE_URL + '/api',
+    baseURL: import.meta.env.VITE_API_BASE_URL,
     headers: {
         'Content-Type': 'application/json',
     },
