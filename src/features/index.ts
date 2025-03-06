@@ -18,4 +18,5 @@ export { postRecruitmentArticle } from './article/recruitment/api/recruitmentSer
 // auth
 export { authReducer } from './auth/model/authSlice';
 export { default as LoginForm } from './auth/ui/LoginForm';
-export { useLogout } from './auth/model/logout';
+export { signup, useLogout } from './auth/api/authApi';
+export { default as SignupForm } from './auth/ui/SignupForm';

@@ -19,6 +19,7 @@ import {
     RecruitmentContentPage,
     NewRecruitmentPage,
     ErrorPage,
+    SignupPage,
 } from '../../pages';
 import { Header } from '../../widgets';
 import { SSEProvider } from '../../shared/sse/SSEProvider';
@@ -74,6 +75,7 @@ function App() {
                             element={<NewRecruitmentPage />}
                         />
                         <Route path="/login" element={<LoginPage />} />
+                        <Route path="/signup" element={<SignupPage />} />
 
                         <Route path="/error" element={<ErrorPage />} />
                     </Routes>
