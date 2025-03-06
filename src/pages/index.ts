@@ -16,3 +16,4 @@ export { default as NewRecruitmentPage } from './study/article/recruitment/NewRe
 
 // 에러 페이지
 export { default as ErrorPage } from './error/ErrorPage';
+export { default as VideoChatPage } from './videoChat/VideoChatPage';

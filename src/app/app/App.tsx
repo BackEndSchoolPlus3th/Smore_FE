@@ -19,6 +19,7 @@ import {
     RecruitmentContentPage,
     NewRecruitmentPage,
     ErrorPage,
+    VideoChatPage,
 } from '../../pages';
 import { Header } from '../../widgets';
 import { SSEProvider } from '../../shared/sse/SSEProvider';
