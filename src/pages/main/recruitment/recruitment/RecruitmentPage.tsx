@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { MarkdownRenderer } from '../../../../shared';
 import { FaSpinner } from 'react-icons/fa';
@@ -44,9 +44,9 @@ const RecuitmentContentPage: React.FC = () => {
         try {
             setIsProcessing(true);
             const response = await apiClient.post(
-                `/v1/recruitmentArticles/${recruitmentId}/apply`
+                `/api/v1/recruitmentArticles/${recruitmentId}/apply`
             );
-            alert('지원이 완료되었습니다.');
+            if (response.status === 200) alert('지원이 완료되었습니다.');
         } catch (error) {
             console.error('지원 에러:', error);
         }
@@ -57,7 +57,7 @@ const RecuitmentContentPage: React.FC = () => {
         try {
             setIsLoading(true); // 로딩 시작
             const response = await apiClient.get(
-                `/v1/recruitmentArticles/detail`,
+                `/api/v1/recruitmentArticles/detail`,
                 {
                     params: {
                         recruitmentArticleId: recruitmentId,
@@ -76,14 +76,18 @@ const RecuitmentContentPage: React.FC = () => {
     const fetchComments = async () => {
         try {
             const response = await apiClient.get(
-                `/v1/recruitmentArticles/${recruitmentId}/comments`,
+                `/api/v1/recruitmentArticles/${recruitmentId}/comments`,
                 {
                     params: {
                         recruitmentArticleId: recruitmentId,
                     },
                 }
             );
-            setComments(response.data);
+            console.log('댓글 목록 조회 response.data::::', response);
+            if (response.data) {
+                console.log('댓글 목록 조회 response.data::::', response.data);
+                setComments(response.data);
+            }
         } catch (error) {
             console.error('댓글 조회 에러:', error);
         }
@@ -96,7 +100,7 @@ const RecuitmentContentPage: React.FC = () => {
         try {
             setIsProcessing(true);
             await apiClient.post(
-                `/v1/recruitmentArticles/${recruitmentId}/comments`,
+                `/api/v1/recruitmentArticles/${recruitmentId}/comments`,
                 { comment: newComment }
             );
             setNewComment('');

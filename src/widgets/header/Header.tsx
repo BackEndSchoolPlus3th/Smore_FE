@@ -1,22 +1,26 @@
-// import React from "react";
+// src/components/Header.tsx
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import AlarmPage from '../../pages/alarm/AlarmPage.tsx';
+import { useSelector } from 'react-redux';
+import type { RootState } from '../../shared';
+import AlarmPage from '../../pages/alarm/AlarmPage';
 import { FaBell } from 'react-icons/fa';
+import { useLogout } from '../../features';
 
 const Header = () => {
     const navigate = useNavigate();
     const [isAlarm, setIsAlarm] = useState(false);
-    const goToMainPage = () => {
-        navigate('/');
+    const auth = useSelector((state: RootState) => state.auth);
+    const user = auth.user;
+
+    const logoutHandler = useLogout();
+
+    const goToStudyMainPage = () => {
+        navigate('/mystudy');
     };
 
     const goToChatPage = () => {
         navigate('/chat');
-    };
-
-    const goToStudyMainPage = () => {
-        navigate('/mystudy');
     };
 
     const goToLoginPage = () => {
@@ -29,7 +33,7 @@ const Header = () => {
                 <img
                     src="/logo_rectangle.png"
                     alt="logo"
-                    className="h-15 rounded rounded-lg"
+                    className="h-15 rounded-lg"
                 />
             </Link>
             <div className="flex items-center space-x-4">
@@ -50,14 +54,29 @@ const Header = () => {
                     color="yellow"
                     onClick={() => setIsAlarm(true)}
                 />
-
                 <AlarmPage isOpen={isAlarm} onClose={() => setIsAlarm(false)} />
-                <button
-                    className="px-4 py-2 bg-dark-purple text-white rounded cursor-pointer"
-                    onClick={goToLoginPage}
-                >
-                    로그인
-                </button>
+                {user ? (
+                    // 로그인 상태: 사용자 이름과 로그아웃 버튼 배치
+                    <div className="flex items-center space-x-2">
+                        <span className="text-lg font-semibold">
+                            {user.nickname}
+                        </span>
+                        <button
+                            className="px-3 py-1 bg-red-500 text-white rounded cursor-pointer"
+                            onClick={logoutHandler}
+                        >
+                            로그아웃
+                        </button>
+                    </div>
+                ) : (
+                    // 로그인되지 않은 경우: 로그인 버튼 표시
+                    <button
+                        className="px-4 py-2 bg-dark-purple text-white rounded cursor-pointer"
+                        onClick={goToLoginPage}
+                    >
+                        로그인
+                    </button>
+                )}
             </div>
         </div>
     );

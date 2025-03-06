@@ -22,6 +22,8 @@ const AddEventPage: React.FC<AddEventPageProps> = ({ onSubmit, onCancel }) => {
     onSubmit({ title, content, startdate, endDate, allDay });
   };
 
+  console.log("startdate", startdate);
+
   return (
     <div style={formStyle}>
       <h2>일정 추가하기</h2>
