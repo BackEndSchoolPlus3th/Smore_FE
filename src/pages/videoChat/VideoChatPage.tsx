@@ -44,8 +44,8 @@ function VideoChatPage() {
     const [localTrack, setLocalTrack] = useState<LocalVideoTrack | undefined>(undefined);
     const [remoteTracks, setRemoteTracks] = useState<TrackInfo[]>([]);
 
-    const participantName = 'Participant' + Math.floor(Math.random() * 100);
-    const roomName = 'Test Room';
+    const [participantName, setParticipantName] = useState('participantName');
+    const [roomName, setRoomName] = useState('Test Room');
 
     useEffect(() => {
         joinRoom();
@@ -70,8 +70,15 @@ function VideoChatPage() {
         });
 
         try {
-            const token = await getToken();
+            const data = await getToken();
+            const token = data.token;
+            const participantName = data.UserId;
+            const roomName = data.StudyTitle;
             console.log('Token:', token);
+
+            setParticipantName(participantName);
+            setRoomName(roomName);
+
             await room.connect(LIVEKIT_URL, token);
 
             await room.localParticipant.enableCameraAndMicrophone();
