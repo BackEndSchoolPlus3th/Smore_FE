@@ -1,44 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import Chat from '../../components/chat/Chat';
-import Sidebar from '../../components/chat/Sidebar';
-import Participants from '../../components/chat/Participants';
+import React from 'react';
+import Chat from '../../components/chat/Chat'; // 채팅 메시지 컴포넌트
+import Sidebar from '../../components/chat/Sidebar'; // 왼쪽 사이드바
+import Participants from '../../components/chat/Participants'; // 오른쪽 참여자 목록
 
 const ChatPage: React.FC = () => {
-    const [messages, setMessages] = useState<any[]>([]);
-
-    useEffect(() => {
-        axios.get('http://localhost:8080/api/chat/messages', { withCredentials: true })
-            .then(response => setMessages(response.data))
-            .catch(error => console.error('채팅 메시지를 불러오는 중 오류 발생:', error));
-
-        const socket = new WebSocket('ws://localhost:8080/ws/chat');
-        socket.onmessage = (event) => {
-            const newMessage = JSON.parse(event.data);
-            setMessages(prevMessages => [...prevMessages, newMessage]);
-        };
-
-        return () => socket.close();
-    }, []);
-
-    const sendMessage = async (message: string) => {
-        try {
-            const response = await axios.post('http://localhost:8080/api/chat/send',
-                { content: message }, { withCredentials: true }
-            );
-            setMessages(prevMessages => [...prevMessages, response.data]);
-        } catch (error) {
-            console.error('메시지 전송 중 오류 발생:', error);
-        }
-    };
-
     return (
         <div className="flex h-screen">
+            {/* 왼쪽 사이드바 (스터디 목록) */}
             <Sidebar />
+
+            {/* 중앙 채팅 영역 */}
             <div className="flex-1 flex flex-col bg-muted-purple">
                 <h1 className="p-4 text-lg font-bold">채팅방</h1>
-                <Chat messages={messages} sendMessage={sendMessage} />
+                <Chat />
             </div>
+
+            {/* 오른쪽 참여자 목록 */}
             <Participants />
         </div>
     );
