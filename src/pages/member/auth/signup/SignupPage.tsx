@@ -40,7 +40,8 @@ const SignupPage: React.FC = () => {
 
         try {
             const response = await signup(form);
-            if (response.resultCode == '409') {
+            console.log('response::::', response);
+            if (response.status == 409) {
                 setError({ email: '이미 가입된 이메일입니다.' });
                 setIsSubmitting(false);
                 return;
