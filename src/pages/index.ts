@@ -10,4 +10,10 @@ export { default as MyStudyDocumentPage } from './myStudy/MyStudyDocumentPage';
 export { default as MyStudyArticlePage } from './myStudy/MyStudyArticlePage';
 export { default as MyStudySettingPage } from './myStudy/MyStudySettingPage';
 export { default as RecruitmentContentPage } from './main/recruitment/recruitment/RecruitmentPage';
+
+// 새 소개 작성 페이지
+export { default as NewRecruitmentPage } from './study/article/recruitment/NewRecruitmentPage';
+
+// 에러 페이지
+export { default as ErrorPage } from './error/ErrorPage';
 export { default as VideoChatPage } from './videoChat/VideoChatPage';

@@ -1,0 +1,71 @@
+/* 마크다운 에디터 스크롤바 스타일 */
+textarea::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+}
+
+textarea::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+textarea::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+    border: 3px solid #f1f1f1;
+}
+
+textarea::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* 미리보기 영역 스크롤바 스타일 */
+.markdown-preview::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+}
+
+.markdown-preview::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.markdown-preview::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+    border: 3px solid #f1f1f1;
+}
+
+.markdown-preview::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+@keyframes slide-up {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slide-down {
+    from {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+}
+
+.modal-slide-up {
+    animation: slide-up 0.3s ease-out;
+}
+
+.modal-slide-down {
+    animation: slide-down 0.3s ease-out;
+}

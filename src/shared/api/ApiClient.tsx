@@ -1,7 +1,6 @@
-import axios, { AxiosResponse } from 'axios';
-import { ApiResponse } from './ApiResponse';
+import axios from 'axios';
 
-const getCookie = (name: any) => {
+const getCookie = (name: string) => {
     const matches = document.cookie.match(
         new RegExp(
             '(?:^|; )' +
@@ -65,7 +64,17 @@ refreshApiClient.interceptors.request.use(
     }
 );
 apiClient.interceptors.response.use(
-    (response) => response,
+    (response) => {
+        const accessToken = response.headers['authorization'];
+        if (accessToken) {
+            localStorage.setItem('accessToken', accessToken);
+        }
+
+        if (import.meta.env.DEV) {
+            console.log('data::::', response.data);
+        }
+        return response.data;
+    },
     async (error) => {
         const originalRequest = error.config;
 
@@ -74,27 +83,26 @@ apiClient.interceptors.response.use(
             originalRequest._retry = true;
 
             try {
-                const presentAccessToken = localStorage.getItem("accessToken");
-               // const presentRefreshToken = getCookie('refreshToken');
+                const presentAccessToken = localStorage.getItem('accessToken');
+                // const presentRefreshToken = getCookie('refreshToken');
                 const response = await axios.post(
-                    "http://localhost:8090/api/member/refresh",
+                    'http://localhost:8090/api/member/refresh',
                     {
-                        presentAccessToken
+                        presentAccessToken,
                     },
                     {
-                      withCredentials: true, // 쿠키 포함
+                        withCredentials: true, // 쿠키 포함
                     }
-                  );
-                  const accessToken = response.headers["authorization"];
-                  if(accessToken){
-                    localStorage.setItem("accessToken", accessToken);
-                  }
+                );
+                const accessToken = response.headers['authorization'];
+                if (accessToken) {
+                    localStorage.setItem('accessToken', accessToken);
+                }
                 console.log(response);
                 localStorage.setItem('accessToken', accessToken);
-                
-                originalRequest.headers[
-                    'Authorization'
-                ] = `Bearer ${accessToken}`;
+
+                originalRequest.headers['Authorization'] =
+                    `Bearer ${accessToken}`;
 
                 return refreshApiClient(originalRequest);
             } catch (refreshError) {
@@ -105,8 +113,14 @@ apiClient.interceptors.response.use(
             }
         }
 
+        // // 400번대 에러 발생 시 에러 페이지로 이동
+        // if (error.response?.status >= 400 && error.response?.status < 500) {
+        //     navigate('/error');
+        // }
+
         return Promise.reject(error);
-    });
+    }
+);
 
 //,
 //     async (error) => {

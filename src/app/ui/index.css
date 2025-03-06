@@ -1,14 +1,5 @@
 @import 'tailwindcss';
 
-/* 기본 레이아웃 */
-#root {
-    background-color: #fbfbfb;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-}
-
 /* 배경 색상 정의 */
 .bg-light-gray {
     background-color: #fbfbfb; /* 기본 밝은 배경 */
