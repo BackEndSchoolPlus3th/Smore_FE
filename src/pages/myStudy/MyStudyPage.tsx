@@ -53,13 +53,42 @@ const MyStudyPage = () => {
   }
 };
 
+const fetchStudyDetails = async (study_Id) => {
+  if (!study_Id) {
+    console.error("study_Id가 undefined입니다.");
+    return;
+  }
+  
+  try {
+    const response = await fetch(`http://localhost:8090/api/study/${study_Id}`, {
+      method: "GET",
+      headers: {
+        "Authorization": `${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("스터디 상세 정보 가져오기 실패");
+    }
+
+    const data = await response.json();
+    setSelectedStudy(prevState => ({
+      ...prevState,
+      introduction: data.introduction,
+      hashTags: data.hashTags
+    }));
+  } catch (error) {
+    console.error("스터디 상세 정보 가져오기 실패:", error);
+  }
+};
+
   useEffect(() => {
     fetchStudies();
   }, []);
 
   useEffect(() => {
     if (selectedStudy) {
-      fetch(`/api/study/${selectedStudy.id}/articles`)
+      fetch(`http:///localhost:8090/api/study/${selectedStudy.id}/articles`)
         .then((response) => response.json())
         .then((data) => setArticles(data))
         .catch((error) => console.error("게시글 가져오기 실패:", error));
@@ -67,7 +96,13 @@ const MyStudyPage = () => {
   }, [selectedStudy]);
 
   const handleStudySelect = (study) => {
-    setSelectedStudy(study);
+    if (study && study.id) {
+      console.log("선택된 스터디 ID:", study.id);  // 선택된 study.id 확인
+      setSelectedStudy(study);
+      fetchStudyDetails(study.id);  // study_Id 사용
+    } else {
+      console.error("선택된 스터디에 id가 없습니다.");
+    }
   };
 
   return (
@@ -105,7 +140,7 @@ const MyStudyPage = () => {
               <div className="pl-10">
                 <div className="text-xl font-bold pb-5">{selectedStudy.title}</div>
                 <div className="text-sm text-gray-700 pb-5">{selectedStudy.introduction}</div>
-                <div className="text-sm text-gray-700">{selectedStudy.hashTags}</div>
+                <div className="text-sm text-gray-700">{selectedStudy.hashTags && selectedStudy.hashTags.join(", ")}</div>
               </div>
             </div>
           )}

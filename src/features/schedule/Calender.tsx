@@ -25,9 +25,8 @@ const Calender: React.FC = () => {
         const fetchData = async () => {
             try {
               const response = await apiClient.get(
-                `/v1/study/${studyId}/schedules`
+                `/api/v1/study/${studyId}/schedules`
             );
-              console.log('response', response);
                 console.log('response', response);
 
                 // FullCalendar에서 사용할 형식으로 변환
@@ -132,7 +131,7 @@ const Calender: React.FC = () => {
 
         // 서버로 저장 요청
         try {
-            const response = await apiClient.post(`/v1/study/${studyId}/schedules`, {
+            const response = await apiClient.post(`/api/v1/study/${studyId}/schedules`, {
                 title: event.title,
                 startDate: event.startdate,
                 endDate: event.endDate || event.startdate, // endDate가 없을 경우 startdate로 설정
@@ -143,7 +142,7 @@ const Calender: React.FC = () => {
             console.log('서버 응답:', response);
 
             // 서버에서 일정 목록 다시 조회
-            const newEvent = await apiClient.get(`/v1/study/${studyId}/schedules`);
+            const newEvent = await apiClient.get(`/api/v1/study/${studyId}/schedules`);
             console.log('newEvent', newEvent);
 
             const formattedEvents = newEvent.data.map((event: any) => ({
@@ -171,7 +170,7 @@ const Calender: React.FC = () => {
 
         if (window.confirm('정말 삭제하시겠습니까?')) {
             try {
-                await apiClient.delete(`/v1/study/${studyId}/schedules`, {
+                await apiClient.delete(`/api/v1/study/${studyId}/schedules`, {
                     data: {
                         id: selectedEvent.id,
                     },
@@ -234,7 +233,9 @@ const Calender: React.FC = () => {
 
            
             // 서버에 put 요청
-            await apiClient.put(`/v1/study/${studyId}/schedules`, {
+
+            await apiClient.put(`/api/v1/study/${studyId}/schedules`, {
+
                 id: selectedEvent.id,
                 title: updatedEvent.title || selectedEvent.title,
                 startDate: startDateTime,
