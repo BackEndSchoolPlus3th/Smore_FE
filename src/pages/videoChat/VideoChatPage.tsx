@@ -72,7 +72,7 @@ function VideoChatPage() {
         try {
             const data = await getToken();
             const token = data.token;
-            const participantName = data.UserId;
+            const participantName = data.UserEmail;
             const roomName = data.StudyTitle;
             console.log('Token:', token);
 
