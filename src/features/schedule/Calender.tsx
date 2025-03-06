@@ -28,7 +28,7 @@ const Calender: React.FC = () => {
                 console.log('response', response);
 
                 // FullCalendar에서 사용할 형식으로 변환
-                const formattedEvents = response.data.map((event: any) => ({
+                const formattedEvents = response.data.data.map((event: any) => ({
                     id: event.id,
                     title: event.title,
                     start: event.startDate,
