@@ -13,3 +13,6 @@ export type { SignupFormValues, SignupError } from './types/auth';
 // components
 export { default as Button } from './components/Button';
 export { default as Input } from './components/Input';
+
+// options
+export { regionOptions } from './options/RegionOptions';
