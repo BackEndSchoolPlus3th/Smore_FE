@@ -19,14 +19,14 @@ const Calender: React.FC = () => {
     const [selectedEvent, setSelectedEvent] = useState<EventApi | null>(null); // EventApi 타입으로 변경
     const [calendar, setCalendar] = useState<Calendar | null>(null);
     const [events, setEvents] = useState([]);
+    const [studyId, setStudyId] = useState<number>(1);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await apiClient.get(
-                    '/api/v1/study/1/schedules'
-                );
-
+              const response = await apiClient.get(
+                `/api/v1/study/${studyId}/schedules`
+            );
                 console.log('response', response);
 
                 // FullCalendar에서 사용할 형식으로 변환
@@ -90,7 +90,7 @@ const Calender: React.FC = () => {
             newCalendar.render();
             setCalendar(newCalendar);
         }
-    }, []);
+    }, [studyId]);
 
     // events 상태값이 변경될 때마다 FullCalendar에 반영
     useEffect(() => {
@@ -131,7 +131,7 @@ const Calender: React.FC = () => {
 
         // 서버로 저장 요청
         try {
-            const response = await apiClient.post('/api/v1/study/1/schedules', {
+            const response = await apiClient.post(`/api/v1/study/${studyId}/schedules`, {
                 title: event.title,
                 startDate: event.startdate,
                 endDate: event.endDate || event.startdate, // endDate가 없을 경우 startdate로 설정
@@ -142,7 +142,7 @@ const Calender: React.FC = () => {
             console.log('서버 응답:', response);
 
             // 서버에서 일정 목록 다시 조회
-            const newEvent = await apiClient.get('/api/v1/study/1/schedules');
+            const newEvent = await apiClient.get(`/api/v1/study/${studyId}/schedules`);
             console.log('newEvent', newEvent);
 
             const formattedEvents = newEvent.data.map((event: any) => ({
@@ -170,7 +170,7 @@ const Calender: React.FC = () => {
 
         if (window.confirm('정말 삭제하시겠습니까?')) {
             try {
-                await apiClient.delete(`/api/v1/study/1/schedules`, {
+                await apiClient.delete(`/api/v1/study/${studyId}/schedules`, {
                     data: {
                         id: selectedEvent.id,
                     },
@@ -200,7 +200,7 @@ const Calender: React.FC = () => {
     const handleUpdateEvent = async (updatedEvent: {
         title: string;
         content?: string;
-        startdate: string;
+        startDate: string;
         endDate?: string;
         allDay?: boolean;
     }) => {
@@ -208,18 +208,21 @@ const Calender: React.FC = () => {
             selectedEvent.setProp('title', updatedEvent.title);
             selectedEvent.setExtendedProp('content', updatedEvent.content);
 
-            let startDateTime = updatedEvent.startdate;
+            let startDateTime = updatedEvent.startDate;
             let endDateTime = updatedEvent.endDate ?? null;
+            console.log("startDateTime: " + updatedEvent.startDate);
 
             if (selectedEvent.allDay) {
                 startDateTime = moment(startDateTime).format('YYYY-MM-DD');
+                console.log("startDateTime: " + startDateTime);
                 endDateTime = endDateTime
                     ? moment(endDateTime).format('YYYY-MM-DD')
                     : null;
             } else {
                 startDateTime = moment(startDateTime).format(
                     'YYYY-MM-DDTHH:mm:ss'
-                );
+                )
+                console.log("startDateTime: " + startDateTime);
                 endDateTime = endDateTime
                     ? moment(endDateTime).format('YYYY-MM-DDTHH:mm:ss')
                     : null;
@@ -228,43 +231,11 @@ const Calender: React.FC = () => {
             selectedEvent.setStart(startDateTime);
             selectedEvent.setEnd(endDateTime);
 
-            console.log('New Event:', selectedEvent);
-            console.log(
-                'Type of id:',
-                typeof selectedEvent.id,
-                selectedEvent.id
-            );
-            console.log(
-                'Type of title:',
-                typeof selectedEvent.title,
-                selectedEvent.title
-            );
-            console.log(
-                'Type of start:',
-                typeof selectedEvent.start,
-                selectedEvent.start
-            );
-            console.log(
-                'Type of end:',
-                typeof selectedEvent.end,
-                selectedEvent.end
-            );
-
-            console.log('Type of start:', typeof startDateTime, startDateTime);
-            console.log('Type of end:', typeof endDateTime, endDateTime);
-            console.log(
-                'Type of allDay:',
-                typeof selectedEvent.allDay,
-                selectedEvent.allDay
-            );
-            console.log(
-                'Type of content:',
-                typeof selectedEvent.extendedProps.content,
-                selectedEvent.extendedProps.content
-            );
-
+           
             // 서버에 put 요청
-            await apiClient.put(`/api/v1/study/1/schedules`, {
+
+            await apiClient.put(`/api/v1/study/${studyId}/schedules`, {
+
                 id: selectedEvent.id,
                 title: updatedEvent.title || selectedEvent.title,
                 startDate: startDateTime,
