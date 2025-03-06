@@ -10,6 +10,7 @@ import {
 import './VideoChatPage.css';
 import VideoComponent from '../../components/livekit/VideoComponent';
 import AudioComponent from '../../components/livekit/AudioComponent';
+import { getToken } from "../../features/videoChat/getToken";
 
 type TrackInfo = {
     trackPublication: RemoteTrackPublication;
@@ -69,7 +70,7 @@ function VideoChatPage() {
         });
 
         try {
-            const token = await getToken(roomName, participantName);
+            const token = await getToken();
             console.log('Token:', token);
             await room.connect(LIVEKIT_URL, token);
 
@@ -88,26 +89,7 @@ function VideoChatPage() {
         setRemoteTracks([]);
     }
 
-    async function getToken(roomName: string, participantName: string) {
-        const response = await fetch(APPLICATION_SERVER_URL + 'token', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                roomName: roomName,
-                participantName: participantName
-            })
-        });
-
-        if (!response.ok) {
-            const error = await response.json();
-            throw new Error(`Failed to get token: ${error.errorMessage}`);
-        }
-
-        const data = await response.json();
-        return data.token;
-    }
+    
 
     return (
         <div id="room">
