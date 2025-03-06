@@ -37,7 +37,7 @@ export const postRecruitmentArticle = async (
     }
 
     return apiClient.post(
-        `/v1/study/${payload.studyId}/recruitmentArticle`,
+        `/api/v1/study/${payload.studyId}/recruitmentArticle`,
         formData,
         {
             headers: {
