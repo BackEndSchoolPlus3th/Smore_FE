@@ -111,6 +111,9 @@ apiClient.interceptors.response.use(
                 //window.location.href = '/login';
                 return Promise.reject(refreshError);
             }
+        } else if (error.response?.status === 409) {
+            // 중복 에러 발생 시 에러 메시지 반환
+            return error.response.data;
         }
 
         // // 400번대 에러 발생 시 에러 페이지로 이동
