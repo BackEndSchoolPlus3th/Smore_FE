@@ -1,24 +1,25 @@
 // src/widgets/navbar/Navbar.js
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const Navbar = () => {
+const { studyId } = useParams();
   const navigate = useNavigate();
 
   const goToStudyMainPage = () => {
-    navigate("/mystudy");
+    navigate(`/study/${studyId}`);
   };
   const goToSchedulePage = () => {
-    navigate("/mystudyschedule");
+    navigate(`/study/${studyId}/schedules`);
   };
   const goToDocumentPage = () => {
-    navigate("/document");
+    navigate(`/study/${studyId}/document`);
   };
   const goToStudyArticlePage = () => {
-    navigate("/study/:studyId/article");
+    navigate(`/study/${studyId}/article`);
   };
   const goToSettingPage = () => {
-    navigate("/studysetting");
+    navigate(`/study/${studyId}/studysetting`);
   };
 
   return (
