@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useSearchParams, Link } from 'react-router-dom';
 import {
     RecruitmentArticle,
     RecruitmentArticleProps,
@@ -10,56 +11,81 @@ import {
     RecruitmentArticleSearch,
     fetchRecruitmentArticles,
 } from '../../../../features';
-import { Link } from 'react-router-dom';
+import { PageSizeSelect } from '../../../../shared';
 
 const pagesPerBlock = 10;
 
 const RecruitmentArticlesPage: React.FC = () => {
-    // 캐시: 블록 번호 => 게시글 배열
+    // useSearchParams 훅을 이용해 URL의 쿼리 파라미터 읽기
+    const [searchParams, setSearchParams] = useSearchParams();
+
+    // URL 파라미터에서 초기 상태 읽기 (숫자는 변환 필요)
+    const initialPage = Number(searchParams.get('page')) || 1;
+    const initialPageSize = Number(searchParams.get('pageSize')) || 16;
+    const initialFilters = {
+        title: searchParams.get('title') || '',
+        content: searchParams.get('content') || '',
+        introduction: searchParams.get('introduction') || '',
+        hashTags: searchParams.get('hashTags') || '',
+        region: searchParams.get('region') || '',
+    };
+
+    // 캐시 및 화면에 표시할 게시글 관련 상태
     const [articlesCache, setArticlesCache] = useState<{
         [key: number]: RecruitmentArticleProps[];
     }>({});
-    // 현재 화면에 보여질 게시글들
     const [displayedArticles, setDisplayedArticles] = useState<
         RecruitmentArticleProps[]
     >([]);
-    const [page, setPage] = useState(1);
-    const [pageSize, setPageSize] = useState(12);
+    const [page, setPage] = useState(initialPage);
+    const [pageSize, setPageSize] = useState(initialPageSize);
     const [totalCount, setTotalCount] = useState<number>(0);
-
-    // 검색 관련 상태: 각 검색 필드를 기본값 빈 문자열로 초기화
-    const [searchParams, setSearchParams] = useState({
-        title: '',
-        content: '',
-        introduction: '',
-        hashTags: '',
-        region: '',
-    });
+    const [searchFilters, setSearchFilters] = useState(initialFilters);
     const [isLoading, setIsLoading] = useState(true);
 
-    // API 호출 함수 (한 블록 단위)
-    const fetchBlockArticles = async (page: number) => {
-        const block = Math.floor((page - 1) / pagesPerBlock);
+    // URL 업데이트 함수: 페이지, 페이지 사이즈, 검색 필터를 반영
+    const updateUrlParams = (
+        newPage: number,
+        newPageSize: number,
+        filters: { [key: string]: string }
+    ) => {
+        const params: { [key: string]: string } = {
+            page: newPage.toString(),
+            pageSize: newPageSize.toString(),
+            ...filters,
+        };
+        // 빈 문자열인 값은 URL에서 제거
+        Object.keys(params).forEach((key) => {
+            if (!params[key]) {
+                delete params[key];
+            }
+        });
+        setSearchParams(params);
+    };
+
+    // API 호출 (한 블록 단위)
+    const fetchBlockArticles = async (
+        currentPage: number,
+        effectivePageSize: number = pageSize
+    ) => {
+        const block = Math.floor((currentPage - 1) / pagesPerBlock);
         try {
-            // pagedResponse 타입의 응답 받음
             const response: pagedResponse = await fetchRecruitmentArticles({
-                ...searchParams,
-                page: page,
-                size: pageSize,
+                ...searchFilters,
+                page: currentPage,
+                size: effectivePageSize,
             });
             const blockData: RecruitmentArticleProps[] = response.data;
-            // 캐시에 저장
             setArticlesCache((prevCache) => ({
                 ...prevCache,
                 [block]: blockData,
             }));
-            // 전체 게시글 개수 저장
             setTotalCount(response.totalCount);
-            // 현재 페이지에 해당하는 데이터 슬라이싱
-            const startIndex = ((page - 1) % pagesPerBlock) * pageSize;
+            const startIndex =
+                ((currentPage - 1) % pagesPerBlock) * effectivePageSize;
             const slicedData = blockData.slice(
                 startIndex,
-                startIndex + pageSize
+                startIndex + effectivePageSize
             );
             setDisplayedArticles(slicedData);
             setIsLoading(false);
@@ -69,49 +95,59 @@ const RecruitmentArticlesPage: React.FC = () => {
         }
     };
 
-    // 페이지 변경 시 호출되는 함수
-    const handlePageChange = (page: number) => {
-        const currentBlock = Math.floor((page - 1) / pagesPerBlock);
-        setPage(page);
-
-        // 캐시에 데이터가 있으면 슬라이싱만 진행
+    // 페이지 변경 핸들러
+    const handlePageChange = (newPage: number, effectivePageSize?: number) => {
+        const usedPageSize = effectivePageSize ?? pageSize;
+        setPage(newPage);
+        const currentBlock = Math.floor((newPage - 1) / pagesPerBlock);
         if (articlesCache[currentBlock]) {
             const blockData = articlesCache[currentBlock];
-            const startIndex = ((page - 1) % pagesPerBlock) * pageSize;
+            const startIndex = ((newPage - 1) % pagesPerBlock) * usedPageSize;
             const slicedData = blockData.slice(
                 startIndex,
-                startIndex + pageSize
+                startIndex + usedPageSize
             );
             setDisplayedArticles(slicedData);
             setIsLoading(false);
         } else {
-            // 없으면 API 호출
             setIsLoading(true);
-            fetchBlockArticles(page);
+            fetchBlockArticles(newPage, usedPageSize);
         }
+        updateUrlParams(newPage, usedPageSize, searchFilters);
     };
 
-    // 검색 실행 시 호출 (RecruitmentArticleSearch에서 전달)
-    const onSearch = (newParam: { [key: string]: string }) => {
-        // 새로운 검색 파라미터가 전달되면 캐시 초기화 및 파라미터 갱신
+    // 검색 실행 시 호출 (검색 버튼 또는 엔터키)
+    const onSearch = (newFilters: { [key: string]: string }) => {
+        // 캐시 초기화 및 검색 필터 갱신
         setArticlesCache({});
-        setSearchParams({
+        const updatedFilters = {
             title: '',
             content: '',
             introduction: '',
             hashTags: '',
             region: '',
-            ...newParam,
-        });
-        setPage(1);
+            ...newFilters,
+        };
+        setSearchFilters(updatedFilters);
+        setPage(1); // 검색 시 1페이지로 초기화
+        updateUrlParams(1, pageSize, updatedFilters);
         handlePageChange(1);
     };
 
+    // 페이지 사이즈 변경 핸들러
+    const handlePageSizeChange = (newPageSize: number) => {
+        setArticlesCache({});
+        setPageSize(newPageSize);
+        setPage(1);
+        updateUrlParams(1, newPageSize, searchFilters);
+        handlePageChange(1, newPageSize);
+    };
+
+    // 페이지나 검색 필터가 변경될 때 데이터를 로드
     useEffect(() => {
-        // 검색 파라미터나 페이지가 변경되면 데이터 로드
         handlePageChange(page);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [page, searchParams]);
+    }, [page, searchFilters]);
 
     return (
         <div className="flex flex-col gap-4 w-full pb-4">
@@ -119,10 +155,14 @@ const RecruitmentArticlesPage: React.FC = () => {
                 <p className="text-2xl font-bold text-dark-purple">
                     스터디 모집 게시판
                 </p>
-                {/* 검색 필드 */}
-                <RecruitmentArticleSearch onSearch={onSearch} />
+                <div className="flex gap-4 items-center">
+                    <PageSizeSelect
+                        value={pageSize}
+                        onChange={handlePageSizeChange}
+                    />
+                    <RecruitmentArticleSearch onSearch={onSearch} />
+                </div>
             </div>
-            {/* 게시글 목록 */}
             <div className="items-center w-full">
                 <div className="flex flex-wrap gap-4 w-full justify-center">
                     {isLoading
@@ -145,7 +185,6 @@ const RecruitmentArticlesPage: React.FC = () => {
                           ))}
                 </div>
             </div>
-            {/* 페이지네이션 */}
             <div className="flex justify-center items-center w-full">
                 <PagingButton
                     setPage={handlePageChange}

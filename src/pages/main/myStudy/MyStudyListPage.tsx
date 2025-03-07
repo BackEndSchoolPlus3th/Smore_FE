@@ -1,22 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import '../../../shared/style/ArticleListPageStyle.css';
+import { Link } from 'react-router-dom';
 import { PagingButton } from '../../../widgets';
 import { fetchMyStudyList, MyStudyArticle } from '../../../features';
 import { MyStudyListArticleProps } from '../../../entities';
-import { Link } from 'react-router-dom';
+import { PageSizeSelect } from '../../../shared';
+import '../../../shared/style/ArticleListPageStyle.css';
+import './MyStudyListPageStyle.css';
 
 const MyStudyListPage: React.FC = () => {
-    // 전체 게시글을 저장
     const [articles, setArticles] = useState<MyStudyListArticleProps[]>([]);
-    // 현재 페이지에 보여질 게시글들
     const [displayedArticles, setDisplayedArticles] = useState<
         MyStudyListArticleProps[]
     >([]);
     const [page, setPage] = useState(1);
-    const [pageSize] = useState(12);
+    const [pageSize, setPageSize] = useState(16);
     const [isLoading, setIsLoading] = useState(true);
 
-    // 전체 데이터를 한번만 가져오기
+    // 전체 데이터를 한 번만 가져오기
     const fetchArticles = async () => {
         try {
             const data: MyStudyListArticleProps[] = await fetchMyStudyList();
@@ -28,21 +28,22 @@ const MyStudyListPage: React.FC = () => {
         }
     };
 
-    // 전체 게시글 수를 바탕으로 총 페이지 수 계산 (게시글이 없으면 최소 1페이지)
-    const totalPages = articles.length
-        ? Math.ceil(articles.length / pageSize)
-        : 1;
-
-    // 페이지 번호 변경 및 표시할 게시글 업데이트
-    const handlePageChange = (newPage: number) => {
-        // newPage가 총 페이지 수 범위를 벗어나면 변경하지 않음
+    // pageSize를 인자로 받아 올바른 페이지의 데이터를 계산하도록 수정
+    const handlePageChange = (
+        newPage: number,
+        effectivePageSize: number = pageSize
+    ) => {
+        const totalPages = articles.length
+            ? Math.ceil(articles.length / effectivePageSize)
+            : 1;
         if (newPage < 1 || newPage > totalPages) return;
 
         setPage(newPage);
-
-        // 현재 페이지에 해당하는 게시글 슬라이싱
-        const startIndex = (newPage - 1) * pageSize;
-        const slicedData = articles.slice(startIndex, startIndex + pageSize);
+        const startIndex = (newPage - 1) * effectivePageSize;
+        const slicedData = articles.slice(
+            startIndex,
+            startIndex + effectivePageSize
+        );
         setDisplayedArticles(slicedData);
     };
 
@@ -50,7 +51,7 @@ const MyStudyListPage: React.FC = () => {
         fetchArticles();
     }, []);
 
-    // 게시글 데이터를 불러온 후 현재 페이지에 맞게 표시 업데이트
+    // 최초 articles 데이터가 로드되면 현재 페이지를 계산
     useEffect(() => {
         if (articles.length > 0) {
             handlePageChange(page);
@@ -63,6 +64,15 @@ const MyStudyListPage: React.FC = () => {
                 <p className="text-2xl font-bold text-dark-purple">
                     내 스터디 목록
                 </p>
+                {/* 페이지 사이즈 설정 드롭다운 */}
+                <PageSizeSelect
+                    value={pageSize}
+                    onChange={(newPageSize) => {
+                        setPageSize(newPageSize);
+                        // 새로운 pageSize로 1페이지 데이터를 계산
+                        handlePageChange(1, newPageSize);
+                    }}
+                />
             </div>
             {/* 게시글 목록 */}
             <div className="items-center w-full">
@@ -79,11 +89,12 @@ const MyStudyListPage: React.FC = () => {
                         : displayedArticles.map((article) => (
                               <Link
                                   to={`/study/${article.id}`}
-                                  className={`recruitment-article-card card p-4 bg-white shadow-lg rounded-lg w-80 min-w-80 h-110 ${
-                                      article.studyPosition === 'LEADER'
-                                          ? 'bg-light-purple'
-                                          : 'bg-light-lavender'
-                                  }`}
+                                  className={`recruitment-article-card card p-4 bg-white shadow-lg rounded-lg w-80 min-w-80 h-110 bg-light-lavender
+                                    ${
+                                        article.studyPosition === 'LEADER'
+                                            ? 'border-2 border-yellow-400'
+                                            : ''
+                                    }`}
                                   key={article.id}
                               >
                                   <MyStudyArticle {...article} />
@@ -94,7 +105,7 @@ const MyStudyListPage: React.FC = () => {
             {/* 페이지네이션 */}
             <div className="flex justify-center items-center w-full">
                 <PagingButton
-                    setPage={handlePageChange}
+                    setPage={(newPage) => handlePageChange(newPage)}
                     page={page}
                     totalCount={articles.length}
                     pageSize={pageSize}
