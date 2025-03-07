@@ -7,14 +7,12 @@ interface EventDetailPopupProps {
   isOpen: boolean;
   event: EventApi;
   onClose: () => void;
-  onDelete: () => void;
-  onUpdate: () => void;
 }
 
-const EventDetailPopup: React.FC<EventDetailPopupProps> = ({ isOpen, event, onClose, onDelete, onUpdate }) => {
+const EventDetailPopup: React.FC<EventDetailPopupProps> = ({ isOpen, event, onClose }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <EventDetailPage event={event} onClose={onClose} onDelete={onDelete} onUpdate={onUpdate} />
+      <EventDetailPage event={event} onClose={onClose} />
     </Modal>
   );
 };
