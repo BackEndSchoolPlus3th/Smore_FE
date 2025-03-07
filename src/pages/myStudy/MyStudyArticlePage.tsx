@@ -1,41 +1,56 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../../widgets/sidebar/Sidebar";
 import Navbar from "../../widgets/navbarArticle/Navbar";
 
 const MyStudyArticlePage = () => {
+    const token = localStorage.getItem("accessToken");
+
+    const fetchStudies = async () => {
+        try {
+            const response = await fetch("http://localhost:8090/api/study/my-studies", {
+                method: "GET",
+                headers: {
+                    "Authorization": `${token}`,
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log("서버에서 반환된 데이터:", data); // 데이터 확인
+            setStudies(data);
+        } catch (error) {
+            console.error("스터디 목록 가져오기 실패:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchStudies();
+    }, []);
+
     const navigate = useNavigate();
 
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
-      const [studies, setStudies] = useState([]);
-      const [selectedStudy, setSelectedStudy] = useState(null);
+    const [studies, setStudies] = useState([]);
+    const [selectedStudy, setSelectedStudy] = useState(null);
     const [selectedTab, setSelectedTab] = useState("study");
 
     const toggleSidebar = () => {
         setIsSidebarOpen(prevState => !prevState);
     };
 
-    const goToStudyMainPage = () => {
-        navigate("/mystudy");
-    };
-    const goToSchedulePage = () => {
-        navigate("/mystudyschedule");
-    };
-    const goToDocumentPage = () => {
-        navigate("/document");
-    };
     const goToStudyArticlePage = () => {
         navigate("/study/:studyId/article");
-    };
-    const goToSettingPage = () => {
-        navigate("/studysetting");
     };
     const goToStudyEditPage = () => {
         navigate("/studyedit");
     };
     const goToStudyArticleDetailPage = () => {
-      navigate("/studydetail");
+        navigate("/studydetail");
     }
 
     const handleSearchChange = (e) => {
@@ -78,7 +93,7 @@ const MyStudyArticlePage = () => {
 
     const handleStudySelect = (study) => {
         setSelectedStudy(study);
-      };
+    };
 
     const pageNumbers = [];
     const maxPagesToShow = 10;
@@ -93,22 +108,22 @@ const MyStudyArticlePage = () => {
         <div className="flex flex-col w-full h-screen bg-gray-100">
             <div className="flex flex-1">
                 {/* 사이드바 */}
-        <Sidebar
-          studies={studies}
-          onStudySelect={handleStudySelect}
-          isSidebarOpen={isSidebarOpen}
-          toggleSidebar={toggleSidebar}
-        />
+                <Sidebar
+                    studies={studies}
+                    onStudySelect={handleStudySelect}
+                    isSidebarOpen={isSidebarOpen}
+                    toggleSidebar={toggleSidebar}
+                />
 
-      {/* 버튼을 클릭하여 사이드바를 열고 닫을 수 있도록 */}
-      <div className="bg-muted-purple">
-          <button
-            onClick={toggleSidebar}
-            className="px-4 py-2 bg-dark-purple text-white mb-4"
-          >
-            {isSidebarOpen ? '=' : '='}
-          </button>
-        </div>
+                {/* 버튼을 클릭하여 사이드바를 열고 닫을 수 있도록 */}
+                <div className="bg-muted-purple">
+                    <button
+                        onClick={toggleSidebar}
+                        className="px-4 py-2 bg-dark-purple text-white mb-4"
+                    >
+                        {isSidebarOpen ? '=' : '='}
+                    </button>
+                </div>
 
                 {/* 메인 콘텐츠 */}
                 <div className="flex-1 pt-0 p-6 bg-purple-100">

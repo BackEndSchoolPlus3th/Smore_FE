@@ -1,149 +1,214 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import Sidebar from "../../widgets/sidebar/Sidebar";
+import Navbar from "../../widgets/navbarArticle/Navbar";
 
 const MyStudyDetailPage = () => {
   const navigate = useNavigate();
-  const { articleId } = useParams();
-
+  const { studyId, articleId } = useParams();
   const [articleData, setArticleData] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
+
+  const [studies, setStudies] = useState([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
+  const token = localStorage.getItem("accessToken");
+
   useEffect(() => {
-    // 게시글의 상세 데이터를 받아오는 부분
-    const fetchedArticleData = {
-      title: "React 공부하기",
-      content: "이 게시글은 리액트 학습을 위한 게시글입니다. 다양한 내용이 포함되어 있습니다.",
-      author: "홍길동",
-      createdAt: "2025-02-24",
-      files: [
-      ],
+    const fetchArticleData = async () => {
+      try {
+  
+        const response = await fetch(`http://localhost:8090/api/study/${studyId}/articles/${articleId}`, {
+          method: "GET",
+          headers: {
+            "Authorization": `${token}`,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setArticleData(data);
+        } else {
+          console.error("게시글을 불러오는 데 실패했습니다.");
+        }
+      } catch (error) {
+        console.error("게시글 불러오기 오류:", error);
+      }
     };
-    
-    setArticleData(fetchedArticleData);
-  }, [articleId]);
+
+    const fetchUserData = async () => {
+      try {
+        const userResponse = await fetchCurrentUser();
+        setCurrentUser(userResponse); // 현재 로그인한 사용자 정보 저장
+      } catch (error) {
+        console.error('사용자 정보 로딩 실패:', error);
+      }
+    };
+
+    fetchArticleData();
+    fetchUserData();
+  }, [studyId, articleId]);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(prevState => !prevState);
   };
 
-  const goToStudyMainPage = () => {
-    navigate("/mystudy");
-};
-const goToSchedulePage = () => {
-    navigate("/mystudyschedule");
-};
-const goToDocumentPage = () => {
-    navigate("/document");
-};
-const goToStudyArticlePage = () => {
-    navigate("/study/:studyId/article");
-};
-const goToSettingPage = () => {
-    navigate("/studysetting");
-};
-const goToStudyEditPage = () => {
-    navigate("/studyedit");
-};
-const goToStudyArticleDetailPage = () => {
-  navigate("/studydetail");
-}
+  const fetchCurrentUser = async () => {
+    const token = localStorage.getItem('accessToken');
+    const response = await fetch('http://localhost:8090/api/current-user', {
+      method: 'GET',
+      headers: {
+        'Authorization': `${token}`,
+      },
+    });
+  
+    if (response.ok) {
+      const data = await response.json();
+      return data;  // { id, username, name 등 로그인한 사용자 정보 반환 }
+    } else {
+      throw new Error('사용자 정보를 가져올 수 없습니다.');
+    }
+  };
 
-  const handleDeleteArticle = () => {
-    const userConfirmed = window.confirm("이 게시글을 삭제하시겠습니까?");
-    if (userConfirmed) {
-      alert("게시글이 삭제되었습니다.");
-      navigate("/StudyArticle");
+  const fetchStudies = async () => {
+    try {
+      const response = await fetch(`http://localhost:8090/api/study/my-studies`, {
+        method: "GET",
+        headers: {
+          "Authorization": `${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setStudies(data);
+    } catch (error) {
+      console.error("스터디 목록 가져오기 실패:", error);
+    }
+  };
+
+    useEffect(() => {
+      fetchStudies();
+    }, []);
+
+  const handleStudySelect = (study) => {
+    if (study && study.id) {
+      setSelectedStudy(study);
+      navigate(`/study/${study.id}`);  // studyId를 URL에 추가하여 해당 스터디 페이지로 이동
     }
   };
 
   const handleEditArticle = () => {
-    navigate(`/StudyEdit/${articleId}`);
+    navigate(`/study/${studyId}/edit`);
   };
 
-  if (!articleData) return <div>Loading...</div>;
+  const handleDeleteArticle = async () => {
+    const confirmDelete = window.confirm('정말로 이 게시글을 삭제하시겠습니까?');
+    if (confirmDelete) {
+      try {
+        const token = localStorage.getItem('accessToken');
+        const response = await fetch(`http://localhost:8090/api/study/articles/${articleId}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
 
+        if (response.ok) {
+          alert('게시글이 삭제되었습니다.');
+          navigate('/study/articles');
+        } else {
+          alert('삭제 실패');
+        }
+      } catch (error) {
+        console.error('삭제 실패:', error);
+      }
+    }
+  };
+
+  if (!articleData || !currentUser) {
+    return <div>Loading...</div>;
+  }
+  const isAuthor = articleData.member.id === currentUser;
+
+  if (!articleData) return <div>Loading...</div>;
   return (
     <div className="flex flex-col w-full h-screen bg-gray-100">
       <div className="flex flex-1">
         {/* 사이드바 */}
-        <div className={`w-1/5 bg-gray-400 p-4 transition-all duration-300 ${isSidebarOpen ? 'block' : 'hidden'}`}>
-          <div className="mb-4 text-lg font-bold">스터디 목록</div>
-          <ul>
-            {['스터디A', '스터디B', '스터디C', '스터디D'].map((study, index) => (
-              <li key={index} className="p-2 bg-gray-500 text-white rounded mb-2 text-right flex items-center space-x-2">
-                <div className="bg-gray-600 w-8 h-8 rounded-full" />
-                <span>{study}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <Sidebar
+          studies={studies}
+          onStudySelect={handleStudySelect}
+          isSidebarOpen={isSidebarOpen}
+          toggleSidebar={toggleSidebar}
+        />
 
         {/* 버튼을 클릭하여 사이드바를 열고 닫을 수 있도록 */}
-        <div className="bg-gray-400">
+        <div className="bg-muted-purple">
           <button
             onClick={toggleSidebar}
-            className="px-4 py-2 bg-gray-500 text-white mb-4"
+            className="px-4 py-2 bg-dark-purple text-white mb-4"
           >
             {isSidebarOpen ? '=' : '='}
           </button>
         </div>
 
         {/* 메인 콘텐츠 */}
-        <div className="flex-1 pt-0 p-6 bg-gray-200">
+        <div className="flex-1 pt-0 p-6 bg-purple-100">
           <div>
             {/* 네브 바 */}
-            <div className="bg-gray-200 text-white flex justify-between mx-auto mt-0 pb-3">
-              <div className="flex justify-center w-full">
-                <button className="px-3 py-1 bg-gray-600 cursor-pointer" onClick={goToStudyMainPage}>메인</button>
-                <button className="px-3 py-1 bg-gray-600 cursor-pointer" onClick={goToSchedulePage}>캘린더</button>
-                <button className="px-3 py-1 bg-gray-600 cursor-pointer" onClick={goToDocumentPage}>문서함</button>
-                <button className="px-3 py-1 bg-gray-600 cursor-pointer" onClick={goToStudyArticlePage}>게시판</button>
-                <button className="px-3 py-1 bg-gray-600 cursor-pointer" onClick={goToSettingPage}>설정</button>
-              </div>
-            </div>
+            <Navbar />
           </div>
 
           {/* 게시글 상세 정보 */}
-          <div className="p-4 bg-white shadow rounded">
-            <h1 className="text-xl font-bold mb-4">{articleData.title}</h1>
-            <div className="text-sm text-gray-600 mb-2">
-              <span>작성자: {articleData.author}</span> | 
-              <span> 작성일: {articleData.createdAt}</span>
+          <div className="p-6 bg-white shadow-md rounded-lg space-y-6">
+            <form>
+            {/* 제목 */}
+            <div className="mb-6">
+            <label htmlFor="title" className="block text-sm font-semibold mb-2">제목</label>
+                <input
+                  type="text"
+                  id="title"
+                  name="title"
+                  value={articleData.title}
+                  disabled
+                  className="w-full p-2 border rounded bg-gray-100"
+                />
             </div>
-            <div className="mb-4">
-              <h3 className="text-lg font-semibold">내용</h3>
-              <p>{articleData.content}</p>
+            <div>
+            <div className="mb-6">
+            <label htmlFor="username" className="block text-sm font-semibold mb-2">작성자</label>
+                <input
+                  id="username"
+                  name="username"
+                  value={articleData.member.nickname}
+                  disabled
+                  className="w-full p-2 border rounded bg-gray-100"
+                />
             </div>
-
-            <div className="mb-4">
-              <h3 className="text-lg font-semibold">첨부 파일</h3>
-              {articleData.files.length > 0 ? (
-                <div>
-                  {articleData.files.map((file, index) => (
-                    <div key={index} className="flex items-center mb-2">
-                      <span>{file.name}</span>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p>첨부된 파일이 없습니다.</p>
-              )}
+</div>
+            {/* 내용 */}
+            <div className="mb-6">
+            <label htmlFor="content" className="block text-sm font-semibold mb-2">내용</label>
+                <textarea
+                  id="content"
+                  name="content"
+                  value={articleData.content}
+                  disabled
+                  rows="6"
+                  className="w-full p-2 border rounded bg-gray-100"
+                />
             </div>
-
-            <div className="flex justify-end space-x-4">
-              <button
-                onClick={handleEditArticle}
-                className="px-4 py-1 bg-black text-white rounded cursor-pointer"
-              >
-                수정
-              </button>
-              <button
-                onClick={handleDeleteArticle}
-                className="px-4 py-1 bg-black text-white rounded cursor-pointer"
-              >
-                삭제
-              </button>
-            </div>
+            {isAuthor && (
+        <div>
+          <button onClick={handleEditArticle}>수정</button>
+          <button onClick={handleDeleteArticle}>삭제</button>
+        </div>
+      )}
+            </form>
           </div>
         </div>
       </div>

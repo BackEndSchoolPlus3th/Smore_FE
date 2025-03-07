@@ -10,6 +10,33 @@ const MyStudyDocumentPage = () => {
   const [selectedStudy, setSelectedStudy] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
+    const token = localStorage.getItem("accessToken");
+  
+    const fetchStudies = async () => {
+      try {
+          const response = await fetch("http://localhost:8090/api/study/my-studies", {
+              method: "GET",
+              headers: {
+                  "Authorization": `${token}`,
+              },
+          });
+  
+          if (!response.ok) {
+            throw new Error(`Error: ${response.status}`);
+          }
+  
+          const data = await response.json();
+      console.log("서버에서 반환된 데이터:", data); // 데이터 확인
+      setStudies(data);
+    } catch (error) {
+      console.error("스터디 목록 가져오기 실패:", error);
+    }
+  };
+  
+  useEffect(() => {
+    fetchStudies();
+  }, []);
+  
   useEffect(() => {
     const studyDocuments = [
       {
@@ -45,28 +72,6 @@ const MyStudyDocumentPage = () => {
   const toggleSidebar = () => {
     setIsSidebarOpen(prevState => !prevState);
   };
-
-  const goToStudyMainPage = () => {
-    navigate("/mystudy");
-  };
-  const goToSchedulePage = () => {
-    navigate("/mystudyschedule");
-  };
-  const goToDocumentPage = () => {
-    navigate("/document");
-  };
-  const goToStudyArticlePage = () => {
-    navigate("/study/:studyId/article");
-  };
-  const goToSettingPage = () => {
-    navigate("/studysetting");
-  };
-  const goToStudyEditPage = () => {
-    navigate("/studyedit");
-  };
-  const goToStudyArticleDetailPage = () => {
-    navigate("/studydetail");
-  }
 
   const handleDownload = (fileName) => {
     alert(`${fileName}을 다운로드합니다.`);
