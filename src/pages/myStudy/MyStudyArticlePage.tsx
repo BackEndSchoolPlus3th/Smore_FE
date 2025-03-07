@@ -9,7 +9,7 @@ const MyStudyArticlePage = () => {
 
     const fetchStudies = async () => {
         try {
-            const response = await fetch("http://localhost:8090/api/study/my-studies", {
+            const response = await fetch("http://localhost:8090/api/v1/user/studies", {
                 method: "GET",
                 headers: {
                     "Authorization": `${token}`,
@@ -52,7 +52,7 @@ const MyStudyArticlePage = () => {
 
         try {
             const response = await fetch(
-                `http://localhost:8090/api/study/${studyId}/articles`,
+                `http://localhost:8090/api/v1/study/${studyId}/articles`,
                 {
                     method: "GET",
                     headers: {

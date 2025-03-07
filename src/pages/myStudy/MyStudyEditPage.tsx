@@ -43,7 +43,7 @@ const MyStudyEditPage = () => {
 
   const fetchStudies = async () => {
     try {
-      const response = await fetch(`http://localhost:8090/api/study/my-studies`, {
+      const response = await fetch(`http://localhost:8090/api/v1/user/studies`, {
         method: "GET",
         headers: {
           "Authorization": `${token}`,
@@ -78,7 +78,7 @@ const MyStudyEditPage = () => {
       console.log('Form Data:', formDataToSend);
 
       try {
-        const response = await fetch(`http://localhost:8090/api/study/${studyId}/articles`, {
+        const response = await fetch(`http://localhost:8090/api/v1/study/${studyId}/articles`, {
           method: "POST",
           headers: {
             "Authorization": `${token}`,
@@ -89,7 +89,7 @@ const MyStudyEditPage = () => {
         if (response.ok) {
           const data = await response.json();
           alert("글 작성이 완료되었습니다.");
-          navigate("/study");
+          navigate(`/study/${studyId}`);
         } else {
           alert("글 작성에 실패했습니다.");
         }
