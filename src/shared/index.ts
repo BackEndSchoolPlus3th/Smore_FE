@@ -1,4 +1,4 @@
-export { default as MarkdownRenderer } from './ui/MarkdownRenderer';
+// api
 export { default as apiClient } from './api/ApiClient';
 
 // types
@@ -16,3 +16,7 @@ export { default as Input } from './components/Input';
 
 // options
 export { regionOptions } from './options/RegionOptions';
+
+// ui
+export { default as MarkdownRenderer } from './ui/MarkdownRenderer';
+export { default as PageSizeSelect } from './ui/PageSizeSelect';
