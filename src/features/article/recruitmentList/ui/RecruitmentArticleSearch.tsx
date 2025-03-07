@@ -1,6 +1,7 @@
 import React, { useState, KeyboardEvent } from 'react';
 import Select from 'react-select';
 import { MdOutlineCancel } from 'react-icons/md';
+import { regionOptions } from '../../../../shared';
 
 interface RecruitmentArticleSearchProps {
     onSearch: (searchParams: { [key: string]: string }) => void;
@@ -34,6 +35,10 @@ export const RecruitmentArticleSearch: React.FC<
         searchTypes[0]
     );
     const [inputValue, setInputValue] = useState<string>('');
+    const [regionValue, setRegionValue] = useState<{
+        value: string;
+        label: string;
+    } | null>(null);
     const [savedSearches, setSavedSearches] = useState<
         { type: string; keyword: string }[]
     >([]);
@@ -49,8 +54,18 @@ export const RecruitmentArticleSearch: React.FC<
     };
 
     const handleSearchClick = () => {
-        if (savedSearches.length > 0) {
-            const searchParams = savedSearches.reduce(
+        const updatedSavedSearches = [...savedSearches];
+        // 만약 아직 region이 추가되지 않았다면, 검색 버튼 클릭 시 추가
+        if (selectedType?.value === 'region' && regionValue) {
+            if (!savedSearches.some((search) => search.type === 'region')) {
+                updatedSavedSearches.push({
+                    type: 'region',
+                    keyword: regionValue.value,
+                });
+            }
+        }
+        if (updatedSavedSearches.length > 0) {
+            const searchParams = updatedSavedSearches.reduce(
                 (acc, search) => {
                     if (acc[search.type]) {
                         acc[search.type] += `,${search.keyword}`;
@@ -76,23 +91,55 @@ export const RecruitmentArticleSearch: React.FC<
                 <div className="">
                     <Select
                         value={selectedType}
-                        onChange={(selectedOption) =>
-                            setSelectedType(selectedOption as SearchType)
-                        }
+                        onChange={(selectedOption) => {
+                            setSelectedType(selectedOption as SearchType);
+                            // 타입 변경 시 기존 입력값 초기화
+                            setInputValue('');
+                            setRegionValue(null);
+                        }}
                         options={searchTypes}
                         className="w-full"
                         classNamePrefix="react-select"
                     />
                 </div>
                 <div className="">
-                    <input
-                        type="text"
-                        value={inputValue}
-                        onChange={(e) => setInputValue(e.target.value)}
-                        onKeyPress={handleKeyPress}
-                        placeholder="검색어를 입력하세요"
-                        className="w-full p-2 border border-gray-300 rounded-md"
-                    />
+                    {selectedType?.value === 'region' ? (
+                        <Select
+                            value={regionValue}
+                            onChange={(selectedOption) => {
+                                const selectedRegion = selectedOption as {
+                                    value: string;
+                                    label: string;
+                                };
+                                setRegionValue(selectedRegion);
+                                // 지역 선택 시 즉시 savedSearches 업데이트 (기존의 region 검색어는 대체)
+                                setSavedSearches((prev) => {
+                                    const filtered = prev.filter(
+                                        (search) => search.type !== 'region'
+                                    );
+                                    return [
+                                        ...filtered,
+                                        {
+                                            type: 'region',
+                                            keyword: selectedRegion.value,
+                                        },
+                                    ];
+                                });
+                            }}
+                            options={regionOptions}
+                            className="w-full"
+                            classNamePrefix="react-select"
+                        />
+                    ) : (
+                        <input
+                            type="text"
+                            value={inputValue}
+                            onChange={(e) => setInputValue(e.target.value)}
+                            onKeyPress={handleKeyPress}
+                            placeholder="검색어를 입력하세요"
+                            className="w-full p-2 border border-gray-300 rounded-md"
+                        />
+                    )}
                 </div>
                 <div className="">
                     <button
