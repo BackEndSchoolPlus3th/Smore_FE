@@ -8,6 +8,7 @@ import {
     ChatPage,
     CalenderPage,
     LoginPage,
+    MyStudySelectPage,
     MyStudyPage,
     MyStudyEditPage,
     MyStudyDetailPage,
@@ -31,21 +32,22 @@ function App() {
                 <div className="App">
                     <Header />
                     <Routes>
-                        <Route path="/mystudy" element={<MyStudyPage />} />
+                        <Route path="/study" element={<MyStudyPage />} />
                         <Route
-                            path="/studyedit"
+                            path="/study/:studyId/edit"
                             element={<MyStudyEditPage />}
                         />
+                        <Route path="/study/:studyId" element={<MyStudySelectPage />} />
                         <Route
-                            path="/studydetail"
+                            path="/study/:studyId/articles/:articleId"
                             element={<MyStudyDetailPage />}
                         />
                         <Route
-                            path="/document"
+                            path="/study/:studyId/document"
                             element={<MyStudyDocumentPage />}
                         />
                         <Route
-                            path="/studysetting"
+                            path="/study/:studyId/studysetting"
                             element={<MyStudySettingPage />}
                         />
 
@@ -54,11 +56,6 @@ function App() {
                         <Route
                             path="/recruitment/:recruitmentId"
                             element={<RecruitmentContentPage />}
-                        />
-
-                        <Route
-                            path="/study/:studyId/schedules"
-                            element={<CalenderPage />}
                         />
                         <Route
                             path="/study/:studyId/article"

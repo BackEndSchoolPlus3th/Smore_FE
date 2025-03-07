@@ -16,7 +16,7 @@ const Header = () => {
     const logoutHandler = useLogout();
 
     const goToStudyMainPage = () => {
-        navigate('/mystudy');
+        navigate('/study');
     };
 
     const goToChatPage = () => {
