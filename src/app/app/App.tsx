@@ -21,6 +21,7 @@ import {
     NewRecruitmentPage,
     ErrorPage,
     SignupPage,
+    MyStudyListPage,
 } from '../../pages';
 import { Header } from '../../widgets';
 import { SSEProvider } from '../../shared/sse/SSEProvider';
@@ -33,6 +34,11 @@ function App() {
                     <Header />
                     <Routes>
                         <Route path="/study" element={<MyStudyPage />} />
+                        <Route path="/mystudy" element={<MyStudyListPage />} />
+                        <Route
+                            path="/study/:studyId"
+                            element={<MyStudyPage />}
+                        />
                         <Route
                             path="/study/:studyId/edit"
                             element={<MyStudyEditPage />}

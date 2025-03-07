@@ -1,3 +1,10 @@
+export interface pagedResponse {
+    currentPage: number;
+    pageSize: number;
+    totalCount: number;
+    data: RecruitmentArticleProps[];
+}
+
 export interface RecruitmentArticleProps {
     id: number;
     title: string;
@@ -8,5 +15,5 @@ export interface RecruitmentArticleProps {
     writerName: string;
     writerProfileImageUrl: string;
     clipCount: number;
-    hashTags: string;
+    hashTags: string | null;
 }

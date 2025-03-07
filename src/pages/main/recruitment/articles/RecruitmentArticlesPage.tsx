@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import {
     RecruitmentArticle,
     RecruitmentArticleProps,
+    pagedResponse,
 } from '../../../../entities';
-import './RecruitmentArticlesPageStyle.css';
+import '../../../../shared/style/ArticleListPageStyle.css';
 import { PagingButton } from '../../../../widgets';
 import {
     RecruitmentArticleSearch,
@@ -23,10 +24,10 @@ const RecruitmentArticlesPage: React.FC = () => {
         RecruitmentArticleProps[]
     >([]);
     const [page, setPage] = useState(1);
-    const [endPage, setEndPage] = useState(0);
     const [pageSize, setPageSize] = useState(12);
+    const [totalCount, setTotalCount] = useState<number>(0);
 
-    // 검색 관련 상태: 각 검색 필드는 기본값을 빈 문자열로 초기화 (필요시 기본 해시태그 값 설정 가능)
+    // 검색 관련 상태: 각 검색 필드를 기본값 빈 문자열로 초기화
     const [searchParams, setSearchParams] = useState({
         title: '',
         content: '',
@@ -34,24 +35,26 @@ const RecruitmentArticlesPage: React.FC = () => {
         hashTags: '',
         region: '',
     });
-    const [isEndPage, setIsEndPage] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
     // API 호출 함수 (한 블록 단위)
     const fetchBlockArticles = async (page: number) => {
         const block = Math.floor((page - 1) / pagesPerBlock);
         try {
-            const blockData: RecruitmentArticleProps[] =
-                await fetchRecruitmentArticles({
-                    ...searchParams,
-                    page: page,
-                    size: pageSize,
-                });
+            // pagedResponse 타입의 응답 받음
+            const response: pagedResponse = await fetchRecruitmentArticles({
+                ...searchParams,
+                page: page,
+                size: pageSize,
+            });
+            const blockData: RecruitmentArticleProps[] = response.data;
             // 캐시에 저장
             setArticlesCache((prevCache) => ({
                 ...prevCache,
                 [block]: blockData,
             }));
+            // 전체 게시글 개수 저장
+            setTotalCount(response.totalCount);
             // 현재 페이지에 해당하는 데이터 슬라이싱
             const startIndex = ((page - 1) % pagesPerBlock) * pageSize;
             const slicedData = blockData.slice(
@@ -68,16 +71,12 @@ const RecruitmentArticlesPage: React.FC = () => {
 
     // 페이지 변경 시 호출되는 함수
     const handlePageChange = (page: number) => {
-        const newEndPage =
-            page - 1 - ((page - 1) % pagesPerBlock) + pagesPerBlock;
-        const newCurrentBlock = Math.floor((page - 1) / pagesPerBlock);
-
+        const currentBlock = Math.floor((page - 1) / pagesPerBlock);
         setPage(page);
-        setEndPage(newEndPage);
 
         // 캐시에 데이터가 있으면 슬라이싱만 진행
-        if (articlesCache[newCurrentBlock]) {
-            const blockData = articlesCache[newCurrentBlock];
+        if (articlesCache[currentBlock]) {
+            const blockData = articlesCache[currentBlock];
             const startIndex = ((page - 1) % pagesPerBlock) * pageSize;
             const slicedData = blockData.slice(
                 startIndex,
@@ -94,7 +93,7 @@ const RecruitmentArticlesPage: React.FC = () => {
 
     // 검색 실행 시 호출 (RecruitmentArticleSearch에서 전달)
     const onSearch = (newParam: { [key: string]: string }) => {
-        // 새로운 검색 파라미터가 전달되면 다른 필드는 초기화하고 해당 필드만 갱신
+        // 새로운 검색 파라미터가 전달되면 캐시 초기화 및 파라미터 갱신
         setArticlesCache({});
         setSearchParams({
             title: '',
@@ -149,10 +148,10 @@ const RecruitmentArticlesPage: React.FC = () => {
             {/* 페이지네이션 */}
             <div className="flex justify-center items-center w-full">
                 <PagingButton
-                    setPage={setPage}
+                    setPage={handlePageChange}
                     page={page}
-                    endPage={endPage}
-                    isEndPage={isEndPage}
+                    totalCount={totalCount}
+                    pageSize={pageSize}
                 />
             </div>
         </div>
