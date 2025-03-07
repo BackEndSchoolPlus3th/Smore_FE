@@ -10,7 +10,7 @@ export interface RecruitmentArticleProps {
     title: string;
     introduction: string;
     region: string;
-    thumbnailUrl: string;
+    thumbnailUrl: string | null;
     isRecruiting: boolean;
     writerName: string;
     writerProfileImageUrl: string;
