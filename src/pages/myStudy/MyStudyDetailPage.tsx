@@ -110,10 +110,10 @@ const MyStudyDetailPage = () => {
     if (confirmDelete) {
       try {
         const token = localStorage.getItem('accessToken');
-        const response = await fetch(`http://localhost:8090/api/study/articles/${articleId}`, {
+        const response = await fetch(`http://localhost:8090/api/articles/${articleId}`, {
           method: 'DELETE',
           headers: {
-            'Authorization': `Bearer ${token}`,
+            'Authorization': `${token}`,
           },
         });
 
@@ -203,9 +203,9 @@ const MyStudyDetailPage = () => {
                 />
             </div>
             {isAuthor && (
-        <div>
-          <button onClick={handleEditArticle}>수정</button>
-          <button onClick={handleDeleteArticle}>삭제</button>
+        <div className="flex justify-end space-x-2">
+          <button className="p-1 bg-purple-500 text-white rounded cursor-pointer" onClick={handleEditArticle}>수정</button>
+          <button className="p-1 bg-purple-500 text-white rounded cursor-pointer" onClick={handleDeleteArticle}>삭제</button>
         </div>
       )}
             </form>
