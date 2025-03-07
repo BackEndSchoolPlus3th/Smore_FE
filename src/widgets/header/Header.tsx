@@ -16,7 +16,7 @@ const Header = () => {
     const logoutHandler = useLogout();
 
     const goToStudyMainPage = () => {
-        navigate('/study');
+        navigate('/mystudy');
     };
 
     const goToChatPage = () => {
@@ -37,37 +37,39 @@ const Header = () => {
                 />
             </Link>
             <div className="flex items-center space-x-4">
-                <button
-                    className="text-lg font-semibold cursor-pointer"
-                    onClick={goToStudyMainPage}
-                >
-                    내스터디
-                </button>
-                <button
-                    className="text-lg font-semibold cursor-pointer"
-                    onClick={goToChatPage}
-                >
-                    채팅페이지
-                </button>
-                <FaBell
-                    className="text-2xl cursor-pointer"
-                    color="yellow"
-                    onClick={() => setIsAlarm(true)}
-                />
                 <AlarmPage isOpen={isAlarm} onClose={() => setIsAlarm(false)} />
                 {user ? (
-                    // 로그인 상태: 사용자 이름과 로그아웃 버튼 배치
-                    <div className="flex items-center space-x-2">
-                        <span className="text-lg font-semibold">
-                            {user.nickname}
-                        </span>
+                    // 로그인된 경우: 내스터디, 채팅페이지, 알림, 닉네임, 로그아웃 버튼 표시
+                    <>
                         <button
-                            className="px-3 py-1 bg-red-500 text-white rounded cursor-pointer"
-                            onClick={logoutHandler}
+                            className="text-lg font-semibold cursor-pointer"
+                            onClick={goToStudyMainPage}
                         >
-                            로그아웃
+                            내스터디
                         </button>
-                    </div>
+                        <button
+                            className="text-lg font-semibold cursor-pointer"
+                            onClick={goToChatPage}
+                        >
+                            채팅페이지
+                        </button>
+                        <FaBell
+                            className="text-2xl cursor-pointer"
+                            color="yellow"
+                            onClick={() => setIsAlarm(true)}
+                        />
+                        <div className="flex items-center space-x-2">
+                            <span className="text-lg font-semibold">
+                                {user.nickname}
+                            </span>
+                            <button
+                                className="px-3 py-1 bg-red-500 text-white rounded cursor-pointer"
+                                onClick={logoutHandler}
+                            >
+                                로그아웃
+                            </button>
+                        </div>
+                    </>
                 ) : (
                     // 로그인되지 않은 경우: 로그인 버튼 표시
                     <button
