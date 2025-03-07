@@ -14,7 +14,7 @@ const MyStudyDocumentPage = () => {
   
     const fetchStudies = async () => {
       try {
-          const response = await fetch("http://localhost:8090/api/study/my-studies", {
+          const response = await fetch("http://localhost:8090/api/v1/user/studies", {
               method: "GET",
               headers: {
                   "Authorization": `${token}`,
