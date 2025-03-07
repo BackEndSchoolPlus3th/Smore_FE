@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
-import axios from "axios";
 import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
+import { apiClient } from "../../shared";
 
 type Message = {
   type: "message";
@@ -29,108 +29,147 @@ const Chat: React.FC<ChatProps> = ({ roomId, chatType }) => {
   const chatEndRef = useRef<HTMLDivElement>(null);
   const stompClient = useRef<Client | null>(null);
 
-  // 로컬 스토리지에서 JWT 토큰 가져오기
-  const token = localStorage.getItem("token");
+  // (1) 로컬 스토리지에서 JWT 토큰과 userId 가져오기
+  const jwt = localStorage.getItem("jwt");
+  const currentUserId = localStorage.getItem("userId") || "anonymous";
 
-  /** HTTP API로 기존 채팅 히스토리 불러오기 */
+  // (2) 기존 채팅 히스토리 불러오기
   useEffect(() => {
-    axios
-      .get(`http://localhost:8090/api/chatrooms/${chatType}/${roomId}/messages`, {
-        headers: { Authorization: `Bearer ${token}` },
-        withCredentials: true,
-      })
+    apiClient
+      .get(`/api/v1/chatrooms/${chatType}/${roomId}/messages`)
       .then((response) => {
-        setMessages(response.data);
+        // 서버에서 가져온 메시지를 클라이언트 구조로 변환
+        const loadedMessages: ChatMessage[] = [];
+        let lastDate: string | null = null;
+
+        response.data.forEach((msg: any) => {
+          const dateObj = msg.createdDate ? new Date(msg.createdDate) : new Date();
+          const dateStr = dateObj.toLocaleDateString("ko-KR", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            weekday: "long",
+          });
+          const timeStr = dateObj.toLocaleTimeString("ko-KR", {
+            hour: "numeric",
+            minute: "numeric",
+            hour12: true,
+          });
+
+          // 내 메시지인지 상대방 메시지인지 구분
+          const senderType = msg.senderId === currentUserId ? "me" : "other";
+
+          // 날짜가 바뀌면 divider 삽입
+          if (!lastDate || lastDate !== dateStr) {
+            loadedMessages.push({ type: "divider", text: dateStr });
+            lastDate = dateStr;
+          }
+
+          loadedMessages.push({
+            type: "message",
+            sender: senderType,
+            text: msg.message,
+            time: timeStr,
+            date: dateStr,
+          });
+        });
+
+        setMessages(loadedMessages);
       })
       .catch((error) => {
         console.error("메시지 불러오기 실패:", error);
       });
-  }, [roomId, chatType, token]);
+  }, [roomId, chatType, jwt, currentUserId]);
 
-  /** WebSocket 연결 및 실시간 메시지 수신 */
+  // (3) WebSocket 연결 & 메시지 수신
   useEffect(() => {
     if (!stompClient.current) {
-      const socket = new SockJS("http://localhost:8090/ws");
+      const socket = new SockJS("http://localhost:8090/ws",null, { xhrWithCredentials: true } as any );
       stompClient.current = new Client({
         webSocketFactory: () => socket,
-        connectHeaders: { Authorization: `Bearer ${token}` },
+        connectHeaders: { Authorization: `Bearer ${jwt}` },
         onConnect: () => {
           console.log("WebSocket 연결됨");
           // 채팅방 구독
-          stompClient.current?.subscribe(`/topic/chatroom/${roomId}`, (message) => {
-            const received: ChatMessage = JSON.parse(message.body);
-            setMessages((prev) => [...prev, received]);
+          stompClient.current?.subscribe(`/topic/chatroom/${roomId}`, (msg) => {
+            const data = JSON.parse(msg.body);
+
+            // 내 메시지인지, 상대방 메시지인지 구분
+            const senderType = data.senderId === currentUserId ? "me" : "other";
+
+            const dateObj = data.timestamp ? new Date(data.timestamp) : new Date();
+            const dateStr = dateObj.toLocaleDateString("ko-KR", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+              weekday: "long",
+            });
+            const timeStr = dateObj.toLocaleTimeString("ko-KR", {
+              hour: "numeric",
+              minute: "numeric",
+              hour12: true,
+            });
+
+            setMessages((prev) => {
+              const lastMessage = prev[prev.length - 1];
+              let newMessages = [...prev];
+
+              // 날짜가 바뀌면 divider 삽입
+              if (!lastMessage || (lastMessage.type === "message" && lastMessage.date !== dateStr)) {
+                newMessages.push({ type: "divider", text: dateStr });
+              }
+
+              newMessages.push({
+                type: "message",
+                sender: senderType,
+                text: data.message,
+                time: timeStr,
+                date: dateStr,
+              });
+
+              return newMessages;
+            });
           });
         },
         onDisconnect: () => console.log("WebSocket 연결 종료"),
       });
       stompClient.current.activate();
     }
+
     return () => {
       stompClient.current?.deactivate();
       stompClient.current = null;
     };
-  }, [roomId, token]);
+  }, [roomId, jwt, currentUserId]);
 
-  /** 메시지가 추가될 때마다 스크롤 자동 이동 */
+  // (4) 메시지가 추가될 때마다 스크롤 자동 이동
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  /** 메시지 전송 */
+  // (5) 메시지 전송 
   const sendMessage = () => {
     if (input.trim() === "") return;
 
-    const now = new Date();
-    const currentDate = now.toLocaleDateString("ko-KR", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      weekday: "long",
-    });
-    const currentTime = now.toLocaleTimeString("ko-KR", {
-      hour: "numeric",
-      minute: "numeric",
-      hour12: true,
-    });
-
-    let newMessages = [...messages];
-    const lastMessage = messages[messages.length - 1];
-
-    // 날짜가 바뀌었거나 첫 메시지인 경우 날짜 구분선 추가
-    if (!lastMessage || (lastMessage.type === "message" && lastMessage.date !== currentDate)) {
-      newMessages.push({ type: "divider", text: currentDate });
-    }
-
-    const myMessage: Message = {
-      type: "message",
-      sender: "me",
-      text: input,
-      time: currentTime,
-      date: currentDate,
-    };
-
-    newMessages.push(myMessage);
-    setMessages(newMessages);
-
-    // 웹소켓을 통한 메시지 전송
+    // 그냥 서버로만 전송하고, 표시(렌더링)는 서버가 브로드캐스트한 이벤트로 처리
     if (stompClient.current?.connected) {
-      const payload = {
-        roomId,
-        chatType,
-        senderId: "me", // 실제 사용자 식별자로 대체 가능
-        message: input,
-        attachment: null,
-      };
       stompClient.current.publish({
-        destination: "/app/chat.sendMessage",
-        body: JSON.stringify(payload),
+        destination: "/app/chat/sendMessage",
+        body: JSON.stringify({
+          roomId,
+          chatType,
+          senderId: currentUserId,
+          message: input,
+          attachment: null,
+        }),
       });
     }
+
+    // 입력창 비우기
     setInput("");
   };
 
-  /** 텍스트 영역에서 Enter, Shift+Enter 구분 */
+  // (6) Enter 키 처리
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && (e.shiftKey || e.ctrlKey)) {
       e.preventDefault();
@@ -141,7 +180,7 @@ const Chat: React.FC<ChatProps> = ({ roomId, chatType }) => {
     }
   };
 
-  /** 날짜 구분선 렌더링 */
+  // 날짜 구분선 렌더링
   const renderDivider = (text: string, key: number) => (
     <div className="flex justify-center my-4" key={key}>
       <div className="bg-light-blue px-4 py-2 rounded-full text-sm font-semibold text-gray-700 shadow-md flex items-center">
@@ -161,16 +200,22 @@ const Chat: React.FC<ChatProps> = ({ roomId, chatType }) => {
             ) : (
               <div
                 key={index}
-                className={`flex my-2 ${msg.sender === "me" ? "justify-end" : "justify-start"}`}
+                className={`flex my-2 ${
+                  msg.sender === "me" ? "justify-end" : "justify-start"
+                }`}
               >
                 <div
                   className={`max-w-[60%] p-3 rounded-lg shadow-md ${
-                    msg.sender === "me" ? "bg-light-blue text-gray-800" : "bg-white text-gray-800"
+                    msg.sender === "me"
+                      ? "bg-light-blue text-gray-800"
+                      : "bg-white text-gray-800"
                   }`}
                   style={{ whiteSpace: "pre-wrap" }}
                 >
                   {msg.text}
-                  <div className="text-xs text-gray-500 mt-1 text-right">{msg.time}</div>
+                  <div className="text-xs text-gray-500 mt-1 text-right">
+                    {msg.time}
+                  </div>
                 </div>
               </div>
             )
@@ -187,7 +232,10 @@ const Chat: React.FC<ChatProps> = ({ roomId, chatType }) => {
             placeholder="메시지를 입력하세요."
             className="flex-1 p-2 resize-none border-none outline-none text-sm h-10 rounded-md"
           />
-          <button onClick={sendMessage} className="ml-3 px-4 py-2 bg-purple-500 text-white rounded-md hover:bg-purple-600">
+          <button
+            onClick={sendMessage}
+            className="ml-3 px-4 py-2 bg-purple-500 text-white rounded-md hover:bg-purple-600"
+          >
             전송
           </button>
         </div>
