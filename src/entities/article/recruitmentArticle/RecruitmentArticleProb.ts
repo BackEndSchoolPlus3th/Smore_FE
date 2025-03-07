@@ -1,3 +1,10 @@
+export interface pagedResponse {
+    currentPage: number;
+    pageSize: number;
+    totalCount: number;
+    data: RecruitmentArticleProps[];
+}
+
 export interface RecruitmentArticleProps {
     id: number;
     title: string;

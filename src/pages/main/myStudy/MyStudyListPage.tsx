@@ -5,8 +5,6 @@ import { fetchMyStudyList, MyStudyArticle } from '../../../features';
 import { MyStudyListArticleProps } from '../../../entities';
 import { Link } from 'react-router-dom';
 
-const pagesPerBlock = 10;
-
 const MyStudyListPage: React.FC = () => {
     // 전체 게시글을 저장
     const [articles, setArticles] = useState<MyStudyListArticleProps[]>([]);
@@ -16,9 +14,6 @@ const MyStudyListPage: React.FC = () => {
     >([]);
     const [page, setPage] = useState(1);
     const [pageSize] = useState(12);
-    // 현재 블록의 마지막 페이지 번호 (페이지 버튼에 사용)
-    const [endPage, setEndPage] = useState(1);
-    const [isEndPage, setIsEndPage] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
     // 전체 데이터를 한번만 가져오기
@@ -38,19 +33,12 @@ const MyStudyListPage: React.FC = () => {
         ? Math.ceil(articles.length / pageSize)
         : 1;
 
-    // 페이지 번호를 변경하고, 표시할 게시글과 페이징 블록 정보 업데이트
+    // 페이지 번호 변경 및 표시할 게시글 업데이트
     const handlePageChange = (newPage: number) => {
         // newPage가 총 페이지 수 범위를 벗어나면 변경하지 않음
         if (newPage < 1 || newPage > totalPages) return;
 
         setPage(newPage);
-        // 현재 페이지가 속한 블록의 시작 페이지 번호
-        const blockStart =
-            Math.floor((newPage - 1) / pagesPerBlock) * pagesPerBlock + 1;
-        // 블록의 끝 페이지 번호는 총 페이지 수를 넘지 않도록 계산
-        const blockEnd = Math.min(blockStart + pagesPerBlock - 1, totalPages);
-        setEndPage(blockEnd);
-        setIsEndPage(newPage === totalPages);
 
         // 현재 페이지에 해당하는 게시글 슬라이싱
         const startIndex = (newPage - 1) * pageSize;
@@ -108,8 +96,8 @@ const MyStudyListPage: React.FC = () => {
                 <PagingButton
                     setPage={handlePageChange}
                     page={page}
-                    endPage={endPage}
-                    isEndPage={isEndPage}
+                    totalCount={articles.length}
+                    pageSize={pageSize}
                 />
             </div>
         </div>
