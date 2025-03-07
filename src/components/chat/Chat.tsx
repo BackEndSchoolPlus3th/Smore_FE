@@ -40,7 +40,6 @@ const Chat: React.FC<ChatProps> = ({ roomId, chatType }) => {
         withCredentials: true,
       })
       .then((response) => {
-        // 서버에서 받아온 메시지가 ChatMessage 타입과 다를 경우 변환 작업이 필요할 수 있음
         setMessages(response.data);
       })
       .catch((error) => {
@@ -78,7 +77,7 @@ const Chat: React.FC<ChatProps> = ({ roomId, chatType }) => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  /** 메시지 전송 (날짜 구분선 추가 포함) */
+  /** 메시지 전송 */
   const sendMessage = () => {
     if (input.trim() === "") return;
 
@@ -118,6 +117,7 @@ const Chat: React.FC<ChatProps> = ({ roomId, chatType }) => {
     if (stompClient.current?.connected) {
       const payload = {
         roomId,
+        chatType,
         senderId: "me", // 실제 사용자 식별자로 대체 가능
         message: input,
         attachment: null,
