@@ -22,6 +22,7 @@ import {
     ErrorPage,
     SignupPage,
     MyStudyListPage,
+    MyPagePage,
 } from '../../pages';
 import { Header } from '../../widgets';
 import { SSEProvider } from '../../shared/sse/SSEProvider';
@@ -33,6 +34,12 @@ function App() {
                 <div className="App">
                     <Header />
                     <Routes>
+                        {/* 
+                        *
+                        * 스터디 
+                        *
+                        */}
+
                         <Route path="/study" element={<MyStudyPage />} />
                         <Route path="/mystudy" element={<MyStudyListPage />} />
                         <Route
@@ -52,12 +59,30 @@ function App() {
                             element={<MyStudyDocumentPage />}
                         />
                         <Route
+                            path="/study/:studyId/schedules"
+                            element={<CalenderPage />}
+                        />
+                        <Route
                             path="/study/:studyId/studysetting"
                             element={<MyStudySettingPage />}
                         />
 
-                        <Route path="/" element={<RecruitmentArticlesPage />} />
+
+                        {/* 
+                        *
+                        * 채팅 
+                        *
+                        */}
+                        
                         <Route path="/chat" element={<ChatPage />} />
+                        
+
+                        {/* 
+                        *
+                        * 스터디 모집 
+                        *
+                        */}
+                        <Route path="/" element={<RecruitmentArticlesPage />} />
                         <Route
                             path="/recruitment/:recruitmentId"
                             element={<RecruitmentContentPage />}
@@ -65,20 +90,30 @@ function App() {
                         <Route
                             path="/study/:studyId/article"
                             element={<MyStudyArticlePage />}
-                        />
-
-                        <Route
-                            path="/study/:studyId/schedules"
-                            element={<CalenderPage />}
-                        />
+                        />                     
 
                         <Route
                             path="/study/:studyId/article/recruitment/new"
                             element={<NewRecruitmentPage />}
                         />
+
+
+                        {/* 
+                        *
+                        * 회원
+                        *
+                        */}
                         <Route path="/login" element={<LoginPage />} />
                         <Route path="/signup" element={<SignupPage />} />
+                        <Route path="/mypage" element={<MyPagePage />} />
 
+
+
+                        {/* 
+                        *
+                        * 기타
+                        *
+                        */}
                         <Route path="/error" element={<ErrorPage />} />
                     </Routes>
                 </div>
