@@ -10,6 +10,7 @@ import { PagingButton } from '../../../../widgets';
 import {
     RecruitmentArticleSearch,
     fetchRecruitmentArticles,
+    FileUploadButton,
 } from '../../../../features';
 import { PageSizeSelect } from '../../../../shared';
 
@@ -155,6 +156,8 @@ const RecruitmentArticlesPage: React.FC = () => {
                 <p className="text-2xl font-bold text-dark-purple">
                     스터디 모집 게시판
                 </p>
+                {/* 파일 업로드 테스트 */}
+                <FileUploadButton />
                 <div className="flex gap-4 items-center">
                     <PageSizeSelect
                         value={pageSize}
