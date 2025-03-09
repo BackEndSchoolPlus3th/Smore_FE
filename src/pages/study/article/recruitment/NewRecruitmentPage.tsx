@@ -6,7 +6,10 @@ import {
     MarkdownPreview,
     RecruitmentModal,
 } from '../../../../components';
-import { postRecruitmentArticle } from '../../../../features';
+import {
+    postRecruitmentArticle,
+    MultiImageUploadRef,
+} from '../../../../features';
 
 const NewRecruitmentPage: React.FC = () => {
     const { studyId } = useParams<{ studyId: string }>();
@@ -27,6 +30,8 @@ const NewRecruitmentPage: React.FC = () => {
     });
     const [thumbnail, setThumbnail] = useState<File | null>(null);
     const [maxMember, setMaxMember] = useState<number>(0);
+
+    const multiImageUploadRef = useRef<MultiImageUploadRef>(null);
 
     const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
 
@@ -93,6 +98,13 @@ const NewRecruitmentPage: React.FC = () => {
         }
 
         try {
+            // 먼저 MultiImageUpload 컴포넌트의 uploadFiles를 호출하여 이미지 업로드
+            let uploadedUrls: string[] = [];
+            if (multiImageUploadRef.current) {
+                uploadedUrls = await multiImageUploadRef.current.uploadFiles();
+                console.log('업로드된 이미지 URL들:', uploadedUrls);
+            }
+
             await postRecruitmentArticle({
                 studyId,
                 title,
@@ -111,6 +123,8 @@ const NewRecruitmentPage: React.FC = () => {
             alert('모집글 게시 중 오류가 발생했습니다.');
         }
     };
+
+    const uploadPath = `study/${studyId}/images`;
 
     return (
         <div className="flex flex-col min-h-full">
@@ -139,6 +153,8 @@ const NewRecruitmentPage: React.FC = () => {
                         setTitle={setTitle}
                         setContent={setContent}
                         textAreaRef={textAreaRef}
+                        uploadPath={uploadPath}
+                        multiImageUploadRef={multiImageUploadRef}
                     />
                     <MarkdownPreview content={content} />
                 </div>

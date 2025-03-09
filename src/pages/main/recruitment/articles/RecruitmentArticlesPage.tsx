@@ -11,6 +11,7 @@ import {
     RecruitmentArticleSearch,
     fetchRecruitmentArticles,
     FileUploadButton,
+    MultiImageUpload,
 } from '../../../../features';
 import { PageSizeSelect } from '../../../../shared';
 
