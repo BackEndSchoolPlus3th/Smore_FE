@@ -151,6 +151,8 @@ const RecruitmentArticlesPage: React.FC = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [page, searchFilters]);
 
+    const fileUploadPath = 'recruitment';
+
     return (
         <div className="flex flex-col gap-4 w-full pb-4">
             <div className="sticky top-0 flex justify-between items-center w-full bg-white shadow p-4">
@@ -158,7 +160,9 @@ const RecruitmentArticlesPage: React.FC = () => {
                     스터디 모집 게시판
                 </p>
                 {/* 파일 업로드 테스트 */}
-                <FileUploadButton />
+                <div className="w-50">
+                    <FileUploadButton uploadPath={fileUploadPath} />
+                </div>
                 <div className="flex gap-4 items-center">
                     <PageSizeSelect
                         value={pageSize}

@@ -14,6 +14,8 @@ import { fileUploadApiClient } from '../../shared';
 export interface MultiImageUploadRef {
     // 선택된 파일들을 모두 업로드한 후, 업로드된 URL 배열을 반환
     uploadFiles: () => Promise<string[]>;
+    // 선택된 파일의 개수를 반환 (선택되었지만 아직 업로드되지 않은 경우)
+    getSelectedCount: () => number;
 }
 
 interface MultiImageUploadProps {
@@ -41,7 +43,7 @@ const MultiImageUpload = forwardRef<MultiImageUploadRef, MultiImageUploadProps>(
         // 이미지 추가 버튼 클릭 시 파일 선택 창 열기
         const handleIconClick = () => {
             if (files.length >= MAX_FILES) {
-                alert('최대 5개 파일만 업로드 가능합니다.');
+                alert('최대 5개 파일만 업로드 가능');
                 return;
             }
             fileInputRef.current?.click();
@@ -55,7 +57,7 @@ const MultiImageUpload = forwardRef<MultiImageUploadRef, MultiImageUploadProps>(
                 // 각 파일에 대해 미리보기를 생성
                 selectedFiles.forEach((file) => {
                     if (files.length + newFiles.length >= MAX_FILES) {
-                        alert('최대 5개 파일만 업로드 가능합니다.');
+                        alert('최대 5개 파일만 업로드 가능');
                         return;
                     }
                     if (file.size > MAX_FILE_SIZE) {
@@ -120,7 +122,7 @@ const MultiImageUpload = forwardRef<MultiImageUploadRef, MultiImageUploadProps>(
             updatedPreviews.splice(toIndex, 0, movedItem);
             setPreviews(updatedPreviews);
 
-            // files 배열도 동일하게 재정렬 (previews와 순서가 일치해야 함)
+            // files 배열도 동일하게 재정렬 (previews와 순서 일치)
             const updatedFiles = [...files];
             const [movedFile] = updatedFiles.splice(fromIndex, 1);
             updatedFiles.splice(toIndex, 0, movedFile);
@@ -131,8 +133,8 @@ const MultiImageUpload = forwardRef<MultiImageUploadRef, MultiImageUploadProps>(
         /**
          * uploadFiles 함수
          * - 선택된 모든 파일들을 S3에 업로드합니다.
-         * - uploadPath를 경로로 사용하여 프리사인 URL 요청 시 고유한 파일 이름으로 키를 구성합니다.
-         * - 업로드가 완료되면 업로드된 파일 URL 배열을 반환합니다.
+         * - uploadPath를 사용해 프리사인 URL 요청 시 고유한 파일 이름으로 키를 구성합니다.
+         * - 업로드된 파일 URL 배열을 반환합니다.
          */
         const uploadFiles = async (): Promise<string[]> => {
             const uploadedUrls: string[] = [];
@@ -164,7 +166,11 @@ const MultiImageUpload = forwardRef<MultiImageUploadRef, MultiImageUploadProps>(
             return uploadedUrls;
         };
 
-        useImperativeHandle(ref, () => ({ uploadFiles }));
+        // 외부에서 uploadFiles 및 getSelectedCount 메서드를 호출할 수 있도록 노출
+        useImperativeHandle(ref, () => ({
+            uploadFiles,
+            getSelectedCount: () => files.length,
+        }));
 
         return (
             <div className="relative inline-block group">

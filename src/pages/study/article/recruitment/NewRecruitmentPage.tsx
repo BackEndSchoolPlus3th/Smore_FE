@@ -15,7 +15,7 @@ const NewRecruitmentPage: React.FC = () => {
     const { studyId } = useParams<{ studyId: string }>();
     const navigate = useNavigate();
 
-    // 에디터와 모달 관련 상태들
+    // 에디터 및 모달 관련 상태들
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -28,11 +28,14 @@ const NewRecruitmentPage: React.FC = () => {
         start: '',
         end: '',
     });
-    const [thumbnail, setThumbnail] = useState<File | null>(null);
     const [maxMember, setMaxMember] = useState<number>(0);
+    // thumbnail state: 업로드된 썸네일의 S3 URL (문자열)
+    const [thumbnail, setThumbnail] = useState<string>('');
+    // 다중 이미지 업로드 결과 (콤마로 구분된 URL 문자열)
+    const [imageUrlsStr, setImageUrlsStr] = useState<string>('');
 
+    // FileUploadButton(또는 MultiImageUpload) 컴포넌트에 접근하기 위한 ref
     const multiImageUploadRef = useRef<MultiImageUploadRef>(null);
-
     const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
 
     if (!studyId) {
@@ -54,6 +57,7 @@ const NewRecruitmentPage: React.FC = () => {
         }, 300);
     };
 
+    // 모집기간 유효성 검사 함수
     const isEndDateValid = () => {
         const currentDate = new Date().toISOString().split('T')[0];
         return (
@@ -62,7 +66,7 @@ const NewRecruitmentPage: React.FC = () => {
         );
     };
 
-    // 해시태그 처리 함수
+    // 해시태그 입력 처리
     const handleHashtagKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
         const newHashtag = hashtagInput.trim().toLowerCase();
         const hashtagRegex = /^[a-zA-Z0-9가-힣]+$/;
@@ -82,7 +86,15 @@ const NewRecruitmentPage: React.FC = () => {
         setHashtags(hashtags.filter((_, i) => i !== index));
     };
 
-    // 모달 내 "확인" 버튼 클릭시 호출
+    /**
+     * 모달 내 "확인" 버튼 클릭 시 처리하는 함수
+     * - 모든 필드의 유효성을 검사합니다.
+     * - 만약 다중 이미지 업로드(MultiImageUpload) 컴포넌트에 선택된 파일이 있다면(아직 업로드되지 않았을 경우),
+     *   confirm 창을 띄워 업로드 진행 여부를 확인합니다.
+     * - 사용자가 확인하면 multiImageUploadRef.current.uploadFiles()를 호출하여 업로드된 URL 배열을 받고,
+     *   이를 콤마로 구분한 문자열(imageUrlsStr)로 변환하고, 첫 번째 URL은 썸네일로 사용합니다.
+     * - 이후 게시글 API를 호출합니다.
+     */
     const handleModalConfirm = async () => {
         if (
             !title ||
@@ -96,15 +108,37 @@ const NewRecruitmentPage: React.FC = () => {
             alert('모든 필드를 올바르게 입력해주세요.');
             return;
         }
+        let finalImageUrlsStr = imageUrlsStr; // 기존 업로드된 이미지 URL 문자열
+        // 만약 multiImageUpload에 선택된 파일이 있다면
+        if (
+            multiImageUploadRef.current &&
+            multiImageUploadRef.current.getSelectedCount() > 0
+        ) {
+            const shouldUpload = window.confirm(
+                '선택된 이미지 파일이 있으나 아직 업로드되지 않았습니다. 업로드 후 진행하시겠습니까?'
+            );
+            if (!shouldUpload) {
+                // 사용자가 취소하면 게시글 업로드 중단
+                return;
+            }
+            // 파일 업로드 진행
+            const uploadedUrls =
+                await multiImageUploadRef.current.uploadFiles();
+            if (uploadedUrls && uploadedUrls.length > 0) {
+                finalImageUrlsStr = uploadedUrls.join(',');
+                // 썸네일이 없으면 첫 번째 URL을 thumbnail로 설정
+                if (!thumbnail) {
+                    setThumbnail(uploadedUrls[0]);
+                }
+            } else {
+                alert(
+                    '이미지 업로드가 완료되지 않았습니다. 다시 시도해주세요.'
+                );
+                return;
+            }
+        }
 
         try {
-            // 먼저 MultiImageUpload 컴포넌트의 uploadFiles를 호출하여 이미지 업로드
-            let uploadedUrls: string[] = [];
-            if (multiImageUploadRef.current) {
-                uploadedUrls = await multiImageUploadRef.current.uploadFiles();
-                console.log('업로드된 이미지 URL들:', uploadedUrls);
-            }
-
             await postRecruitmentArticle({
                 studyId,
                 title,
@@ -114,7 +148,8 @@ const NewRecruitmentPage: React.FC = () => {
                 region,
                 recruitmentPeriod,
                 maxMember,
-                thumbnail,
+                thumbnail, // 업로드된 썸네일의 S3 URL
+                imageUrls: finalImageUrlsStr, // 콤마로 구분된 다중 이미지 URL 문자열
             });
             closeModal();
             alert('모집글이 성공적으로 게시되었습니다.');
@@ -124,6 +159,7 @@ const NewRecruitmentPage: React.FC = () => {
         }
     };
 
+    // 업로드 경로는 studyId 기반으로 설정합니다.
     const uploadPath = `study/${studyId}/images`;
 
     return (
@@ -144,7 +180,7 @@ const NewRecruitmentPage: React.FC = () => {
                 </div>
             </div>
 
-            {/* 본문 영역 */}
+            {/* 본문 영역: 에디터와 미리보기 */}
             <div className="p-4">
                 <div className="flex flex-row space-x-4">
                     <Editor

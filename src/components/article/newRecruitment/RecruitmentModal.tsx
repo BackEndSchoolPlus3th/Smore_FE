@@ -1,6 +1,7 @@
 import React from 'react';
 import HashtagInput from './HashtagInput';
 import RegionSelect from './RegionSelect';
+import { FileUploadButton } from '../../../features';
 
 interface RecruitmentModalProps {
     title: string;
@@ -19,8 +20,9 @@ interface RecruitmentModalProps {
     >;
     maxMember: number;
     setMaxMember: React.Dispatch<React.SetStateAction<number>>;
-    thumbnail: File | null;
-    setThumbnail: React.Dispatch<React.SetStateAction<File | null>>;
+    // 변경: thumbnail은 now a URL string
+    thumbnail: string;
+    setThumbnail: React.Dispatch<React.SetStateAction<string>>;
     isClosing: boolean;
     closeModal: () => void;
     onConfirm: () => void;
@@ -49,15 +51,10 @@ const RecruitmentModal: React.FC<RecruitmentModalProps> = ({
     onConfirm,
     isEndDateValid,
 }) => {
+    // 모달 외부 클릭 시 닫기
     const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
         if (e.target === e.currentTarget) {
             closeModal();
-        }
-    };
-
-    const handleThumbnailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files[0]) {
-            setThumbnail(e.target.files[0]);
         }
     };
 
@@ -67,11 +64,12 @@ const RecruitmentModal: React.FC<RecruitmentModalProps> = ({
             onClick={handleOverlayClick}
         >
             <div
-                className={`bg-white rounded-lg shadow-lg max-w-lg w-full p-6 ${isClosing ? 'modal-slide-down' : 'modal-slide-up'}`}
+                className={`bg-white rounded-lg shadow-lg max-w-lg w-full p-6 ${
+                    isClosing ? 'modal-slide-down' : 'modal-slide-up'
+                }`}
             >
                 <h2 className="text-2xl font-bold mb-4">{title}</h2>
-
-                {/* 소개글 */}
+                {/* 소개글 입력 */}
                 <div className="mb-4">
                     <label className="block text-gray-700 text-sm font-medium mb-2">
                         소개글
@@ -85,8 +83,7 @@ const RecruitmentModal: React.FC<RecruitmentModalProps> = ({
                         className="w-full border border-gray-300 rounded p-2 focus:outline-none focus:border-purple-500"
                     />
                 </div>
-
-                {/* 해시태그 */}
+                {/* 해시태그 입력 */}
                 <div className="mb-4">
                     <label className="block text-gray-700 text-sm font-medium mb-2">
                         해시태그
@@ -99,12 +96,10 @@ const RecruitmentModal: React.FC<RecruitmentModalProps> = ({
                         onRemoveHashtag={onRemoveHashtag}
                     />
                 </div>
-
                 {/* 지역 선택 */}
                 <div className="mb-4">
                     <RegionSelect region={region} setRegion={setRegion} />
                 </div>
-
                 {/* 모집기간 */}
                 <div className="mb-4">
                     <label className="block text-gray-700 text-sm font-medium mb-2">
@@ -140,8 +135,7 @@ const RecruitmentModal: React.FC<RecruitmentModalProps> = ({
                         </p>
                     )}
                 </div>
-
-                {/* 최대 인원 */}
+                {/* 최대 인원 입력 */}
                 <div className="mb-4">
                     <label className="block text-gray-700 text-sm font-medium mb-2">
                         최대 인원
@@ -153,20 +147,17 @@ const RecruitmentModal: React.FC<RecruitmentModalProps> = ({
                         className="w-full border border-gray-300 rounded p-2 focus:outline-none focus:border-purple-500"
                     />
                 </div>
-
-                {/* 썸네일 */}
+                {/* 썸네일 업로드 영역 */}
                 <div className="mb-4">
                     <label className="block text-gray-700 text-sm font-medium mb-2">
                         썸네일
                     </label>
-                    <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleThumbnailChange}
-                        className="w-full border border-gray-300 rounded p-2 focus:outline-none focus:border-purple-500 cursor-pointer"
+                    {/* FileUploadButton를 사용하여 파일 업로드 후 onUploadComplete로 URL을 setThumbnail 호출 */}
+                    <FileUploadButton
+                        uploadPath="recruitment/thumbnail"
+                        onUploadComplete={(url: string) => setThumbnail(url)}
                     />
                 </div>
-
                 {/* 모달 하단 버튼 */}
                 <div className="flex justify-end space-x-2">
                     <button
