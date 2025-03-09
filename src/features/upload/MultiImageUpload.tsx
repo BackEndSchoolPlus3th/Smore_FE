@@ -31,6 +31,12 @@ const MultiImageUpload = forwardRef<MultiImageUploadRef, MultiImageUploadProps>(
         const MAX_FILES = 5;
         const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
+        // 고유 파일 이름 생성: 현재 시간과 0~999 사이의 랜덤값을 접두사로 추가
+        const generateUniqueFileName = (file: File): string => {
+            const uniquePrefix = `${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+            return `${uniquePrefix}-${file.name}`;
+        };
+
         // 이미지 추가 버튼 클릭 시 파일 선택 창 열기
         const handleIconClick = () => {
             if (files.length >= MAX_FILES) {
@@ -81,18 +87,21 @@ const MultiImageUpload = forwardRef<MultiImageUploadRef, MultiImageUploadProps>(
         /**
          * uploadFiles 함수
          * - 선택된 모든 파일들을 S3에 업로드합니다.
-         * - uploadPath를 경로로 사용하여 프리사인 URL 요청 시 파일 키를 구성합니다.
+         * - uploadPath를 경로로 사용하여 프리사인 URL 요청 시 고유한 파일 이름으로 키를 구성합니다.
          * - 업로드가 완료되면 업로드된 파일 URL 배열을 반환합니다.
          */
         const uploadFiles = async (): Promise<string[]> => {
             const uploadedUrls: string[] = [];
             for (const file of files) {
                 try {
+                    // 고유 파일 이름 생성
+                    const uniqueFileName = generateUniqueFileName(file);
+                    // 프리사인 URL 요청 시 파일 키는 uploadPath와 uniqueFileName의 조합
                     const response = await fileUploadApiClient.get(
                         '/api/v1/s3/presign',
                         {
                             params: {
-                                fileName: `${uploadPath}/${file.name}`,
+                                fileName: `${uploadPath}/${uniqueFileName}`,
                                 contentType: file.type,
                             },
                         }
