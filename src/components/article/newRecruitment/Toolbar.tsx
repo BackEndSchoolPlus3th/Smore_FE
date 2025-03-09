@@ -24,34 +24,33 @@ const Toolbar: React.FC<ToolbarProps> = ({
     return (
         <div className="flex space-x-2 mb-2 items-center">
             <button
-                className="p-2 rounded focus:outline-none cursor-pointer"
+                className="p-2 rounded focus:outline-none cursor-pointer hover:text-purple-700"
                 title="Bold"
                 onClick={onBold}
             >
                 <FaBold />
             </button>
             <button
-                className="p-2 rounded focus:outline-none cursor-pointer"
+                className="p-2 rounded focus:outline-none cursor-pointer hover:text-purple-700"
                 title="Italic"
                 onClick={onItalic}
             >
                 <FaItalic />
             </button>
             <button
-                className="p-2 rounded focus:outline-none cursor-pointer"
+                className="p-2 rounded focus:outline-none cursor-pointer hover:text-purple-700"
                 title="Link"
                 onClick={onLink}
             >
                 <FaLink />
             </button>
             <button
-                className="p-2 rounded focus:outline-none cursor-pointer"
+                className="p-2 rounded focus:outline-none cursor-pointer hover:text-purple-700"
                 title="Code"
                 onClick={onCode}
             >
                 <FaCode />
             </button>
-            {/* MultiImageUpload 컴포넌트를 이미지 업로드 아이콘 위치에 삽입 */}
             <MultiImageUpload
                 ref={multiImageUploadRef}
                 uploadPath={uploadPath}

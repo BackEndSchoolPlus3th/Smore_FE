@@ -28,6 +28,7 @@ const MultiImageUpload = forwardRef<MultiImageUploadRef, MultiImageUploadProps>(
             { file: File; preview: string }[]
         >([]);
         const fileInputRef = useRef<HTMLInputElement>(null);
+        const draggedItemIndex = useRef<number | null>(null);
         const MAX_FILES = 5;
         const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
@@ -46,34 +47,47 @@ const MultiImageUpload = forwardRef<MultiImageUploadRef, MultiImageUploadProps>(
             fileInputRef.current?.click();
         };
 
-        // 파일 선택 후 처리 (한 번에 하나씩 선택)
+        // 파일 선택 후 처리 (여러 파일 선택 지원)
         const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
             if (e.target.files) {
-                const file = e.target.files[0];
-                if (!file) return;
-                if (file.size > MAX_FILE_SIZE) {
-                    alert('파일 크기는 최대 5MB로 제한됩니다.');
-                    return;
-                }
-                // 동일 파일 중복 선택 방지
-                if (
-                    files.some(
-                        (f) => f.name === file.name && f.size === file.size
-                    )
-                ) {
-                    alert('동일한 파일은 업로드할 수 없습니다.');
-                    return;
-                }
-                setFiles((prev) => [...prev, file]);
-                const reader = new FileReader();
-                reader.onloadend = () => {
-                    setPreviews((prev) => [
-                        ...prev,
-                        { file, preview: reader.result as string },
-                    ]);
-                };
-                reader.readAsDataURL(file);
-                // 같은 파일 재선택을 위해 value 초기화
+                const selectedFiles = Array.from(e.target.files);
+                const newFiles: File[] = [];
+                // 각 파일에 대해 미리보기를 생성
+                selectedFiles.forEach((file) => {
+                    if (files.length + newFiles.length >= MAX_FILES) {
+                        alert('최대 5개 파일만 업로드 가능합니다.');
+                        return;
+                    }
+                    if (file.size > MAX_FILE_SIZE) {
+                        alert(
+                            `파일 ${file.name} 크기는 최대 5MB로 제한됩니다.`
+                        );
+                        return;
+                    }
+                    if (
+                        files
+                            .concat(newFiles)
+                            .some(
+                                (f) =>
+                                    f.name === file.name && f.size === file.size
+                            )
+                    ) {
+                        alert(
+                            `동일한 파일 ${file.name}은 업로드할 수 없습니다.`
+                        );
+                        return;
+                    }
+                    newFiles.push(file);
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                        setPreviews((prev) => [
+                            ...prev,
+                            { file, preview: reader.result as string },
+                        ]);
+                    };
+                    reader.readAsDataURL(file);
+                });
+                setFiles((prev) => [...prev, ...newFiles]);
                 e.target.value = '';
             }
         };
@@ -82,6 +96,36 @@ const MultiImageUpload = forwardRef<MultiImageUploadRef, MultiImageUploadProps>(
         const handleRemoveFile = (index: number) => {
             setFiles((prev) => prev.filter((_, i) => i !== index));
             setPreviews((prev) => prev.filter((_, i) => i !== index));
+        };
+
+        // 드래그 시작: draggedItemIndex 설정
+        const handleDragStart = (index: number) => {
+            draggedItemIndex.current = index;
+        };
+
+        // 드래그 오버: 기본 동작 취소하여 drop 허용
+        const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+            e.preventDefault();
+        };
+
+        // 드롭 시, draggedItemIndex와 drop 대상 인덱스를 이용해 배열 재정렬
+        const handleDrop = (dropIndex: number) => {
+            if (draggedItemIndex.current === null) return;
+            const fromIndex = draggedItemIndex.current;
+            const toIndex = dropIndex;
+            if (fromIndex === toIndex) return;
+
+            const updatedPreviews = [...previews];
+            const [movedItem] = updatedPreviews.splice(fromIndex, 1);
+            updatedPreviews.splice(toIndex, 0, movedItem);
+            setPreviews(updatedPreviews);
+
+            // files 배열도 동일하게 재정렬 (previews와 순서가 일치해야 함)
+            const updatedFiles = [...files];
+            const [movedFile] = updatedFiles.splice(fromIndex, 1);
+            updatedFiles.splice(toIndex, 0, movedFile);
+            setFiles(updatedFiles);
+            draggedItemIndex.current = null;
         };
 
         /**
@@ -94,9 +138,7 @@ const MultiImageUpload = forwardRef<MultiImageUploadRef, MultiImageUploadProps>(
             const uploadedUrls: string[] = [];
             for (const file of files) {
                 try {
-                    // 고유 파일 이름 생성
                     const uniqueFileName = generateUniqueFileName(file);
-                    // 프리사인 URL 요청 시 파일 키는 uploadPath와 uniqueFileName의 조합
                     const response = await fileUploadApiClient.get(
                         '/api/v1/s3/presign',
                         {
@@ -110,7 +152,6 @@ const MultiImageUpload = forwardRef<MultiImageUploadRef, MultiImageUploadProps>(
                     await axios.put(presignedUrl, file, {
                         headers: { 'Content-Type': file.type },
                     });
-                    // 쿼리 스트링 제거하여 실제 파일 URL 획득
                     const fileUrl = presignedUrl.split('?')[0];
                     uploadedUrls.push(fileUrl);
                 } catch (error) {
@@ -118,21 +159,19 @@ const MultiImageUpload = forwardRef<MultiImageUploadRef, MultiImageUploadProps>(
                     alert(`파일 ${file.name} 업로드 실패`);
                 }
             }
-            // 업로드 후 상태 초기화
             setFiles([]);
             setPreviews([]);
             return uploadedUrls;
         };
 
-        // 외부에서 uploadFiles 함수를 호출할 수 있도록 노출
         useImperativeHandle(ref, () => ({ uploadFiles }));
 
         return (
-            <div className="relative inline-block">
+            <div className="relative inline-block group">
                 {/* 이미지 추가 버튼 */}
                 <button
                     onClick={handleIconClick}
-                    className="p-2 text-blue-500 hover:text-blue-600 focus:outline-none"
+                    className="p-2 hover:text-purple-700 focus:outline-none cursor-pointer"
                     title="이미지 추가"
                 >
                     <FaImage size={24} />
@@ -140,16 +179,27 @@ const MultiImageUpload = forwardRef<MultiImageUploadRef, MultiImageUploadProps>(
                 <input
                     type="file"
                     accept="image/*"
+                    multiple
                     ref={fileInputRef}
                     onChange={handleFileChange}
                     style={{ display: 'none' }}
                 />
                 {/* 프리뷰 팝오버 */}
                 {previews.length > 0 && (
-                    <div className="absolute top-full right-0 mt-2 z-10 bg-white border border-gray-300 p-2 rounded shadow w-48">
+                    <div className="absolute top-6 left-0 mt-2 z-10 bg-white border border-gray-300 p-2 rounded shadow w-48 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none group-hover:pointer-events-auto">
                         <div className="grid grid-cols-2 gap-2">
                             {previews.map((item, index) => (
-                                <div key={index} className="relative">
+                                <div
+                                    key={index}
+                                    className="relative"
+                                    draggable
+                                    onDragStart={() => handleDragStart(index)}
+                                    onDragOver={handleDragOver}
+                                    onDrop={() => handleDrop(index)}
+                                >
+                                    <p className="absolute top-0 left-0 bg-gray-500 text-white px-1 py-0.5 text-xs rounded">
+                                        {index + 1}
+                                    </p>
                                     <img
                                         src={item.preview}
                                         alt={item.file.name}
@@ -157,7 +207,7 @@ const MultiImageUpload = forwardRef<MultiImageUploadRef, MultiImageUploadProps>(
                                     />
                                     <button
                                         onClick={() => handleRemoveFile(index)}
-                                        className="absolute top-0 right-0 bg-red-500 rounded-full text-white p-1 hover:bg-red-600 focus:outline-none"
+                                        className="absolute top-0 right-0 bg-red-400 rounded-full text-white p-0.5 hover:bg-red-500 focus:outline-none cursor-pointer"
                                         title="삭제"
                                     >
                                         <MdOutlineCancel size={12} />
