@@ -1,5 +1,6 @@
 // api
 export { default as apiClient } from './api/ApiClient';
+export { default as fileUploadApiClient } from './api/uploadClient';
 
 // types
 export type { ApiResponse } from './api/ApiResponse';

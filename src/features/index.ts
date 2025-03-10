@@ -21,3 +21,8 @@ export { default as SignupForm } from './auth/ui/SignupForm';
 // myStudyList
 export { fetchMyStudyList } from './article/myStudyList/api/myStudyListApi';
 export { default as MyStudyArticle } from './article/myStudyList/ui/MyStudyArticle';
+
+// FileUploadButton
+export { default as FileUploadButton } from './upload/FileUploadButton';
+export { default as MultiImageUpload } from './upload/MultiImageUpload';
+export type { MultiImageUploadRef } from './upload/MultiImageUpload';
