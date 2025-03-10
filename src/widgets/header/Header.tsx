@@ -38,24 +38,7 @@ const Header = () => {
                 />
             </Link>
             <div className="flex items-center space-x-4">
-                <AlarmPage isOpen={isAlarm} onClose={() => setIsAlarm(false)} />
-                <button
-                    className="text-lg font-semibold cursor-pointer"
-                    onClick={goToStudyMainPage}
-                >
-                    내스터디
-                </button>
-                <button
-                    className="text-lg font-semibold cursor-pointer"
-                    onClick={goToChatPage}
-                >
-                    채팅페이지
-                </button>
-                <FaBell
-                    className="text-2xl cursor-pointer"
-                    color="yellow"
-                    onClick={() => setIsAlarm(true)}
-                />
+            
                 <AlarmPage isOpen={isAlarm} onClose={() => setIsAlarm(false)} events={events} />
                 {user ? (
                     // 로그인된 경우: 내스터디, 채팅페이지, 알림, 닉네임, 로그아웃 버튼 표시
