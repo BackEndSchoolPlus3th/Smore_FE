@@ -115,12 +115,7 @@ const NewRecruitmentPage: React.FC = () => {
                 finalImageUrlsList = uploadedUrls;
                 if (!thumbnail) {
                     setThumbnail(uploadedUrls[0]);
-                    console.log(
-                        'Thumbnail set from multiImageUpload:',
-                        uploadedUrls[0]
-                    );
                 }
-                console.log('Uploaded multi image URLs:', finalImageUrlsList);
             } else {
                 alert(
                     '이미지 업로드가 완료되지 않았습니다. 다시 시도해주세요.'
@@ -143,12 +138,12 @@ const NewRecruitmentPage: React.FC = () => {
                 recruitmentPeriod,
                 maxMember,
                 thumbnail, // 업로드된 썸네일의 S3 URL
-                imageUrls: finalImageUrlsList, // List<string> 형태로 전송
+                imageUrls: finalImageUrlsList,
             });
             closeModal();
             alert('모집글이 성공적으로 게시되었습니다.');
-        } catch (error) {
-            console.error('모집글 게시 중 오류 발생:', error);
+            navigate(`/study/${studyId}`);
+        } catch {
             alert('모집글 게시 중 오류가 발생했습니다.');
         }
     };
