@@ -6,7 +6,7 @@ export { default as fileUploadApiClient } from './api/uploadClient';
 export type { ApiResponse } from './api/ApiResponse';
 
 export type { AppDispatch, RootState } from './store/store';
-export { store } from './store/store';
+export { store, persistor } from './store/store';
 
 // auth
 export type { SignupFormValues, SignupError } from './types/auth';
