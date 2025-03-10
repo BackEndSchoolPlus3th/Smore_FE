@@ -11,11 +11,13 @@ interface Alarm {
   isRead: boolean;
   senderId: string;   // 채팅을 위한 필드 추가
   receiverId: string;
+  events: string[];
 }
 
 // 2. props 타입 간소화
 interface AlarmPageProps {
   isOpen: boolean;
+  events: string[];
   onClose: () => void;
 }
 
