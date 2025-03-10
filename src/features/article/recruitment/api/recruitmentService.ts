@@ -1,4 +1,3 @@
-// src/shared/api.ts (또는 해당 API 파일)
 import { apiClient } from '../../../../shared';
 
 interface RecruitmentArticlePayload {
@@ -11,7 +10,7 @@ interface RecruitmentArticlePayload {
     recruitmentPeriod: { start: string; end: string };
     maxMember: number;
     thumbnail: string | null;
-    imageUrls?: string;
+    imageUrls?: string[];
 }
 
 export const postRecruitmentArticle = async (
@@ -30,11 +29,9 @@ export const postRecruitmentArticle = async (
             .toISOString()
             .split('T')[0],
         hashtags: payload.hashtags,
-        thumbnail: payload.thumbnail,
+        thumbnailUrl: payload.thumbnail,
         imageUrls: payload.imageUrls,
     };
-
-    console.log('JSON 데이터 전송:', data);
 
     return apiClient.post(
         `/api/v1/study/${payload.studyId}/recruitmentArticle`,

@@ -20,7 +20,6 @@ interface RecruitmentModalProps {
     >;
     maxMember: number;
     setMaxMember: React.Dispatch<React.SetStateAction<number>>;
-    // 변경: thumbnail은 now a URL string
     thumbnail: string;
     setThumbnail: React.Dispatch<React.SetStateAction<string>>;
     isClosing: boolean;
@@ -51,7 +50,6 @@ const RecruitmentModal: React.FC<RecruitmentModalProps> = ({
     onConfirm,
     isEndDateValid,
 }) => {
-    // 모달 외부 클릭 시 닫기
     const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
         if (e.target === e.currentTarget) {
             closeModal();
@@ -152,10 +150,11 @@ const RecruitmentModal: React.FC<RecruitmentModalProps> = ({
                     <label className="block text-gray-700 text-sm font-medium mb-2">
                         썸네일
                     </label>
-                    {/* FileUploadButton를 사용하여 파일 업로드 후 onUploadComplete로 URL을 setThumbnail 호출 */}
                     <FileUploadButton
                         uploadPath="recruitment/thumbnail"
-                        onUploadComplete={(url: string) => setThumbnail(url)}
+                        onUploadComplete={(url: string) => {
+                            setThumbnail(url);
+                        }}
                     />
                 </div>
                 {/* 모달 하단 버튼 */}

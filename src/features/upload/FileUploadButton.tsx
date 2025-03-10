@@ -9,18 +9,18 @@ import { fileUploadApiClient } from '../../shared';
 import { MdOutlineCancel } from 'react-icons/md';
 
 export interface FileUploadButtonRef {
-    // 단일 파일 업로드를 트리거하는 메서드 (여러 파일 업로드일 경우 "uploadFiles" 사용)
+    // 단일 파일 업로드를 트리거하는 메서드
     uploadFiles: () => Promise<string[]>;
 }
 
 interface FileUploadButtonProps {
-    // 파일 업로드 시 사용할 경로(디렉터리). 예: "studies/123/images"
+    // 파일 업로드 시 사용할 경로 (예: "studies/123/images")
     uploadPath: string;
     // 부모에게 업로드 상태(업로드 완료 여부)를 전달하는 콜백
     onUploadStatusChange?: (isUploaded: boolean) => void;
-    // 부모에게 업로드 완료된 이미지의 S3 URL을 전달하는 콜백
+    // 부모에게 업로드 완료된 파일의 S3 URL을 전달하는 콜백 (예: thumbnail)
     onUploadComplete?: (uploadedUrl: string) => void;
-    // 파일이 선택되었음을 부모에 알리는 콜백
+    // 파일 선택 시 부모에 알리는 콜백 (옵션)
     onFileSelected?: () => void;
 }
 
@@ -34,7 +34,7 @@ const FileUploadButton = forwardRef<FileUploadButtonRef, FileUploadButtonProps>(
         const [uploadedUrl, setUploadedUrl] = useState<string>('');
         const [uploadedFileName, setUploadedFileName] = useState<string>('');
 
-        // 고유 파일 이름 생성: 현재 시간과 0~999 사이의 랜덤값을 접두사로 추가
+        // 고유 파일 이름 생성 (중복 방지를 위해 현재 시간과 랜덤숫자 사용)
         const generateUniqueFileName = (file: File): string => {
             const uniquePrefix = `${Date.now()}-${Math.floor(Math.random() * 1000)}`;
             return `${uniquePrefix}-${file.name}`;
@@ -42,7 +42,8 @@ const FileUploadButton = forwardRef<FileUploadButtonRef, FileUploadButtonProps>(
 
         /**
          * 파일 선택 핸들러
-         * - 파일 선택 시, 기존에 업로드된 파일이 있으면 삭제 후 새 파일을 설정하고 부모에 onFileSelected 호출
+         * - 파일 선택 시 기존 업로드된 파일이 있으면 삭제하고, 새 파일을 상태에 저장
+         * - 선택된 파일 정보는 콘솔에 출력하여 확인
          */
         const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
             if (event.target.files && event.target.files.length > 0) {
@@ -51,6 +52,7 @@ const FileUploadButton = forwardRef<FileUploadButtonRef, FileUploadButtonProps>(
                     handleDelete();
                 }
                 const selected = event.target.files[0];
+                console.log('File selected:', selected);
                 setFile(selected);
                 if (onFileSelected) onFileSelected();
                 if (onUploadStatusChange) onUploadStatusChange(false);
@@ -59,8 +61,9 @@ const FileUploadButton = forwardRef<FileUploadButtonRef, FileUploadButtonProps>(
 
         /**
          * 업로드 핸들러
-         * - 백엔드 API를 통해 프리사인 URL을 요청하고, 해당 URL로 PUT 요청하여 S3에 파일 업로드.
-         * - 업로드 성공 시, 고유 파일 이름과 실제 파일 URL을 상태에 저장하고, 부모에 업로드 상태와 URL 전달.
+         * - 백엔드 API를 통해 프리사인 URL을 요청하고 해당 URL로 파일을 S3에 업로드
+         * - 업로드 성공 시, 생성된 고유 파일 이름과 실제 파일 URL(쿼리스트링 제거)을 상태에 저장하고,
+         *   부모에게 onUploadStatusChange(true)와 onUploadComplete(fileUrl)를 호출
          */
         const handleUpload = async (): Promise<string[]> => {
             const uploadedUrls: string[] = [];
@@ -71,6 +74,7 @@ const FileUploadButton = forwardRef<FileUploadButtonRef, FileUploadButtonProps>(
             setUploadStatus('업로드 중...');
             try {
                 const uniqueFileName = generateUniqueFileName(file);
+                console.log('Generated unique filename:', uniqueFileName);
                 const response = await fileUploadApiClient.get(
                     '/api/v1/s3/presign',
                     {
@@ -81,16 +85,21 @@ const FileUploadButton = forwardRef<FileUploadButtonRef, FileUploadButtonProps>(
                     }
                 );
                 const presignedUrl: string = response.data.url;
+                console.log('Received presigned URL:', presignedUrl);
                 await axios.put(presignedUrl, file, {
                     headers: { 'Content-Type': file.type },
                 });
-                // 실제 파일 URL은 쿼리스트링 제거 후 사용
+                // 쿼리스트링 제거 후 실제 파일 URL 추출
                 const fileUrl = presignedUrl.split('?')[0];
+                console.log('File uploaded successfully. URL:', fileUrl);
                 setUploadedUrl(fileUrl);
                 setUploadedFileName(uniqueFileName);
                 setUploadStatus('업로드 성공!');
                 if (onUploadStatusChange) onUploadStatusChange(true);
-                if (onUploadComplete) onUploadComplete(fileUrl);
+                if (onUploadComplete) {
+                    console.log('Calling onUploadComplete with URL:', fileUrl);
+                    onUploadComplete(fileUrl);
+                }
                 uploadedUrls.push(fileUrl);
             } catch (error) {
                 console.error('업로드 에러:', error);
@@ -102,7 +111,7 @@ const FileUploadButton = forwardRef<FileUploadButtonRef, FileUploadButtonProps>(
 
         /**
          * 삭제 핸들러
-         * - 업로드된 파일 이름과 업로드 경로를 기반으로 백엔드 삭제 API를 호출하고 상태를 초기화합니다.
+         * - 업로드된 파일이 있을 경우, 백엔드의 삭제 API를 호출하여 파일을 삭제하고 상태를 초기화
          */
         const handleDelete = async () => {
             if (!uploadedFileName) return;
@@ -113,6 +122,7 @@ const FileUploadButton = forwardRef<FileUploadButtonRef, FileUploadButtonProps>(
                         fileName: uploadedFileName,
                     },
                 });
+                console.log('File deleted successfully:', uploadedFileName);
                 setUploadedUrl('');
                 setUploadedFileName('');
                 setUploadStatus('파일이 삭제되었습니다.');
@@ -123,6 +133,7 @@ const FileUploadButton = forwardRef<FileUploadButtonRef, FileUploadButtonProps>(
             }
         };
 
+        // 외부에서 uploadFiles 메서드를 호출할 수 있도록 노출
         useImperativeHandle(ref, () => ({
             uploadFiles: handleUpload,
         }));
