@@ -3,17 +3,18 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import type { RootState } from '../../shared';
-import AlarmPage from '../../pages/alarm/AlarmPage';
+import AlarmPage  from '../../pages/alarm/AlarmPage';
 import { FaBell } from 'react-icons/fa';
 import { useLogout } from '../../features';
+import { useGlobalEvents } from '../../shared/sse/EventProvider';
 
 const Header = () => {
     const navigate = useNavigate();
     const [isAlarm, setIsAlarm] = useState(false);
     const auth = useSelector((state: RootState) => state.auth);
     const user = auth.user;
-
     const logoutHandler = useLogout();
+    const { events } = useGlobalEvents() || { events: [] }; 
 
     const goToStudyMainPage = () => {
         navigate('/mystudy');
@@ -38,6 +39,24 @@ const Header = () => {
             </Link>
             <div className="flex items-center space-x-4">
                 <AlarmPage isOpen={isAlarm} onClose={() => setIsAlarm(false)} />
+                <button
+                    className="text-lg font-semibold cursor-pointer"
+                    onClick={goToStudyMainPage}
+                >
+                    내스터디
+                </button>
+                <button
+                    className="text-lg font-semibold cursor-pointer"
+                    onClick={goToChatPage}
+                >
+                    채팅페이지
+                </button>
+                <FaBell
+                    className="text-2xl cursor-pointer"
+                    color="yellow"
+                    onClick={() => setIsAlarm(true)}
+                />
+                <AlarmPage isOpen={isAlarm} onClose={() => setIsAlarm(false)} events={events} />
                 {user ? (
                     // 로그인된 경우: 내스터디, 채팅페이지, 알림, 닉네임, 로그아웃 버튼 표시
                     <>
