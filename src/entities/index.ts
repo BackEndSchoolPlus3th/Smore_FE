@@ -8,3 +8,5 @@ export type {
 } from './article/recruitmentArticle/RecruitmentArticleProb';
 
 export type { MyStudyListArticleProps } from './article/myStudyList/MyStudyListArticleProps';
+
+export type { CommentProps } from './comment/CommentProps';
