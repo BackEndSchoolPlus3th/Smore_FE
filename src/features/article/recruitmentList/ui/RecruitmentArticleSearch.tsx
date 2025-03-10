@@ -85,9 +85,9 @@ export const RecruitmentArticleSearch: React.FC<
     };
 
     return (
-        <div className="recruitment-article-search">
+        <div className="w-full relative group items-center">
             {/* 검색 필드 */}
-            <div className="flex flex-row gap-4 justify-end">
+            <div className="flex flex-row gap-4 justify-end items-center">
                 <div className="">
                     <Select
                         value={selectedType}
@@ -98,7 +98,7 @@ export const RecruitmentArticleSearch: React.FC<
                             setRegionValue(null);
                         }}
                         options={searchTypes}
-                        className="w-full"
+                        className="w-full cursor-pointer"
                         classNamePrefix="react-select"
                     />
                 </div>
@@ -144,7 +144,7 @@ export const RecruitmentArticleSearch: React.FC<
                 <div className="">
                     <button
                         onClick={handleSearchClick}
-                        className="w-full p-2 bg-dark-purple text-white rounded-md hover:bg-blue-600"
+                        className="w-full py-2 px-4 bg-purple-600 text-white rounded-md hover:bg-purple-700 cursor-pointer"
                     >
                         검색
                     </button>
@@ -152,16 +152,16 @@ export const RecruitmentArticleSearch: React.FC<
             </div>
             {/* 저장된 검색어 */}
             {savedSearches.length > 0 && (
-                <div className="flex flex-row gap-4 mt-4">
-                    <div className="saved-searches flex flex-row gap-2">
+                <div className="absolute top-full right-0 w-full z-10 bg-white border border-gray-300 p-2 rounded shadow opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none group-hover:pointer-events-auto overflow-x-auto">
+                    <div className="flex flex-row gap-4 flex flex-row gap-2 ">
                         {savedSearches.map((search, index) => (
                             <div
                                 key={index}
-                                className={`px-3 py-1 rounded-full text-sm font-semibold ${typeColors[search.type]} flex items-center`}
+                                className={`px-3 py-1 rounded-full text-sm font-semibold ${typeColors[search.type]} flex items-center whitespace-nowrap`}
                             >
                                 {search.keyword}
                                 <MdOutlineCancel
-                                    className="ml-2 cursor-pointer"
+                                    className="ml-2 cursor-pointer text-red-500"
                                     onClick={() => handleRemoveSearch(index)}
                                 />
                             </div>
