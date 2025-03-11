@@ -29,7 +29,7 @@ export const login = createAsyncThunk(
     ) => {
         try {
             const response = await apiClient.post(
-                '/api/v1/member/login',
+                '/api/member/login',
                 credentials
             );
             console.log(response);
