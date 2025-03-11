@@ -5,9 +5,7 @@ import type { RootState } from '../../shared';
 import AlarmPage from '../../pages/alarm/AlarmPage';
 import { useLogout } from '../../features';
 import {
-    LayoutGrid,
     BookOpen,
-    Image,
     Settings,
     User,
     Bell,
@@ -41,7 +39,7 @@ const Header = () => {
     };
 
     const goToMyPagePage = () => {
-        navigate('/MyPage');
+        navigate('/mypage');
     };
 
     const handleShowMyPagePopup = () => {
@@ -66,7 +64,7 @@ const Header = () => {
     }, []);
 
     return (
-        <div className="flex justify-between items-center bg-[#FAFBFF] border-b border-gray-200 shadow-md h-16">
+        <div className="flex justify-between items-center bg-[#FAFBFF] border-b border-gray-200 shadow-md h-16 w-full z-50">
             <div className="space-x-12 cursor-pointer rounded hover:bg-gray-100 ml-4 mt-2 mb-2">
                 <Link
                     to="/"
