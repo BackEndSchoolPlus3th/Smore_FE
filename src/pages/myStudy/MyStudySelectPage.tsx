@@ -139,8 +139,8 @@ const MyStudySelectPage = () => {
                 </div>
 
                 {/* 메인 콘텐츠 */}
-                <div className="flex-1 pt-0 p-6 bg-purple-100">
-                    <div>
+                <div className="flex-1 bg-purple-100">
+                    <div className="mb-2">
                         {/* 네브 바 */}
                         <Navbar />
                     </div>
