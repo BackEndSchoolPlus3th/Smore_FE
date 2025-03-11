@@ -1,6 +1,8 @@
 // src/widgets/navbar/Navbar.js
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { LayoutGrid, BookOpen, Image, Settings, Home, Calendar, MessageSquare } from 'lucide-react';
+
 
 const Navbar = () => {
 const { studyId } = useParams();
@@ -23,24 +25,42 @@ const { studyId } = useParams();
   };
 
   return (
-    <div className="bg-purple-100 text-white flex justify-between mx-auto mt-0 pb-3">
-      <div className="flex justify-center w-full">
-        <button className="px-3 py-1 bg-dark-purple cursor-pointer" onClick={goToStudyMainPage}>
-          메인
-        </button>
-        <button className="px-3 py-1 bg-dark-purple cursor-pointer" onClick={goToSchedulePage}>
-          캘린더
-        </button>
-        <button className="px-3 py-1 bg-dark-purple cursor-pointer" onClick={goToDocumentPage}>
-          문서함
-        </button>
-        <button className="px-3 py-1 bg-dark-purple cursor-pointer" onClick={goToStudyArticlePage}>
-          게시판
-        </button>
-        <button className="px-3 py-1 bg-dark-purple cursor-pointer" onClick={goToSettingPage}>
-          설정
-        </button>
-      </div>
+    <div className="flex border-b bg-[#FAFBFF]">
+      <button className="px-4 py-2 border-b-2 border-purple-500 text-sm font-medium" 
+      onClick={goToStudyMainPage}>
+        <div className="flex items-center gap-1">
+          <Home size={16} />
+          <span>메인</span>
+        </div>
+      </button>
+      <button className="px-4 py-2 text-sm font-medium text-gray-500" 
+      onClick={goToSchedulePage}>
+        <div className="flex items-center gap-1">
+          <Calendar size={16} />
+          <span>캘린더</span>
+          </div>
+      </button>
+      <button className="px-4 py-2 text-sm font-medium text-gray-500"
+      onClick={goToDocumentPage}>
+        <div className="flex items-center gap-1">
+          <Image size={16} />
+          <span>아카이브</span>
+          </div>
+      </button>
+      <button className="px-4 py-2 text-sm font-medium text-gray-500" 
+      onClick={goToStudyArticlePage}>
+        <div className="flex items-center gap-1">
+          <MessageSquare size={16} />
+          <span>작업실</span>
+          </div>
+      </button>
+      <button className="px-4 py-2 text-sm font-medium text-gray-500" 
+      onClick={goToSettingPage}>
+        <div className="flex items-center gap-1">
+          <Settings size={16} />
+          <span>설정</span>
+          </div>
+      </button>
     </div>
   );
 };
