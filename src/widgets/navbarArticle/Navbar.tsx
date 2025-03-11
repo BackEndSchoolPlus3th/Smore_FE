@@ -1,46 +1,38 @@
 // src/widgets/navbar/Navbar.js
 import React from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { Archive, Settings, Home, Calendar, Clipboard } from 'lucide-react';
+
 
 const Navbar = () => {
-const { studyId } = useParams();
+  const { studyId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation(); // 현재 URL 경로 확인
 
-  const goToStudyMainPage = () => {
-    navigate(`/study/${studyId}`);
-  };
-  const goToSchedulePage = () => {
-    navigate(`/study/${studyId}/schedules`);
-  };
-  const goToDocumentPage = () => {
-    navigate(`/study/${studyId}/document`);
-  };
-  const goToStudyArticlePage = () => {
-    navigate(`/study/${studyId}/article`);
-  };
-  const goToSettingPage = () => {
-    navigate(`/study/${studyId}/studysetting`);
-  };
+  const navItems = [
+    { path: `/study/${studyId}/`, label: "메인", icon: <Home size={16} /> },
+    { path: `/study/${studyId}/schedules`, label: "캘린더", icon: <Calendar size={16} /> },
+    { path: `/study/${studyId}/document`, label: "아카이브", icon: <Archive size={16} /> },
+    { path: `/study/${studyId}/article`, label: "게시판", icon: <Clipboard size={16} /> },
+    { path: `/study/${studyId}/studysetting`, label: "설정", icon: <Settings size={16} /> },
+  ];
 
   return (
-    <div className="bg-purple-100 text-white flex justify-between mx-auto mt-0 pb-3">
-      <div className="flex justify-center w-full">
-        <button className="px-3 py-1 bg-dark-purple cursor-pointer" onClick={goToStudyMainPage}>
-          메인
-        </button>
-        <button className="px-3 py-1 bg-dark-purple cursor-pointer" onClick={goToSchedulePage}>
-          캘린더
-        </button>
-        <button className="px-3 py-1 bg-dark-purple cursor-pointer" onClick={goToDocumentPage}>
-          문서함
-        </button>
-        <button className="px-3 py-1 bg-dark-purple cursor-pointer" onClick={goToStudyArticlePage}>
-          게시판
-        </button>
-        <button className="px-3 py-1 bg-dark-purple cursor-pointer" onClick={goToSettingPage}>
-          설정
-        </button>
-      </div>
+    <div className="flex border-b bg-[#FAFBFF]">
+      {navItems.map(({ path, label, icon }) => {
+        const isActive = location.pathname === path;
+        return (
+          <button
+            key={path}
+            className={`px-4 py-2 text-sm font-medium ${
+              isActive ? "border-b-2 border-purple-500 text-black font-medium" : "text-gray-500"
+            }`}
+            onClick={() => navigate(path)}
+          >
+            <div className="flex items-center gap-1">{icon}<span>{label}</span></div>
+          </button>
+        );
+      })}
     </div>
   );
 };

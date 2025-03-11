@@ -6,7 +6,7 @@ import { logout } from '../model/authSlice';
 
 // 회원가입 API
 export const signup = async (formData: SignupFormValues) => {
-    const response = await apiClient.post('/api/member/signup', formData);
+    const response = await apiClient.post('/api/v1/member/signup', formData);
     return response;
 };
 
@@ -17,7 +17,7 @@ export const useLogout = () => {
 
     const handleLogout = async () => {
         try {
-            await apiClient.post('/api/member/logout');
+            await apiClient.post('/api/v1/member/logout');
             localStorage.removeItem('accessToken');
             dispatch(logout());
             navigate('/login');
