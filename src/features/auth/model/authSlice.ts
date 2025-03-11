@@ -4,7 +4,7 @@ import { apiClient } from '../../../shared';
 
 export interface User {
     nickname: string;
-    hashTags: string;
+    hashTags: string[];
     profileImageUrl: string | null;
 }
 
@@ -32,7 +32,7 @@ export const login = createAsyncThunk(
                 '/api/v1/member/login',
                 credentials
             );
-            console.log(response);
+            console.log('login response: ', response);
             return {
                 user: response.data,
             };
