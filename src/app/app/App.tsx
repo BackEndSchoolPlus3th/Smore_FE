@@ -3,6 +3,7 @@ import '../ui/App.css';
 import '../ui/markdownStyle.css';
 import '../ui/scrollbar.css';
 import '../ui/text.css';
+// import TestPage from '../../pages/testPage';
 
 import {
     ChatPage,
@@ -23,6 +24,7 @@ import {
     SignupPage,
     MyStudyListPage,
     MyPagePage,
+    TestPage,
 } from '../../pages';
 import { Header } from '../../widgets';
 import { SSEProvider } from '../../shared/sse/SSEProvider';
@@ -115,6 +117,7 @@ function App() {
                         *
                         */}
                         <Route path="/error" element={<ErrorPage />} />
+                        <Route path="/test" element={<TestPage />} />
                     </Routes>
                 </div>
             </Router>

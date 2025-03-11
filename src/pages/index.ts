@@ -12,6 +12,7 @@ export { default as MyStudySettingPage } from './myStudy/MyStudySettingPage';
 export { default as RecruitmentContentPage } from './main/recruitment/recruitment/RecruitmentPage';
 export { default as MyStudySelectPage } from './myStudy/MyStudySelectPage';
 export { default as MyPagePage } from './member/myPage/MyPagePage';
+export { default as TestPage } from '../pages/testPage';
 
 // 새 소개 작성 페이지
 export { default as NewRecruitmentPage } from './study/article/recruitment/NewRecruitmentPage';

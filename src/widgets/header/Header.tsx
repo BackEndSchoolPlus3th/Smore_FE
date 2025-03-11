@@ -6,6 +6,8 @@ import type { RootState } from '../../shared';
 import AlarmPage from '../../pages/alarm/AlarmPage';
 import { FaBell } from 'react-icons/fa';
 import { useLogout } from '../../features';
+import { LayoutGrid, BookOpen, Image, Settings, Home, User, Bell, MessageSquare } from 'lucide-react';
+import MyPagePage from '../../pages/member/myPage/MyPagePage';
 
 const Header = () => {
     const navigate = useNavigate();
@@ -27,61 +29,46 @@ const Header = () => {
         navigate('/login');
     };
 
+    const goToMyPagePage = () => {
+        navigate('/MyPage');
+      };
+
     return (
-        <div className="flex items-center justify-between bg-muted-purple p-4">
+        <div className="flex justify-between items-center p-4 bg-[#FAFBFF]">
+        <div className="space-x-12 cursor-pointer rounded hover:bg-gray-100">
             <Link to="/" className="flex items-center space-x-4 cursor-pointer">
-                <img
-                    src="/logo_rectangle.png"
-                    alt="logo"
-                    className="h-15 rounded-lg"
-                />
-            </Link>
-            <div className="flex items-center space-x-4">
-                <AlarmPage isOpen={isAlarm} onClose={() => setIsAlarm(false)} />
-                {user ? (
-                    // 로그인된 경우: 내스터디, 채팅페이지, 알림, 닉네임, 로그아웃 버튼 표시
-                    <>
-                        <button
-                            className="text-lg font-semibold cursor-pointer"
-                            onClick={goToStudyMainPage}
-                        >
-                            내스터디
-                        </button>
-                        <button
-                            className="text-lg font-semibold cursor-pointer"
-                            onClick={goToChatPage}
-                        >
-                            채팅페이지
-                        </button>
-                        <FaBell
-                            className="text-2xl cursor-pointer"
-                            color="yellow"
-                            onClick={() => setIsAlarm(true)}
-                        />
-                        <div className="flex items-center space-x-2">
-                            <span className="text-lg font-semibold">
-                                {user.nickname}
-                            </span>
-                            <button
-                                className="px-3 py-1 bg-red-500 text-white rounded cursor-pointer"
-                                onClick={logoutHandler}
-                            >
-                                로그아웃
-                            </button>
-                        </div>
-                    </>
-                ) : (
-                    // 로그인되지 않은 경우: 로그인 버튼 표시
-                    <button
-                        className="px-4 py-2 bg-dark-purple text-white rounded cursor-pointer"
-                        onClick={goToLoginPage}
-                    >
-                        로그인
-                    </button>
-                )}
-            </div>
+                <img src="/logo_final.png" alt="로고" className="h-8" /> 
+                </Link>
         </div>
-    );
+        <div className="flex gap-2">
+          <AlarmPage isOpen={isAlarm} onClose={() => setIsAlarm(false)} />
+            {user ? (
+              <>
+              <button className="p-2 rounded hover:bg-gray-100"
+                      onClick={goToStudyMainPage}>
+                <BookOpen size={20} />
+              </button>
+              <button className="p-2 rounded hover:bg-gray-100">
+                <Bell size={20} />
+              </button>
+              <button className="p-2 rounded hover:bg-gray-100"
+                      onClick={goToChatPage}>
+                <MessageSquare size={20} />
+              </button>
+              <button className="p-2 rounded hover:bg-gray-100"
+                      onClick={goToMyPagePage}>
+                      <User size={20} />
+              </button>
+              </>
+            ) : (
+              <button className="p-2 rounded hover:bg-gray-100"
+                      onClick={goToLoginPage}>
+                <User size={20} />
+              </button>
+            )}          
+        </div>
+      </div>
+    )
 };
 
 export default Header;
