@@ -46,7 +46,7 @@ function App() {
                 <div className="App">
                     <div className="flex flex-col h-screen w-100vw overflow-auto items-center">
                         <Header />
-                        <div className="flex-1 min-w-310 bg-blue-100">
+                        <div className="flex-1 w-310 bg-blue-100">
                             <Routes>
                                 {/*
                                  *
