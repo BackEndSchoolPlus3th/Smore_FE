@@ -45,7 +45,7 @@ const isTokenExpired = (token: string): boolean => {
   }
 };
 
-// JWT 디코딩하여 사용자 ID(subject) 추출 - 수정됨
+// JWT 디코딩하여 사용자 ID(subject) 추출 함수 수정
 const getUserIdFromToken = (token: string): string => {
   try {
     if (!token || token === "") {
@@ -53,8 +53,12 @@ const getUserIdFromToken = (token: string): string => {
       return "anonymous";
     }
 
+    // Bearer 접두어 제거
+    const actualToken = token.startsWith("Bearer ") ? token.substring(7) : token;
+
     // jwtDecode 라이브러리 사용하여 토큰 디코딩
-    const decoded: any = jwtDecode(token);
+    const decoded: any = jwtDecode(actualToken);
+    console.log("JWT 디코딩 결과:", decoded);
 
     if (!decoded) {
       console.error("JWT 디코딩 결과가 없습니다.");
@@ -68,17 +72,17 @@ const getUserIdFromToken = (token: string): string => {
       // 대체 필드 확인 (userId, id 등이 사용될 수 있음)
       if (decoded.userId) {
         console.log("userId 필드 사용:", decoded.userId);
-        return decoded.userId;
+        return String(decoded.userId);
       } else if (decoded.id) {
         console.log("id 필드 사용:", decoded.id);
-        return decoded.id;
+        return String(decoded.id);
       }
 
       return "anonymous";
     }
 
     console.log("현재 로그인 사용자 ID(JWT sub 필드):", decoded.sub);
-    return decoded.sub;
+    return String(decoded.sub);
   } catch (error) {
     console.error("JWT 디코딩 실패:", error);
     console.error("토큰 값:", token.substring(0, 20) + "...");
@@ -104,7 +108,7 @@ const Chat: React.FC<ChatProps> = ({ roomId, chatType }) => {
   const [currentUserId, setCurrentUserId] = useState<string>(() => {
     const storedToken = localStorage.getItem("accessToken") || "";
     const userId = getUserIdFromToken(storedToken);
-    console.log("초기 사용자 ID 설정:", userId);
+    console.log("초기 사용자 ID 설정:", userId, "(타입:", typeof userId, ")");
     return userId;
   });
 
@@ -186,9 +190,10 @@ const Chat: React.FC<ChatProps> = ({ roomId, chatType }) => {
             hour12: true,
           });
 
-          // 발신자 ID 비교 및 로깅 - 값 타입 출력
-          console.log(`메시지 발신자 비교 - 메시지 ID: ${msg.senderId} (${typeof msg.senderId}), 현재 사용자: ${currentUserId} (${typeof currentUserId})`);
-          const senderType = String(msg.senderId) === String(currentUserId) ? "me" : "other";
+          // 발신자 ID 비교 (문자열로 변환)
+          const isSentByMe = String(msg.senderId) === String(currentUserId);
+          console.log("히스토리 메시지 - 내가 보낸 메시지인가?", isSentByMe, 
+            "비교:", String(msg.senderId), "==", String(currentUserId));
 
           if (!lastDate || lastDate !== dateStr) {
             loadedMessages.push({ type: "divider", text: dateStr });
@@ -196,12 +201,13 @@ const Chat: React.FC<ChatProps> = ({ roomId, chatType }) => {
           }
           loadedMessages.push({
             type: "message",
-            sender: senderType,
+            sender: isSentByMe ? "me" : "other",
             text: msg.message,
             time: timeStr,
             date: dateStr,
           });
         });
+
         setMessages(loadedMessages);
       })
       .catch((error) => {
@@ -302,19 +308,11 @@ const Chat: React.FC<ChatProps> = ({ roomId, chatType }) => {
             console.log("📩 새로운 메시지 도착!", data);
             console.log("메시지 발신자 ID:", data.senderId, "(타입:", typeof data.senderId, ")");
             console.log("현재 사용자 ID:", currentUserId, "(타입:", typeof currentUserId, ")");
-
-            // 메시지 받을 때마다 최신 사용자 ID 다시 확인 (문제 해결을 위한 추가 코드)
-            const latestToken = localStorage.getItem("accessToken") || "";
-            if (latestToken !== jwt) {
-              const latestUserId = getUserIdFromToken(latestToken);
-              console.log("메시지 수신 시 최신 ID 확인:", latestUserId);
-              if (latestUserId !== currentUserId) {
-                console.log("사용자 ID 불일치 감지 - 업데이트 필요");
-                setJwt(latestToken);
-                setCurrentUserId(latestUserId);
-              }
-            }
-
+            
+            // 메시지 발신자 ID와 현재 사용자 ID 비교 (문자열로 변환)
+            const isSentByMe = String(data.senderId) === String(currentUserId);
+            console.log("내가 보낸 메시지인가?", isSentByMe, "비교:", String(data.senderId), "==", String(currentUserId));
+            
             setMessages((prevMessages) => {
               const dateObj = new Date(data.timestamp);
               const dateStr = dateObj.toLocaleDateString("ko-KR", {
@@ -329,14 +327,6 @@ const Chat: React.FC<ChatProps> = ({ roomId, chatType }) => {
                 hour12: true,
               });
 
-              // 명확한 문자열 비교 (숫자와 문자열 구분을 위해)
-              const isSentByMe = String(data.senderId) === String(currentUserId);
-              console.log("메시지 ID 비교:", {
-                senderId: String(data.senderId),
-                currentUserId: String(currentUserId),
-                isSentByMe: isSentByMe
-              });
-
               let newMessages = [...prevMessages];
               if (
                 newMessages.length === 0 ||
@@ -346,6 +336,7 @@ const Chat: React.FC<ChatProps> = ({ roomId, chatType }) => {
                 newMessages.push({ type: "divider", text: dateStr });
               }
 
+              // 메시지 발신자에 따라 sender 설정
               newMessages.push({
                 type: "message",
                 sender: isSentByMe ? "me" : "other",
@@ -353,6 +344,7 @@ const Chat: React.FC<ChatProps> = ({ roomId, chatType }) => {
                 time: timeStr,
                 date: dateStr,
               });
+
               return newMessages;
             });
           } catch (error) {
@@ -410,7 +402,7 @@ const Chat: React.FC<ChatProps> = ({ roomId, chatType }) => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // 메시지 전송 함수 - 토큰 및 현재 사용자 ID 최신 상태 확인
+  // 메시지 전송 함수 수정
   const sendMessage = () => {
     if (input.trim() === "") return;
 
@@ -420,27 +412,26 @@ const Chat: React.FC<ChatProps> = ({ roomId, chatType }) => {
     
     if (currentToken !== jwt) {
       console.log("메시지 전송 - 토큰 변경 감지, 업데이트 중");
-      const updatedUserId = getUserIdFromToken(currentToken);
       setJwt(currentToken);
-      setCurrentUserId(updatedUserId);
-      console.log("메시지 전송 - 사용자 ID 업데이트:", updatedUserId);
+      setCurrentUserId(latestUserId);
+      console.log("메시지 전송 - 사용자 ID 업데이트:", latestUserId);
     } else {
       console.log("메시지 전송 - 사용자 ID:", currentUserId);
     }
 
     if (stompClient.current?.connected) {
+      // 서버로 메시지 전송 (senderId는 서버에서 설정됨)
       stompClient.current.publish({
         destination: "/app/chat/sendMessage",
-        headers: { Authorization: addBearer(jwt) },
+        headers: { Authorization: addBearer(currentToken) },
         body: JSON.stringify({
           roomId,
           chatType,
-          senderId: currentUserId,
           message: input,
           attachment: null,
         }),
       });
-      console.log("메시지 전송됨");
+      console.log("메시지 전송됨 - 인증 토큰:", currentToken.substring(0, 20) + "...");
     } else {
       console.warn("웹소켓 연결이 없어 메시지를 전송할 수 없습니다. 재연결을 시도합니다.");
       connectWebSocket(); // 연결 시도
@@ -469,12 +460,16 @@ const Chat: React.FC<ChatProps> = ({ roomId, chatType }) => {
                 📅 {msg.text}
               </div>
             ) : (
-              <div key={index} className={`flex my-2 ${msg.sender === "me" ? "justify-end" : "justify-start"}`}>
+              <div 
+                key={index} 
+                className={`flex my-2 ${msg.sender === "me" ? "justify-end" : "justify-start"}`}
+              >
                 <div
                   className={`max-w-[60%] p-3 rounded-lg shadow-md ${
                     msg.sender === "me" ? "bg-blue-400 text-white" : "bg-white text-gray-800"
                   }`}
                 >
+                  <div className="text-xs opacity-50 mb-1">[{msg.sender}]</div>
                   {msg.text}
                   <div className="text-xs text-gray-500 mt-1 text-right">{msg.time}</div>
                 </div>
