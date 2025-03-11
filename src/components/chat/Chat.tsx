@@ -331,8 +331,11 @@ const Chat: React.FC<ChatProps> = ({ roomId, chatType }) => {
 
               // 명확한 문자열 비교 (숫자와 문자열 구분을 위해)
               const isSentByMe = String(data.senderId) === String(currentUserId);
-              console.log("나의 메시지인가요?", isSentByMe,
-                "비교:", String(data.senderId), "==", String(currentUserId));
+              console.log("메시지 ID 비교:", {
+                senderId: String(data.senderId),
+                currentUserId: String(currentUserId),
+                isSentByMe: isSentByMe
+              });
 
               let newMessages = [...prevMessages];
               if (
@@ -413,6 +416,8 @@ const Chat: React.FC<ChatProps> = ({ roomId, chatType }) => {
 
     // 메시지 전송 시 최신 토큰 재확인
     const currentToken = localStorage.getItem("accessToken") || "";
+    const latestUserId = getUserIdFromToken(currentToken);
+    
     if (currentToken !== jwt) {
       console.log("메시지 전송 - 토큰 변경 감지, 업데이트 중");
       const updatedUserId = getUserIdFromToken(currentToken);
