@@ -8,8 +8,12 @@ import {
     HashtagInput,
 } from '../../../shared';
 import { UserInfoProps } from '../../../entities';
+import { useDispatch } from 'react-redux';
+import { updateUser } from '../../../features';
 
 const SettingProfileCard: React.FC<UserInfoProps> = (props: UserInfoProps) => {
+    const dispatch = useDispatch();
+
     const [birthday, setBirthday] = useState(props.birthdate);
     const [region, setRegion] = useState(props.region);
     const [hashTag, setHashTag] = useState<string[] | null>(props.hashTags);
@@ -87,6 +91,7 @@ const SettingProfileCard: React.FC<UserInfoProps> = (props: UserInfoProps) => {
             alert('해시태그가 변경되었습니다.');
             setHashTag(editHashTag);
             setIsHashTagEdit(false);
+            dispatch(updateUser({ hashTags: editHashTag }));
         } catch (error) {
             alert('해시태그 형식이 올바르지 않습니다.');
             console.error(error);

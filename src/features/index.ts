@@ -13,7 +13,7 @@ export { clipArticle, unclipArticle } from './article/recruitment/api/clipApi';
 export { postRecruitmentArticle } from './article/recruitment/api/recruitmentService';
 
 // auth
-export { authReducer } from './auth/model/authSlice';
+export { authReducer, login, logout, updateUser } from './auth/model/authSlice';
 export { default as LoginForm } from './auth/ui/LoginForm';
 export { signup, useLogout } from './auth/api/authApi';
 export { default as SignupForm } from './auth/ui/SignupForm';

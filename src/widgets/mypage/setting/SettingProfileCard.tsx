@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { SubmitButton, CancleButton, apiClient } from '../../../shared';
 import { UserProfileProps } from '../../../entities';
-import { FileUploadButton } from '../../../features';
+import { FileUploadButton, updateUser } from '../../../features';
+import { useDispatch } from 'react-redux';
 
 import { User } from 'lucide-react';
 
@@ -12,6 +13,8 @@ import { User } from 'lucide-react';
 const SettingInfoCard: React.FC<UserProfileProps> = (
     props: UserProfileProps
 ) => {
+    const dispatch = useDispatch();
+
     const [imageUrl, setImageUrl] = useState<string | null>(
         props.profileImageUrl
     );
@@ -40,6 +43,7 @@ const SettingInfoCard: React.FC<UserProfileProps> = (
             alert('프로필 이미지가 수정되었습니다.');
             setImageUrl(editImageUrl);
             setIsImageEdit(false);
+            dispatch(updateUser({ profileImageUrl: editImageUrl }));
         } catch (error) {
             console.error(error);
         }
@@ -53,6 +57,7 @@ const SettingInfoCard: React.FC<UserProfileProps> = (
             alert('닉네임이 수정되었습니다.');
             setNickname(editNickname);
             setIsNicknameEdit(false);
+            dispatch(updateUser({ nickname: editNickname }));
         } catch (error) {
             console.error(error);
         }
