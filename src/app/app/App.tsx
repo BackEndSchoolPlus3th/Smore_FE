@@ -27,6 +27,7 @@ import {
     MyStudyListPage,
     MyPage,
     TestPage,
+    StudyPage,
 } from '../../pages';
 import { Header } from '../../widgets';
 //import { SSEProvider } from '../../shared/sse/SSEProvider';
@@ -45,7 +46,7 @@ function App() {
                 <div className="App">
                     <div className="flex flex-col h-screen w-100vw overflow-auto items-center">
                         <Header />
-                        <div className="flex-1 min-w-310 bg-blue-100">
+                        <div className="flex-1 w-310 bg-blue-100">
                             <Routes>
                                 {/*
                                  *
@@ -53,37 +54,41 @@ function App() {
                                  *
                                  */}
 
+                                {/* <Route
+                                        path="/study"
+                                        element={<MyStudyPage />}
+                                    />
+                                    <Route
+                                        path="/mystudy"
+                                        element={<MyStudyListPage />}
+                                    />
+                                    <Route
+                                        path="/study/:studyId"
+                                        element={<MyStudySelectPage />}
+                                    />
+                                    <Route
+                                        path="/study/:studyId/edit"
+                                        element={<MyStudyEditPage />}
+                                    />
+                                    <Route
+                                        path="/study/:studyId/articles/:articleId"
+                                        element={<MyStudyDetailPage />}
+                                    />
+                                    <Route
+                                        path="/study/:studyId/document"
+                                        element={<MyStudyDocumentPage />}
+                                    />
+                                    <Route
+                                        path="/study/:studyId/schedules"
+                                        element={<CalenderPage />}
+                                    />
+                                    <Route
+                                        path="/study/:studyId/studysetting"
+                                        element={<MyStudySettingPage />}
+                                    /> */}
                                 <Route
-                                    path="/study"
-                                    element={<MyStudyPage />}
-                                />
-                                <Route
-                                    path="/mystudy"
-                                    element={<MyStudyListPage />}
-                                />
-                                <Route
-                                    path="/study/:studyId"
-                                    element={<MyStudySelectPage />}
-                                />
-                                <Route
-                                    path="/study/:studyId/edit"
-                                    element={<MyStudyEditPage />}
-                                />
-                                <Route
-                                    path="/study/:studyId/articles/:articleId"
-                                    element={<MyStudyDetailPage />}
-                                />
-                                <Route
-                                    path="/study/:studyId/document"
-                                    element={<MyStudyDocumentPage />}
-                                />
-                                <Route
-                                    path="/study/:studyId/schedules"
-                                    element={<CalenderPage />}
-                                />
-                                <Route
-                                    path="/study/:studyId/studysetting"
-                                    element={<MyStudySettingPage />}
+                                    path="/study/:studyId/*"
+                                    element={<StudyPage />}
                                 />
 
                                 {/*
@@ -107,10 +112,10 @@ function App() {
                                     path="/recruitment/:recruitmentId"
                                     element={<RecruitmentContentPage />}
                                 />
-                                <Route
+                                {/* <Route
                                     path="/study/:studyId/article"
                                     element={<MyStudyArticlePage />}
-                                />
+                                /> */}
 
                                 <Route
                                     path="/study/:studyId/article/recruitment/new"
