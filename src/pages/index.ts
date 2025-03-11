@@ -26,3 +26,6 @@ export { default as SignupPage } from './member/auth/signup/SignupPage';
 
 // 내 스터디 목록 페이지
 export { default as MyStudyListPage } from './main/myStudy/MyStudyListPage';
+
+// 스터디 페이지
+export { default as StudyPage } from './study/StudyPage';
