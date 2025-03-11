@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import React, {useState, useEffect} from "react";
 import '../ui/App.css';
 import '../ui/markdownStyle.css';
 import '../ui/scrollbar.css';
@@ -27,11 +28,19 @@ import {
     TestPage,
 } from '../../pages';
 import { Header } from '../../widgets';
-import { SSEProvider } from '../../shared/sse/SSEProvider';
+//import { SSEProvider } from '../../shared/sse/SSEProvider';
+import { EventProvider } from '../../shared/sse/EventProvider'; // ✅ 이름 수정
 
 function App() {
+    const [events, setEvents] = useState<string[]>([]);
+    const [accessToken, setAccessToken] = useState(() => {
+      const token = localStorage.getItem("accessToken") || ""; // 기본값 설정
+      return token ? token.substring(7) : ""; // 토큰이 있으면 `substring(7)` 적용
+    });
+  
+  
     return (
-        <SSEProvider>
+        <EventProvider>
             <Router>
                 <div className="App">
                     <Header />
@@ -121,7 +130,7 @@ function App() {
                     </Routes>
                 </div>
             </Router>
-        </SSEProvider>
+        </EventProvider>
     );
 }
 

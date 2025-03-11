@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import type { RootState } from '../../../../shared';
 import {
     RecruitmentArticle,
     RecruitmentArticleProps,
@@ -16,10 +18,9 @@ import { PageSizeSelect } from '../../../../shared';
 const pagesPerBlock = 10;
 
 const RecruitmentArticlesPage: React.FC = () => {
-    // useSearchParams 훅을 이용해 URL의 쿼리 파라미터 읽기
     const [searchParams, setSearchParams] = useSearchParams();
 
-    // URL 파라미터에서 초기 상태 읽기 (숫자는 변환 필요)
+    // 초기 URL 파라미터 읽기
     const initialPage = Number(searchParams.get('page')) || 1;
     const initialPageSize = Number(searchParams.get('pageSize')) || 16;
     const initialFilters = {
@@ -30,7 +31,11 @@ const RecruitmentArticlesPage: React.FC = () => {
         region: searchParams.get('region') || '',
     };
 
-    // 캐시 및 화면에 표시할 게시글 관련 상태
+    // Redux 스토어에서 로그인 상태 가져오기
+    const auth = useSelector((state: RootState) => state.auth);
+    const isLoggedIn = Boolean(auth.user);
+
+    // 기존 상태들
     const [articlesCache, setArticlesCache] = useState<{
         [key: number]: RecruitmentArticleProps[];
     }>({});
@@ -43,18 +48,26 @@ const RecruitmentArticlesPage: React.FC = () => {
     const [searchFilters, setSearchFilters] = useState(initialFilters);
     const [isLoading, setIsLoading] = useState(true);
 
-    // URL 업데이트 함수: 페이지, 페이지 사이즈, 검색 필터를 반영
+    // 맞춤 추천 체크박스 상태 (로그인 상태가 아닐 경우 false로 유지)
+    const [isCustomRecommended, setIsCustomRecommended] = useState(false);
+
+    // URL 업데이트 함수 (추천 여부 포함)
     const updateUrlParams = (
         newPage: number,
         newPageSize: number,
-        filters: { [key: string]: string }
+        filters: { [key: string]: string },
+        customRecommended: boolean = isCustomRecommended
     ) => {
         const params: { [key: string]: string } = {
             page: newPage.toString(),
             pageSize: newPageSize.toString(),
             ...filters,
+            // 로그인되지 않은 경우 추천 여부는 무조건 false
+            customRecommended: (isLoggedIn
+                ? customRecommended
+                : false
+            ).toString(),
         };
-        // 빈 문자열인 값은 URL에서 제거
         Object.keys(params).forEach((key) => {
             if (!params[key]) {
                 delete params[key];
@@ -74,6 +87,8 @@ const RecruitmentArticlesPage: React.FC = () => {
                 ...searchFilters,
                 page: currentPage,
                 size: effectivePageSize,
+                // 로그인되지 않은 경우 무조건 false 전달
+                customRecommended: isLoggedIn ? isCustomRecommended : false,
             });
             const blockData: RecruitmentArticleProps[] = response.data;
             setArticlesCache((prevCache) => ({
@@ -116,9 +131,8 @@ const RecruitmentArticlesPage: React.FC = () => {
         updateUrlParams(newPage, usedPageSize, searchFilters);
     };
 
-    // 검색 실행 시 호출 (검색 버튼 또는 엔터키)
+    // 검색 실행 시 호출
     const onSearch = (newFilters: { [key: string]: string }) => {
-        // 캐시 초기화 및 검색 필터 갱신
         setArticlesCache({});
         const updatedFilters = {
             title: '',
@@ -129,7 +143,7 @@ const RecruitmentArticlesPage: React.FC = () => {
             ...newFilters,
         };
         setSearchFilters(updatedFilters);
-        setPage(1); // 검색 시 1페이지로 초기화
+        setPage(1);
         updateUrlParams(1, pageSize, updatedFilters);
         handlePageChange(1);
     };
@@ -143,26 +157,63 @@ const RecruitmentArticlesPage: React.FC = () => {
         handlePageChange(1, newPageSize);
     };
 
-    // 페이지나 검색 필터가 변경될 때 데이터를 로드
+    // 맞춤 추천 토글 핸들러 (로그인된 경우에만 작동)
+    const handleCustomRecommendationToggle = (
+        e: React.ChangeEvent<HTMLInputElement>
+    ) => {
+        const checked = e.target.checked;
+        setIsCustomRecommended(checked);
+        // 체크 상태 변경 시 캐시 초기화 및 1페이지부터 다시 조회
+        setArticlesCache({});
+        setPage(1);
+        updateUrlParams(1, pageSize, searchFilters, checked);
+        handlePageChange(1);
+    };
+
+    // 페이지, 검색 필터 또는 추천 상태가 변경될 때 데이터 로드
     useEffect(() => {
         handlePageChange(page);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [page, searchFilters]);
+    }, [page, searchFilters, isCustomRecommended]);
 
     return (
         <div className="flex flex-col gap-4 w-full pb-4">
+            {/* 상단 고정 헤더 */}
             <div className="sticky top-0 flex justify-between items-center w-full bg-white shadow p-4">
                 <p className="text-2xl font-bold text-dark-purple">
                     스터디 모집 게시판
                 </p>
+
                 <div className="flex gap-4 items-center">
-                    <PageSizeSelect
-                        value={pageSize}
-                        onChange={handlePageSizeChange}
-                    />
-                    <RecruitmentArticleSearch onSearch={onSearch} />
+                    {/* 로그인 된 경우에만 맞춤 추천 체크박스 표시 */}
+                    {isLoggedIn && (
+                        <div>
+                            <label className="flex items-center gap-2 cursor-pointer">
+                                <input
+                                    type="checkbox"
+                                    checked={isCustomRecommended}
+                                    onChange={handleCustomRecommendationToggle}
+                                    className="form-checkbox h-5 w-5 text-indigo-600 transition duration-150 ease-in-out"
+                                />
+                                <span className="text-sm font-medium text-gray-700">
+                                    맞춤 추천
+                                </span>
+                            </label>
+                        </div>
+                    )}
+                    <div>
+                        <PageSizeSelect
+                            value={pageSize}
+                            onChange={handlePageSizeChange}
+                        />
+                    </div>
+                    <div>
+                        <RecruitmentArticleSearch onSearch={onSearch} />
+                    </div>
                 </div>
             </div>
+
+            {/* 게시글 목록 */}
             <div className="items-center w-full">
                 <div className="flex flex-wrap gap-4 w-full justify-center">
                     {isLoading
@@ -185,6 +236,8 @@ const RecruitmentArticlesPage: React.FC = () => {
                           ))}
                 </div>
             </div>
+
+            {/* 페이징 버튼 */}
             <div className="flex justify-center items-center w-full">
                 <PagingButton
                     setPage={handlePageChange}

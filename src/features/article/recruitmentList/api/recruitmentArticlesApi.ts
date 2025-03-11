@@ -9,6 +9,7 @@ interface FetchRecruitmentArticlesParams {
     region: string;
     page: number;
     size: number;
+    customRecommended: boolean;
 }
 
 export const fetchRecruitmentArticles = async (

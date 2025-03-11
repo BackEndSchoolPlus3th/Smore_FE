@@ -7,6 +7,10 @@ interface EditorProps {
     setTitle: React.Dispatch<React.SetStateAction<string>>;
     setContent: React.Dispatch<React.SetStateAction<string>>;
     textAreaRef: React.RefObject<HTMLTextAreaElement | null>;
+    // 추가: 이미지 업로드 경로
+    uploadPath: string;
+    // MultiImageUpload의 ref를 전달 (Toolbar로 전달)
+    multiImageUploadRef: React.Ref<any>;
 }
 
 const Editor: React.FC<EditorProps> = ({
@@ -15,6 +19,8 @@ const Editor: React.FC<EditorProps> = ({
     setTitle,
     setContent,
     textAreaRef,
+    uploadPath,
+    multiImageUploadRef,
 }) => {
     const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setTitle(e.target.value);
@@ -24,7 +30,6 @@ const Editor: React.FC<EditorProps> = ({
         setContent(e.target.value);
     };
 
-    // 선택된 텍스트(없으면 플레이스홀더) 감싸기
     const insertMarkdown = (
         opening: string,
         closing: string,
@@ -110,6 +115,8 @@ const Editor: React.FC<EditorProps> = ({
                 onItalic={handleItalicClick}
                 onLink={handleLinkClick}
                 onCode={handleCodeClick}
+                uploadPath={uploadPath}
+                multiImageUploadRef={multiImageUploadRef}
             />
             <textarea
                 ref={textAreaRef}

@@ -1,73 +1,72 @@
-import { createContext, useContext, useEffect, useRef, useState } from 'react';
+// import { createContext, useContext, useEffect, useRef, useState } from 'react';
 
-const SSEContext = createContext(null);
+// const SSEContext = createContext(null);
 
-export const SSEProvider = ({ children }) => {
-    const eventSourceRef = useRef(null);
-    const reconnectTimeoutRef = useRef(null);
-    const [events, setEvents] = useState([]); // SSE 메시지를 저장할 상태
+// export const SSEProvider = ({ children }) => {
+//   const eventSourceRef = useRef(null);
+//   const [events, setEvents] = useState([]);
+//   const [isConnected, setIsConnected] = useState(false);
+//   const [accessToken, setAccessToken] = useState(localStorage.getItem("accessToken")==null?"":localStorage.getItem("accessToken").substring(7));
 
-    // 🔹 SSE 연결을 설정하는 함수
-    const connectSSE = () => {
-        if (eventSourceRef.current) {
-            eventSourceRef.current.close(); // 기존 연결 닫기
-        }
+//   // 🔹 SSE 연결 함수
+//   const connectSSE = () => {
+//     if (!accessToken || eventSourceRef.current) return; // 이미 연결된 경우 방지
 
-        console.log('🔗 SSE 연결 시작...');
-        eventSourceRef.current = new EventSource(
-            import.meta.env.VITE_API_BASE_URL + '/sse/connect'
-        );
+//     console.log("🔗 SSE 연결 시작...");
+//     console.log(" sse에 연결할 accessToken",accessToken);
+//     eventSourceRef.current = new EventSource(
+//       `${import.meta.env.VITE_API_BASE_URL}/sse/connect?token=${accessToken}`
+//     );
 
-        eventSourceRef.current.onopen = () => {
-            console.log('✅ SSE 연결 성공');
-            if (reconnectTimeoutRef.current) {
-                clearTimeout(reconnectTimeoutRef.current); // 재연결 타이머 초기화
-                reconnectTimeoutRef.current = null;
-            }
-        };
+//     eventSourceRef.current.onopen = () => {
+//       console.log("✅ SSE 연결 성공", accessToken);
+//       setIsConnected(true);
+//     };
 
-        eventSourceRef.current.onmessage = (event) => {
-            console.log('📩 SSE 메시지 수신:', event.data);
-            setEvents((prev) => [...prev, event.data]);
-        };
-        eventSourceRef.current.addEventListener('connect', (event) => {
-            console.log('📩 SSE Custom Event:', event.data);
-            setEvents((prev) => [...prev, `Custom: ${event.data}`]);
-        });
-        eventSourceRef.current.onerror = (error) => {
-            console.error('⚠️ SSE 오류 발생:', error);
-            eventSourceRef.current.close();
-            eventSourceRef.current = null;
+//     eventSourceRef.current.onmessage = (event) => {
+//       console.log("📩 SSE 메시지 수신:", event.data);
+//       setEvents((prev) => [...prev, event.data]);
+//     };
 
-            // 🔄 자동 재연결 시도 (5초 후)
-            if (!reconnectTimeoutRef.current) {
-                console.log(`🔄 ${5000 / 1000}초 후 SSE 재연결 시도...`);
-                reconnectTimeoutRef.current = setTimeout(connectSSE, 5000);
-            }
-        };
-    };
+//     eventSourceRef.current.onerror = (error) => {
+//       console.error("⚠️ SSE 오류 발생:", error);
+//       disconnectSSE();
 
-    useEffect(() => {
-        connectSSE(); // 최초 연결
+//       // 5초 후 재연결 시도
+//       setTimeout(connectSSE, 5000);
+//     };
+//   };
 
-        return () => {
-            console.log('🔌 SSE 연결 종료...');
-            eventSourceRef.current?.close();
-            if (reconnectTimeoutRef.current) {
-                clearTimeout(reconnectTimeoutRef.current);
-            }
-        };
-    }, []);
+//   // 🔹 SSE 연결 종료 함수
+//   const disconnectSSE = () => {
+//     if (eventSourceRef.current) {
+//       console.log("🔌 SSE 연결 종료...");
+//       eventSourceRef.current.close();
+//       eventSourceRef.current = null;
+//       setIsConnected(false);
+//     }
+//   };
 
-    return (
-        <SSEContext.Provider
-            value={{ events, eventSource: eventSourceRef.current }}
-        >
-            {children}
-        </SSEContext.Provider>
-    );
-};
+//   // 🔹 로그인 성공 시 SSE 연결
+//   useEffect(() => {
+//     if (accessToken) {
+//       connectSSE();
+//     } else {
+//       disconnectSSE();
+//     }
 
-export const useSSE = () => {
-    return useContext(SSEContext);
-};
+//     return () => disconnectSSE(); // 컴포넌트 언마운트 시 해제
+//   }, [accessToken]);
+
+//   return (
+//     <SSEContext.Provider value={{ events, isConnected, eventSource: eventSourceRef.current, setAccessToken }}>
+//       {children}
+//     </SSEContext.Provider>
+//   );
+// };
+
+// // SSE를 사용하는 커스텀 훅
+// export const useSSE = () => {
+//   return useContext(SSEContext);
+//   //return eventSourceRef.current;
+// };

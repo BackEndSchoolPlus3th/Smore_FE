@@ -9,7 +9,7 @@ export { default as MyStudyDetailPage } from './myStudy/MyStudyDetailPage';
 export { default as MyStudyDocumentPage } from './myStudy/MyStudyDocumentPage';
 export { default as MyStudyArticlePage } from './myStudy/MyStudyArticlePage';
 export { default as MyStudySettingPage } from './myStudy/MyStudySettingPage';
-export { default as RecruitmentContentPage } from './main/recruitment/recruitment/RecruitmentPage';
+export { default as RecruitmentContentPage } from './main/recruitment/detail/RecruitmentPage';
 export { default as MyStudySelectPage } from './myStudy/MyStudySelectPage';
 export { default as MyPagePage } from './member/myPage/MyPagePage';
 export { default as TestPage } from '../pages/testPage';

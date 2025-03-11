@@ -9,7 +9,8 @@ interface RecruitmentArticlePayload {
     region: string;
     recruitmentPeriod: { start: string; end: string };
     maxMember: number;
-    thumbnail: File | null;
+    thumbnail: string | null;
+    imageUrls?: string[];
 }
 
 export const postRecruitmentArticle = async (
@@ -28,9 +29,9 @@ export const postRecruitmentArticle = async (
             .toISOString()
             .split('T')[0],
         hashtags: payload.hashtags,
+        thumbnailUrl: payload.thumbnail,
+        imageUrls: payload.imageUrls,
     };
-
-    console.log('JSON 데이터 전송:', data);
 
     return apiClient.post(
         `/api/v1/study/${payload.studyId}/recruitmentArticle`,

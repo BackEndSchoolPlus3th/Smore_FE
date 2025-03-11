@@ -36,7 +36,7 @@ const MyStudySelectPage = () => {
 
     const fetchStudies = async () => {
         try {
-            const response = await fetch("http://localhost:8090/api/study/my-studies", {
+            const response = await fetch("http://localhost:8090/api/v1/user/studies", {
                 method: "GET",
                 headers: {
                     "Authorization": `${token}`,
@@ -60,7 +60,7 @@ const MyStudySelectPage = () => {
             return;
         }
         try {
-            const response = await fetch(`http://localhost:8090/api/study/${studyId}`, {
+            const response = await fetch(`http://localhost:8090/api/v1/study/${studyId}`, {
                 method: "GET",
                 headers: {
                     "Authorization": `${token}`,
@@ -91,7 +91,7 @@ const MyStudySelectPage = () => {
 
     useEffect(() => {
         if (selectedStudy) {
-            fetch(`http://localhost:8090/api/study/${selectedStudy.id}/articles`, {
+            fetch(`http://localhost:8090/api/v1/study/${selectedStudy.id}/articles`, {
                 method: "GET",
                 headers: {
                     "Authorization": `${token}`,
@@ -169,8 +169,8 @@ const MyStudySelectPage = () => {
 
                     {/* 게시글 최신순으로 보여주기 */}
                     <div className="grid grid-cols-4 gap-4">
-                        {articles.length > 0 ? (
-                            articles.map((article, index) => (
+                        {articles.slice(0, 8).length > 0 ? (
+                            articles.slice(0, 8).map((article, index) => (
                                 <div key={article.id} onClick={() => handleArticleClick(article.id)} className="cursor-pointer p-4 bg-white shadow rounded">
                                     <div
                                         className="w-full h-32 bg-gray-300"></div>
