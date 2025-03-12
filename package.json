@@ -21,12 +21,14 @@
         "@react-icons/all-files": "^4.1.0",
         "@reduxjs/toolkit": "^2.6.0",
         "@stomp/stompjs": "^7.0.0",
+        "@tailwindcss/oxide-win32-x64-msvc": "^4.0.13",
         "@tailwindcss/vite": "^4.0.7",
         "@types/npm": "^7.19.3",
         "aws-sdk": "^2.1692.0",
         "axios": "^1.8.1",
         "fullcalendar": "^6.1.15",
         "jwt-decode": "^4.0.0",
+        "lightningcss-win32-x64-msvc": "^1.29.2",
         "livekit-client": "^2.9.5",
         "lodash": "^4.17.21",
         "lucide-react": "^0.477.0",
@@ -64,5 +66,8 @@
         "typescript": "~5.7.2",
         "typescript-eslint": "^8.22.0",
         "vite": "^6.1.1"
+    },
+    "optionalDependencies": {
+        "@rollup/rollup-linux-x64-gnu": "^4.35.0"
     }
 }
