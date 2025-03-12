@@ -96,7 +96,7 @@ function App() {
                                  *
                                  */}
 
-                                <Route path="/chat" element={<ChatPage />} />
+                                <Route path="/chat/*" element={<ChatPage />} />
 
                                 {/*
                                  *

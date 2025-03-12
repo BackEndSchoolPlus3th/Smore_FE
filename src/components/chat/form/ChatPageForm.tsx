@@ -13,7 +13,7 @@ const ChatPageForm: React.FC = () => {
             <div className="flex flex-row w-full h-screen">
                 {/* 사이드바 */}
                 {isSidebarOpen && (
-                    <div className="w-1/5 h-full">
+                    <div className="h-full">
                         <Sidebar />
                     </div>
                 )}
