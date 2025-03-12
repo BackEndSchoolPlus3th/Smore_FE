@@ -18,3 +18,9 @@ export type { UserSettingResponse } from './mypage/setting/UserSettingResponse';
 
 export type { ClipCardProps } from './mypage/heart/ClipCardProps';
 export type { ClipListResponse } from './mypage/heart/ClipListResponse';
+
+// article
+export type { ArticleCardProps } from './article/card/ArticleCardProps';
+export type { RecruitmentCardProps } from './article/card/RecruitmentCardProps';
+export type { SimpleArticleResponse } from './article/response/SimpleArticleResponse';
+export type { SimpleRecruitmentResponse } from './article/response/SimpleRecruitmentResponse';
