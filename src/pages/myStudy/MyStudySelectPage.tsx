@@ -149,6 +149,7 @@ const MyStudySelectPage = () => {
                     {selectedStudy && (
                         <div className="flex items-center space-x-4 justify-center">
                             <div className="w-50 h-50 bg-gray-500 rounded-full"></div>
+                            {/* <div className="w-50 h-50 bg-gray-500 rounded-full">{selectedStudy.imageUrls}</div> */}
                             <div className="pl-10">
                                 <div className="text-xl font-bold pb-5">{selectedStudy.title}</div>
                                 <div className="text-sm text-gray-700 pb-5">{selectedStudy.introduction}</div>
