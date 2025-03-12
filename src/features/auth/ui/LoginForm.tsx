@@ -1,5 +1,4 @@
-// src/features/auth/ui/LoginForm.tsx
-import { useState, ChangeEvent, FormEvent, useEffect } from 'react';
+import { useState, ChangeEvent, FormEvent, useEffect, KeyboardEvent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../model/authSlice';
 import type { AppDispatch, RootState } from '../../../shared';
@@ -27,13 +26,21 @@ const LoginForm = () => {
         }
     }, [auth.user, navigate]);
 
+    // 엔터 키 이벤트 핸들러 추가
+    const handleKeyDown = (e: KeyboardEvent<HTMLFormElement>) => {
+        if (e.key === 'Enter') {
+            e.preventDefault(); // 기본 폼 제출 방지
+            handleLogin(); // 로그인 실행
+        }
+    };
+
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-100">
             <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
                 <h1 className="text-2xl font-bold text-center text-gray-900">
                     로그인
                 </h1>
-                <div className="space-y-6">
+                <form className="space-y-6" onKeyDown={handleKeyDown}>
                     <div className="space-y-1">
                         <label
                             htmlFor="email"
@@ -74,6 +81,7 @@ const LoginForm = () => {
                         </p>
                     ) : (
                         <button
+                            type="button"
                             onClick={handleLogin}
                             className="w-full px-4 py-2 text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 cursor-pointer"
                         >
@@ -81,16 +89,18 @@ const LoginForm = () => {
                         </button>
                     )}
                     {auth.error && (
-                            <p className="text-center text-red-500">
-                                {typeof auth.error === 'string' ? auth.error : JSON.stringify(auth.error)}</p>
+                        <p className="text-center text-red-500">
+                            {typeof auth.error === 'string' ? auth.error : JSON.stringify(auth.error)}
+                        </p>
                     )}
                     <button
+                        type="button"
                         onClick={handleSignup}
                         className="w-full px-4 py-2 text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 cursor-pointer"
                     >
                         회원가입
                     </button>
-                </div>
+                </form>
             </div>
         </div>
     );

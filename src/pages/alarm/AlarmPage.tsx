@@ -2,10 +2,11 @@ import React, { useState, useEffect, useCallback } from "react";
 import "./AlarmPage.css";
 import { apiClient } from "../../shared";
 import { useGlobalEvents } from "../../shared/sse/EventProvider";
+import { FaCheck } from "react-icons/fa"; // 체크 아이콘 추가
 
 // 1. Alarm 인터페이스 수정 (API 응답 구조에 맞춤)
 interface Alarm {
-  id: string;
+  id: number;
   message: string;
   eventName: string;  // type -> eventName으로 변경
   isRead: boolean;
@@ -89,7 +90,16 @@ const AlarmPage: React.FC<AlarmPageProps> = ({ isOpen, onClose }) => {
       console.error("채팅 시작 실패:", error);
     }
   }
-
+  const markAsRead = async (alarm: Alarm) => {
+    try {
+      await apiClient.delete(`/api/v1/alarm/${alarm.id}`); // 읽음 처리 API 호출
+      setAlarms((prev) => prev.map(a => a.id === alarm.id ? { ...a, isRead: true } : a));
+      console.log("알림 확인 완료");
+    } catch (error) {
+      console.error("알림 확인 실패:", error);
+    }
+  };
+  
   useEffect(() => {
     isOpen && fetchAlarms();
   }, [isOpen, fetchAlarms, sseEvents]); // 의존성 배열 정확히 지정
@@ -109,26 +119,35 @@ const AlarmPage: React.FC<AlarmPageProps> = ({ isOpen, onClose }) => {
                 onClick={() => startChat(alarm)} // 즉시 실행 함수로 수정
               >
                 채팅 시작
-              </button>
+              </button> 
+              <button className="check" onClick={() => markAsRead(alarm)}>
+          <FaCheck />
+        </button>
             </div>
           </div>
         );
         case "application__permitted":
           return (
             <div className="notification">
-              {alarm.message}
+              {alarm.message} <button className="check" onClick={() => markAsRead(alarm)}>
+          <FaCheck />
+        </button>
             </div>
           );
         case "application__rejected":
           return (
             <div className="notification">
-              {alarm.message}
+              {alarm.message} <button className="check" onClick={() => markAsRead(alarm)}>
+          <FaCheck />
+        </button>
             </div>
           );
           case "dm__created":
             return (
               <div className="notification">
-                {alarm.message}
+                {alarm.message} <button className="check" onClick={() => markAsRead(alarm)}>
+          <FaCheck />
+        </button>
               </div>
             );  
       default:
