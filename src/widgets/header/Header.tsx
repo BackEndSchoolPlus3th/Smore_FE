@@ -42,7 +42,7 @@ const Header = () => {
     const openAlarmPage = () => {
         setIsAlarm(true);
        // setHasNewAlarm(false);  // 알림을 확인했으므로 빨간 점 없애기
-      
+    }  
     const handleShowMyPagePopup = () => {
         setShowMyPagePopup((prev) => !prev);
     };
@@ -62,20 +62,6 @@ const Header = () => {
         setShowMyPagePopup(false);
     };
 
-    const handleMyPage = () => {
-        navigate('/mypage');
-        setShowMyPagePopup(false);
-    };
-
-    const handleSetting = () => {
-        navigate('/mypage/setting');
-        setShowMyPagePopup(false);
-    };
-
-    const handleHeart = () => {
-        navigate('/mypage/heart');
-        setShowMyPagePopup(false);
-    };
 
     // 바깥 영역 클릭 시 드롭다운 닫기
     useEffect(() => {
@@ -214,7 +200,7 @@ const Header = () => {
                 )}
             </div>
         </div>
-    );
-};
+        );
+    };
 
 export default Header;

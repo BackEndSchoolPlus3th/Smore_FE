@@ -1,5 +1,4 @@
-// src/features/auth/ui/LoginForm.tsx
-import { useState, ChangeEvent, useEffect } from 'react';
+import { useState, ChangeEvent, FormEvent, useEffect, KeyboardEvent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../model/authSlice';
 import type { AppDispatch, RootState } from '../../../shared';
@@ -26,6 +25,14 @@ const LoginForm = () => {
             navigate('/');
         }
     }, [auth.user, navigate]);
+
+    // 엔터 키 이벤트 핸들러 추가
+    const handleKeyDown = (e: KeyboardEvent<HTMLFormElement>) => {
+        if (e.key === 'Enter') {
+            e.preventDefault(); // 기본 폼 제출 방지
+            handleLogin(); // 로그인 실행
+        }
+    };
 
     return (
 
