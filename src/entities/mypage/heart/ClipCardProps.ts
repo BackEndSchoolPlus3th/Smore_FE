@@ -1,9 +1,7 @@
 export interface ClipCardProps {
-    id: number;
+    recruitmentArticleId: number;
     title: string;
     introduction: string;
     isRecruiting: boolean;
-    endDate: string;
     hashTags: string[] | null;
-    clipCreatedDate: string;
 }

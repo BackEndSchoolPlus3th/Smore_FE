@@ -5,6 +5,7 @@ import { MyClipCard } from '../../../widgets';
 
 const ClipBoard: React.FC = () => {
     const [clipList, setClipList] = useState<ClipCardProps[]>([]);
+
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<Error | null>(null);
 
@@ -16,13 +17,11 @@ const ClipBoard: React.FC = () => {
             );
             setClipList(
                 response.data.map((clip) => ({
-                    id: clip.id,
+                    recruitmentArticleId: clip.recruitmentArticleId,
                     title: clip.title,
                     introduction: clip.introduction,
                     isRecruiting: clip.isRecruiting,
-                    endDate: clip.endDate,
-                    hashTags: clip.hashTags ? clip.hashTags.split(',') : null,
-                    clipCreatedDate: clip.clipCreatedDate,
+                    hashTags: clip.hashTags?.split(',') || null,
                 }))
             );
         } catch (error) {
@@ -37,7 +36,7 @@ const ClipBoard: React.FC = () => {
     // }, []);
 
     return (
-        <div>
+        <div className="flex flex-col w-full rounded-lg shadow-md bg-white p-4 h-full overflow-y-auto">
             {loading ? (
                 <div>로딩중...</div>
             ) : error ? (
@@ -45,14 +44,12 @@ const ClipBoard: React.FC = () => {
             ) : clipList ? (
                 clipList.map((clip) => (
                     <MyClipCard
-                        key={clip.id}
-                        id={clip.id}
+                        key={clip.recruitmentArticleId}
+                        recruitmentArticleId={clip.recruitmentArticleId}
                         title={clip.title}
                         introduction={clip.introduction}
                         isRecruiting={clip.isRecruiting}
-                        endDate={clip.endDate}
                         hashTags={clip.hashTags}
-                        clipCreatedDate={clip.clipCreatedDate}
                     />
                 ))
             ) : (
