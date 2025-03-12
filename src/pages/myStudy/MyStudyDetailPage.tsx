@@ -11,6 +11,13 @@ const MyStudyDetailPage = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedData, setEditedData] = useState({ title: "", content: "" });
 
+  const [permissions, setPermissions] = useState({
+    recruitManage: [],
+    articleManage: [],
+    calendarManage: [],
+    settingManage: [],
+});
+
   const [studies, setStudies] = useState([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
@@ -21,7 +28,7 @@ const MyStudyDetailPage = () => {
   };
 
   const fetchCurrentUser = async () => {
-    const response = await fetch('http://localhost:8090/api/v1/urrent-user', {
+    const response = await fetch('http://localhost:8090/api/v1/current-user', {
       method: 'GET',
       headers: {
         'Authorization': `${token}`,
@@ -30,7 +37,7 @@ const MyStudyDetailPage = () => {
 
     if (response.ok) {
       const data = await response.json();
-      return data;  // { id, username, name 등 로그인한 사용자 정보 반환 }
+      return data;
     } else {
       throw new Error('사용자 정보를 가져올 수 없습니다.');
     }
@@ -56,10 +63,31 @@ const MyStudyDetailPage = () => {
     }
   };
 
+  const fetchPermissions = async (studyId) => {
+    try {
+        const response = await fetch(`http://localhost:8090/api/v1/study/${studyId}/checkPermission`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `${token}`,
+            },
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            setPermissions(data);
+        } else {
+            throw new Error('권한을 조회할 수 없습니다.');
+        }
+    } catch (error) {
+        console.error("권한 조회 실패:", error);
+    }
+};
+
   useEffect(() => {
     fetchStudies();
-  }, []);
-
+    fetchPermissions(studyId);
+  }, [studyId]);
+console.log(permissions);
   const handleStudySelect = (study) => {
     if (study && study.id) {
       setSelectedStudy(study);
@@ -148,7 +176,7 @@ const MyStudyDetailPage = () => {
 
     fetchArticleData();
     fetchUserData();
-  }, [studyId, articleId, navigate]);
+  }, [studyId, articleId, navigate, token]);
 
   const handleDeleteArticle = async () => {
     const confirmDelete = window.confirm('정말로 이 게시글을 삭제하시겠습니까?');
@@ -162,7 +190,7 @@ const MyStudyDetailPage = () => {
         });
         if (response.ok) {
           alert('삭제 성공');
-        navigate(`/study/${studyId}/articles`, { replace: true });
+          navigate(`/study/${studyId}/articles`, { replace: true });
         } else {
           alert('삭제 실패');
         }
@@ -207,7 +235,33 @@ const MyStudyDetailPage = () => {
 
     fetchArticleData();
     fetchUserData();
-  }, [studyId, articleId, articleData]);
+  }, []);
+
+  const handleDownload = async (key) => {
+    try {
+      const response = await fetch(`http://localhost:8090/api/v1/study/download/{key}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `${token}`, // JWT 토큰이 필요할 수 있습니다
+        },
+      });
+  
+      if (response.ok) {
+        const blob = await response.blob();
+        const downloadUrl = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.download = key.split('/').pop();  // S3 key에서 파일 이름 추출
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } else {
+        alert('파일 다운로드 실패');
+      }
+    } catch (error) {
+      console.error('다운로드 중 오류 발생:', error);
+    }
+  };
 
   if (!articleData || !currentUser) {
     return <div>Loading...</div>;
@@ -250,16 +304,16 @@ const MyStudyDetailPage = () => {
               <div className="mb-6">
                 <label htmlFor="title" className="block text-sm font-semibold mb-2">제목</label>
                 {isEditing ? (
-                <input
-                type="text"
-                id="title"
-                name="title"
-                value={editedData.title}
-                onChange={handleInputChange}
-                className="w-full p-2 border rounded bg-gray-100"
-              />
-              ) : (
-                <input
+                  <input
+                    type="text"
+                    id="title"
+                    name="title"
+                    value={editedData.title}
+                    onChange={handleInputChange}
+                    className="w-full p-2 border rounded bg-gray-100"
+                  />
+                ) : (
+                  <input
                     type="text"
                     id="title"
                     name="title"
@@ -285,26 +339,47 @@ const MyStudyDetailPage = () => {
               <div className="mb-6">
                 <label htmlFor="content" className="block text-sm font-semibold mb-2">내용</label>
                 {isEditing ? (
-                <textarea
-                id="content"
-                name="content"
-                value={editedData.content}
-                onChange={handleInputChange}
-                rows="6"
-                className="w-full p-2 border rounded bg-gray-100"
-              />
-              ) : (
-                <textarea
-                  id="content"
-                  name="content"
-                  value={articleData.content}
-                  disabled
-                  rows="6"
-                  className="w-full p-2 border rounded bg-gray-100"
-                />
-              )}
+                  <textarea
+                    id="content"
+                    name="content"
+                    value={editedData.content}
+                    onChange={handleInputChange}
+                    rows="6"
+                    className="w-full p-2 border rounded bg-gray-100"
+                  />
+                ) : (
+                  <textarea
+                    id="content"
+                    name="content"
+                    value={articleData.content}
+                    disabled
+                    rows="6"
+                    className="w-full p-2 border rounded bg-gray-100"
+                  />
+                )}
               </div>
-              {isAuthor && (
+              {/* 첨부파일 */}
+              {articleData.imageUrls && (
+                <div className="mb-6">
+                  <label className="block text-sm font-semibold mb-2">첨부파일</label>
+                  <div>
+                    {/* 단일 이미지 URL인 경우 */}
+                    <button onClick={() => handleDownload(articleData.imageUrls)} className="text-blue-500 cursor-pointer">
+  다운로드
+</button>
+                    {/* 이미지라면 미리보기 */}
+                    {articleData.imageUrls.match(/\.(jpeg|jpg|gif|png)$/) && (
+                      <img
+                        src={articleData.imageUrls}
+                        alt="첨부파일"
+                        className="w-24 h-24 object-cover mt-2"
+                      />
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {(isAuthor || permissions.articleManage) && (
                 <div className="flex justify-end space-x-2">
                   {isEditing ? (
                     <>
@@ -313,9 +388,9 @@ const MyStudyDetailPage = () => {
                     </>
                   ) : (
                     <>
-                  <button className="p-1 bg-purple-500 text-white rounded cursor-pointer" onClick={handleEditArticle}>수정</button>
-                  <button className="p-1 bg-purple-500 text-white rounded cursor-pointer" onClick={handleDeleteArticle}>삭제</button>
-                  </>
+                      <button className="p-1 bg-purple-500 text-white rounded cursor-pointer" onClick={handleEditArticle}>수정</button>
+                      <button className="p-1 bg-purple-500 text-white rounded cursor-pointer" onClick={handleDeleteArticle}>삭제</button>
+                    </>
                   )}
                 </div>
               )}
