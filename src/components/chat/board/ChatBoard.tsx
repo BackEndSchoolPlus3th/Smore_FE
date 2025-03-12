@@ -2,12 +2,7 @@ import React from "react";
 import { useNavigate,useParams  } from 'react-router-dom';
 import { Video } from "lucide-react";
 
-  
-type ChatRoom = {
-  roomId: string;      // 백엔드에서 roomId(Long)을 받아오면 문자열로 변환
-  roomName: string;    // studyName (스터디명)
-  studyId?: number;    // 그룹 채팅방이라면 studyId를 담아둠 (DM에는 필요없을 수도 있음)
-};
+
 
 const ChatBoard: React.FC = () => {
   const navigate = useNavigate();
