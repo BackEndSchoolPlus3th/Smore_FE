@@ -38,8 +38,28 @@ const Header = () => {
         navigate('/login');
     };
 
+
+    const openAlarmPage = () => {
+        setIsAlarm(true);
+       // setHasNewAlarm(false);  // 알림을 확인했으므로 빨간 점 없애기
+      
     const handleShowMyPagePopup = () => {
         setShowMyPagePopup((prev) => !prev);
+    };
+
+    const handleMyPage = () => {
+        navigate('/mypage');
+        setShowMyPagePopup(false);
+    };
+
+    const handleSetting = () => {
+        navigate('/mypage/setting');
+        setShowMyPagePopup(false);
+    };
+
+    const handleHeart = () => {
+        navigate('/mypage/heart');
+        setShowMyPagePopup(false);
     };
 
     const handleMyPage = () => {
@@ -101,7 +121,7 @@ const Header = () => {
                             </button>
                         </div>
                         <div className="flex items-center text-center w-full">
-                            <button className="p-2 rounded hover:bg-gray-100 cursor-pointer">
+                            <button className="p-2 rounded hover:bg-gray-100 cursor-pointer" onClick={openAlarmPage}>
                                 <Bell size={20} />
                             </button>
                         </div>

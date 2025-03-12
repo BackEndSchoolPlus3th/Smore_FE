@@ -29,6 +29,7 @@ const LoginForm = () => {
 
     return (
 
+
         <div className="p-8 space-y-6 bg-white rounded-lg shadow-md w-full h-full">
             <h1 className="text-2xl font-bold text-center text-gray-900">
                 로그인
@@ -71,6 +72,7 @@ const LoginForm = () => {
                 {auth.loading ? (
                     <p className="text-center text-gray-500">로그인 중...</p>
                 ) : (
+
                     <button
                         onClick={handleLogin}
                         className="w-full px-4 py-2 text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 cursor-pointer"
