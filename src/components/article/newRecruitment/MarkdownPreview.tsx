@@ -7,7 +7,7 @@ interface MarkdownPreviewProps {
 
 const MarkdownPreview: React.FC<MarkdownPreviewProps> = ({ content }) => {
     return (
-        <div className="w-1/2 h-196.5 border border-gray-300 rounded p-3 overflow-y-auto bg-white markdown-preview">
+        <div className="w-full h-full border border-gray-300 rounded p-3 overflow-y-auto bg-white markdown-preview">
             <MarkdownRenderer content={content} />
         </div>
     );
