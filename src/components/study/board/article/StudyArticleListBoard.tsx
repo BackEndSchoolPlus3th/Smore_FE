@@ -1,28 +1,34 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { apiClient } from '../../../../shared';
 import { useNavigate, useParams } from 'react-router-dom';
-
-interface Article {
-    id: number;
-    title: string;
-}
+import { SubmitButton } from '../../../../shared';
 
 const StudyArticleListBoard: React.FC = () => {
-    const studyId = useParams().studyId;
+    const {studyId} = useParams();
     const navigate = useNavigate();
-    const [articles, setArticles] = useState<Article[]>([]);
+    const [articles, setArticles] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
-    const [currentPosts, setCurrentPosts] = useState<Article[]>([]);
-    const [currentDisplayPosts, setCurrentDisplayPosts] = useState<Article[]>(
-        []
-    );
-    const totalPages = Math.ceil(currentPosts.length / 4);
+    const [studies, setStudies] = useState([]);
+    const postsPerPage = 16;
+    const currentPosts = articles;
+    const currentDisplayPosts = currentPosts.slice((currentPage - 1) * postsPerPage, currentPage * postsPerPage);
+    const totalPages = Math.ceil(currentPosts.length / postsPerPage);
     const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
+
+    const fetchStudies = async () => {
+        try {
+            const response = await apiClient.get(`/api/v1/user/studies`);
+
+            setStudies(response.data);
+        } catch (error) {
+            console.error("스터디 목록 가져오기 실패:", error);
+        }
+    };
 
     const fetchArticles = async () => {
         try {
-            const response = await apiClient.get('/articles');
+            const response = await apiClient.get(`/api/v1/study/${studyId}/articles`);
 
             if (response.status !== 200) {
                 throw new Error(`Error: ${response.status}`);
@@ -39,11 +45,11 @@ const StudyArticleListBoard: React.FC = () => {
     };
 
     const goToStudyEditPage = () => {
-        navigate(`/study/${studyId}/article/edit`);
+        navigate(`/study/${studyId}/edit`);
     };
 
-    const handleArticleClick = (articleId: number) => () => {
-        navigate(`/study/${studyId}/article/${articleId}`);
+    const handleArticleClick = (articleId) => {
+        navigate(`/study/${studyId}/articles/${articleId}`);
     };
 
     const handlePageClick = (page) => {
@@ -52,17 +58,23 @@ const StudyArticleListBoard: React.FC = () => {
         }
     };
 
-    useEffect(() => {
-        fetchArticles();
-    }, []);
+    const handleKeyDown = (e) => {
+        if (e.key === "Enter") {
+            console.log("검색어:", searchQuery);
+        }
+    };
 
     useEffect(() => {
-        setCurrentPosts(articles);
+        fetchArticles(studyId);
+        fetchStudies();
+    }, [studyId]);
+
+    useEffect(() => {
     }, [currentPage, articles]);
 
     return (
         <>
-            <div className="mb-4 flex justify-end space-x-2 items-center">
+            <div className="mb-4 flex justify-end space-x-2 items-center p-10">
                 {/* 검색창 */}
                 <div className="flex items-center space-x-2 w-full max-w-xs">
                     <input
@@ -75,38 +87,33 @@ const StudyArticleListBoard: React.FC = () => {
                 </div>
 
                 {/* 글 작성 버튼 */}
-                <button
-                    className="p-1 bg-dark-purple text-white font-semibold rounded cursor-pointer"
+                <SubmitButton
+                label="글 작성"
                     onClick={goToStudyEditPage}
-                >
-                    글작성
-                </button>
+                />
             </div>
             {/* 게시판 */}
-            <div className="grid grid-cols-4 gap-4">
-                {currentDisplayPosts.map((article) => (
-                    <div
-                        onClick={() => handleArticleClick(article.id)}
-                        key={article.id}
-                        className="cursor-pointer p-4 bg-white shadow rounded"
-                    >
-                        <div className="w-full h-32 bg-dark-purple"></div>
-                        <div className="flex items-center space-x-2 mt-2">
-                            <div className="bg-dark-purple w-8 h-8 rounded-full"></div>
-                            <div className="mt-2 text-xl font-semibold text-black">
-                                {article.title}
+            <div className="grid grid-cols-4 gap-4 px-10">
+                        {currentDisplayPosts.map((article) => (
+                            <div
+                                onClick={() => handleArticleClick(article.id)} key={article.id} className="cursor-pointer p-4 bg-white shadow rounded">
+                                <div className="w-full h-32 bg-gray-300"></div>
+                                <div className="flex items-center space-x-2 mt-2">
+                                    <div className="bg-gray-600 w-8 h-8 rounded-full"></div>
+                                    <div className="mt-2 text-xl font-semibold text-black">
+                                        {article.title}
+                                    </div>
+                                </div>
                             </div>
-                        </div>
+                        ))}
                     </div>
-                ))}
-            </div>
 
             {/* 페이징 버튼 */}
             <div className="flex justify-center mt-4 space-x-2">
                 <button
                     disabled={currentPage === 1}
                     onClick={() => handlePageClick(currentPage - 1)}
-                    className="px-4 py-2 bg-dark-purple text-white font-semibold rounded cursor-pointer"
+                    className="px-4 py-2 text-sm bg-whit hover:bg-gray-200 transition-colors border-gray-300 cursor-pointer text-black font-bold border rounded-lg"
                 >
                     이전
                 </button>
@@ -116,7 +123,7 @@ const StudyArticleListBoard: React.FC = () => {
                     <button
                         key={page}
                         onClick={() => handlePageClick(page)}
-                        className={`px-4 py-2 font-semibold rounded ${currentPage === page ? 'bg-purple-600 text-white' : 'bg-white text-black cursor-pointer'}`}
+                        className={`px-4 py-2 text-sm bg-whit hover:bg-gray-200 transition-colors border-gray-300 cursor-pointer text-black font-bold border rounded-lg ${currentPage === page ? 'bg-gray-600 text-white' : 'bg-white text-black cursor-pointer'}`}
                     >
                         {page}
                     </button>
@@ -125,7 +132,7 @@ const StudyArticleListBoard: React.FC = () => {
                 <button
                     disabled={currentPage === totalPages}
                     onClick={() => handlePageClick(currentPage + 1)}
-                    className="px-4 py-2 bg-dark-purple text-white font-semibold rounded cursor-pointer"
+                    className="px-4 py-2 text-sm bg-whit hover:bg-gray-200 transition-colors border-gray-300 cursor-pointer text-black font-bold border rounded-lg"
                 >
                     다음
                 </button>

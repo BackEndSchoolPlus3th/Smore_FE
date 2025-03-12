@@ -37,9 +37,12 @@ export const EventProvider = ({ children }: EventProviderProps) => {
         console.log("✅ SSE 연결 성공");
         setIsConnected(true);
       };
-    console.log("??????????");
       // 메시지 수신
       eventSource.addEventListener("application__reached", handleEvent);
+      eventSource.addEventListener("application__permitted", handleEvent);
+      eventSource.addEventListener("application__rejected", handleEvent);
+      eventSource.addEventListener("dm__created", handleEvent);
+
 
       // 오류 발생 시
       eventSource.onerror = (error) => {

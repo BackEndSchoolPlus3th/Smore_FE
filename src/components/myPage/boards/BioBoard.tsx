@@ -1,42 +1,87 @@
+import { useRef, useState, useEffect } from 'react';
+import { apiClient } from '../../../shared';
+import Editor from '../../article/newRecruitment/Editor';
+import MarkdownPreview from '../../article/newRecruitment/MarkdownPreview';
+import { SubmitButton, CancleButton } from '../../../shared';
+
 const BioBoard: React.FC = () => {
-    const profileData = {
-        email: 'aaa@email.com',
-        nickname: 'My_nickName',
-        birthdate: '2000-01-01',
-        region: '서울',
-        hashtags: '#자바 #스프링부트',
+    const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
+
+    const [isEdit, setIsEdit] = useState(false);
+    const [bio, setBio] = useState<string | null>('');
+    const [editBio, setEditBio] = useState<string>('');
+
+    const fetchGetBio = async () => {
+        try {
+            const response = await apiClient.get('/api/v1/member/bio');
+            setBio(response.data.bio);
+        } catch (error) {
+            console.error(error);
+        }
     };
 
-    return (
-        <div className="flex flex-col items-center max-w-md mx-auto p-6">
-            <h1 className="text-2xl font-bold mb-2">마이페이지</h1>
+    const fetchPutBio = async () => {
+        try {
+            await apiClient.put('/api/v1/member/bio', { bio: editBio });
+            alert('수정되었습니다.');
+            setBio(editBio);
+            setIsEdit(false);
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
-            {/* <div className="w-full space-y-4">
-                <div className="flex items-center">
-                    <span className="w-24 text-right mr-4">이메일</span>
-                    <div className="flex-1 p-2 border border-gray-300 rounded bg-gray-50">{profileData.email}</div>
-                </div>
-        
-                <div className="flex items-center">
-                    <span className="w-24 text-right mr-4">닉네임</span>
-                    <div className="flex-1 p-2 border border-gray-300 rounded bg-gray-50">{profileData.nickname}</div>
-                </div>
-            
-                <div className="flex items-center">
-                    <span className="w-24 text-right mr-4">생일</span>
-                    <div className="flex-1 p-2 border border-gray-300 rounded bg-gray-50">{profileData.birthdate}</div>
-                </div>
-            
-                <div className="flex items-center">
-                    <span className="w-24 text-right mr-4">지역</span>
-                    <div className="flex-1 p-2 border border-gray-300 rounded bg-gray-50">{profileData.region}</div>
-                </div>
-            
-                <div className="flex items-center">
-                    <span className="w-24 text-right mr-4">해시태그</span>
-                    <div className="flex-1 p-2 border border-gray-300 rounded bg-gray-50">{profileData.hashtags}</div>
-                </div>
-            </div> */}
+    const handleEdit = () => {
+        setIsEdit(true);
+    };
+    const handleSubmit = () => {
+        fetchPutBio();
+    };
+    const handleCancel = () => {
+        setIsEdit(false);
+    };
+
+    useEffect(() => {
+        fetchGetBio();
+    }, []);
+
+    return (
+        <div className="flex flex-col h-full gap-4">
+            <div className="flex h-full">
+                {isEdit ? (
+                    <div className="flex flex-row gap-4 w-full h-full">
+                        <div className="w-1/2 h-full">
+                            <Editor
+                                content={editBio}
+                                setTitle={() => {}}
+                                setContent={setEditBio}
+                                textAreaRef={textAreaRef}
+                                uploadPath=""
+                                multiImageUploadRef={null}
+                                isViewTitle={false}
+                                isViewImageUpload={false}
+                            />
+                        </div>
+                        <div className="w-1/2 h-full">
+                            <MarkdownPreview content={editBio} />
+                        </div>
+                    </div>
+                ) : bio ? (
+                    <MarkdownPreview content={bio} />
+                ) : (
+                    <MarkdownPreview content="자기소개를 작성해주세요." />
+                )}
+            </div>
+            <div className="flex justify-end h-auto gap-2">
+                {!isEdit ? (
+                    <SubmitButton onClick={handleEdit} label="수정" />
+                ) : (
+                    <>
+                        <CancleButton onClick={handleCancel} />
+                        <SubmitButton onClick={handleSubmit} />
+                    </>
+                )}
+            </div>
         </div>
     );
 };

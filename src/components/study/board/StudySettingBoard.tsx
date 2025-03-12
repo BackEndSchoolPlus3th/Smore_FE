@@ -1,4 +1,5 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { apiClient } from '../../../shared';
 import React, { useState, useEffect } from "react";
 
 const StudySettingBoard: React.FC = () => {

@@ -1,6 +1,6 @@
 // src/app/store.ts
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
-import { authReducer } from '../../features';
+import authReducer from '../../features/auth/model/authSlice'; // default import 사용
 import storage from 'redux-persist/lib/storage'; // localStorage 사용
 import { persistStore, persistReducer } from 'redux-persist';
 
