@@ -32,9 +32,9 @@ const ClipBoard: React.FC = () => {
         }
     };
 
-    useEffect(() => {
-        fetchClipListData();
-    }, []);
+    // useEffect(() => {
+    //     fetchClipListData();
+    // }, []);
 
     return (
         <div>

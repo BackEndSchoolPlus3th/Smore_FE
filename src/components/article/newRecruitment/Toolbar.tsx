@@ -11,6 +11,7 @@ interface ToolbarProps {
     uploadPath: string;
     // 외부에서 MultiImageUpload의 메서드를 호출할 ref
     multiImageUploadRef: React.Ref<MultiImageUploadRef>;
+    isViewImageUpload?: boolean;
 }
 
 const Toolbar: React.FC<ToolbarProps> = ({
@@ -20,6 +21,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
     onCode,
     uploadPath,
     multiImageUploadRef,
+    isViewImageUpload = true,
 }) => {
     return (
         <div className="flex space-x-2 mb-2 items-center">
@@ -51,10 +53,12 @@ const Toolbar: React.FC<ToolbarProps> = ({
             >
                 <FaCode />
             </button>
-            <MultiImageUpload
-                ref={multiImageUploadRef}
-                uploadPath={uploadPath}
-            />
+            {isViewImageUpload && (
+                <MultiImageUpload
+                    ref={multiImageUploadRef}
+                    uploadPath={uploadPath}
+                />
+            )}
         </div>
     );
 };

@@ -2,7 +2,7 @@ import React from 'react';
 import Toolbar from './Toolbar';
 
 interface EditorProps {
-    title: string;
+    title?: string;
     content: string;
     setTitle: React.Dispatch<React.SetStateAction<string>>;
     setContent: React.Dispatch<React.SetStateAction<string>>;
@@ -11,16 +11,20 @@ interface EditorProps {
     uploadPath: string;
     // MultiImageUpload의 ref를 전달 (Toolbar로 전달)
     multiImageUploadRef: React.Ref<any>;
+    isViewTitle?: boolean;
+    isViewImageUpload?: boolean;
 }
 
 const Editor: React.FC<EditorProps> = ({
-    title,
+    title = '제목 입력',
     content,
     setTitle,
     setContent,
     textAreaRef,
     uploadPath,
     multiImageUploadRef,
+    isViewTitle = true,
+    isViewImageUpload = true,
 }) => {
     const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setTitle(e.target.value);
@@ -101,15 +105,17 @@ const Editor: React.FC<EditorProps> = ({
     };
 
     return (
-        <div className="flex flex-col w-1/2">
-            <input
-                type="text"
-                placeholder="제목을 입력하세요"
-                value={title}
-                onChange={handleTitleChange}
-                maxLength={50}
-                className="w-full border border-gray-300 rounded px-3 py-2 mb-4 text-2xl focus:outline-none focus:border-purple-500 bg-white"
-            />
+        <div className="flex flex-col h-full w-full">
+            {isViewTitle && (
+                <input
+                    type="text"
+                    placeholder="제목을 입력하세요"
+                    value={title}
+                    onChange={handleTitleChange}
+                    maxLength={50}
+                    className="w-full border border-gray-300 rounded px-3 py-2 mb-4 text-2xl focus:outline-none focus:border-purple-500 bg-white"
+                />
+            )}
             <Toolbar
                 onBold={handleBoldClick}
                 onItalic={handleItalicClick}
@@ -117,13 +123,14 @@ const Editor: React.FC<EditorProps> = ({
                 onCode={handleCodeClick}
                 uploadPath={uploadPath}
                 multiImageUploadRef={multiImageUploadRef}
+                isViewImageUpload={isViewImageUpload}
             />
             <textarea
                 ref={textAreaRef}
                 placeholder="본문을 작성하세요..."
                 value={content}
                 onChange={handleContentChange}
-                className="w-full h-170 border border-gray-300 rounded p-3 resize-none focus:outline-none focus:border-purple-500 bg-white"
+                className="w-full h-full border border-gray-300 rounded p-3 resize-none focus:outline-none focus:border-purple-500 bg-white"
             />
         </div>
     );
