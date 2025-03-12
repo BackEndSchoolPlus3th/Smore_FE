@@ -3,7 +3,7 @@ import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { apiClient } from '../../../shared';
 import { CancleButton } from '../../../shared';
-
+import { BookOpen } from 'lucide-react';
 interface Study {
     id: number;
     title: string;
@@ -86,8 +86,8 @@ const StudyMainBoard: React.FC = () => {
 
     return (
     <div className='p-10'>
-        <div className="flex items-center space-x-4 justify-center">
-            <div className="w-50 h-50 bg-gray-500 rounded-full"></div>
+        <div className="flex items-center space-x-4 justify-center pb-8 border-b-2 border-gray-300">
+            <div className="w-50 h-50 bg-gray-300 rounded-full flex justify-center items-center" ><BookOpen color={"white"} size={130} /></div>
             <div className="pl-10">
                 <div className="text-xl font-bold pb-5">{study.title}</div>
                 <div className="text-sm text-gray-700 pb-5">
