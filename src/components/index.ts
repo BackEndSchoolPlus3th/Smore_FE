@@ -31,3 +31,4 @@ export { default as ChatPageForm } from './chat/form/ChatPageForm';
 export { default as InitialChatBoard } from './chat/board/InitialChatBoard';
 export { default as ChatBoard } from './chat/board/ChatBoard';
 export { default as VideoChatBoard } from './chat/board/VideoChatBoard';
+export { default as Sidebar } from './chat/Sidebar';
