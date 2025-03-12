@@ -81,7 +81,8 @@ const LoginForm = () => {
                         </button>
                     )}
                     {auth.error && (
-                        <p className="text-center text-red-500">{auth.error}</p>
+                            <p className="text-center text-red-500">
+                                {typeof auth.error === 'string' ? auth.error : JSON.stringify(auth.error)}</p>
                     )}
                     <button
                         onClick={handleSignup}

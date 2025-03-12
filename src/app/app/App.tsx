@@ -30,7 +30,6 @@ import {
     StudyPage,
 } from '../../pages';
 import { Header } from '../../widgets';
-//import { SSEProvider } from '../../shared/sse/SSEProvider';
 import { EventProvider } from '../../shared/sse/EventProvider'; // ✅ 이름 수정
 
 function App() {
