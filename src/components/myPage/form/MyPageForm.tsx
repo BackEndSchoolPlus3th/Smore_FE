@@ -3,16 +3,14 @@ import { Outlet } from 'react-router-dom';
 
 const MyPageForm: React.FC = () => {
     return (
-        <div className="flex w-full min-h-full items-center justify-center">
-            <div className="flex flex-row w-[80%] h-1000">
-                {/* 사이드바 영역*/}
-                <div className="w-[38%]">
-                    <MyPageSideBar />
-                </div>
-                {/* 보드 영역*/}
-                <div className="w-[62%]">
-                    <Outlet />
-                </div>
+        <div className="flex w-full h-full items-center justify-center">
+            {/* 사이드바 영역*/}
+            <div className="h-full w-1/4 border-r border-gray-200 ">
+                <MyPageSideBar />
+            </div>
+            {/* 보드 영역*/}
+            <div className="w-full h-full p-8">
+                <Outlet />
             </div>
         </div>
     );

@@ -4,7 +4,7 @@ import { apiClient } from '../../../shared';
 
 export interface User {
     nickname: string;
-    hashTags: string;
+    hashTags: string[];
     profileImageUrl: string | null;
 }
 
@@ -20,7 +20,6 @@ const initialState: AuthState = {
     error: null,
 };
 
-// 로그인 API 호출 (비동기 액션)
 export const login = createAsyncThunk(
     'auth/login',
     async (
@@ -32,10 +31,7 @@ export const login = createAsyncThunk(
                 '/api/member/login',
                 credentials
             );
-            console.log(response);
-            return {
-                user: response.data,
-            };
+            return { user: response.data };
         } catch (error) {
             if (error instanceof Error) {
                 return rejectWithValue(
@@ -54,6 +50,11 @@ const authSlice = createSlice({
     reducers: {
         logout(state) {
             state.user = null;
+        },
+        updateUser(state, action: PayloadAction<Partial<User>>) {
+            if (state.user) {
+                state.user = { ...state.user, ...action.payload };
+            }
         },
     },
     extraReducers: (builder) => {
@@ -76,6 +77,6 @@ const authSlice = createSlice({
     },
 });
 
-export const { logout } = authSlice.actions;
+export const { logout, updateUser } = authSlice.actions;
 export default authSlice.reducer;
 export const authReducer = authSlice.reducer;

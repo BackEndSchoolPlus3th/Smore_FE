@@ -2,10 +2,12 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Sidebar from "../../widgets/sidebar/Sidebar";
 import Navbar from "../../widgets/navbarArticle/Navbar";
+import { FileUploadButton } from "../../features";
 
 const MyStudyEditPage = () => {
   const { studyId } = useParams();
   const navigate = useNavigate();
+  const [uploadedUrl, setUploadedUrl] = useState('');
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [studies, setStudies] = useState([]);
@@ -13,6 +15,7 @@ const MyStudyEditPage = () => {
   const [formData, setFormData] = useState({
     title: '',
     content: '',
+    uploadedUrl: null,
   });
 
   // 사이드바에서 스터디 선택 처리
@@ -75,7 +78,9 @@ const MyStudyEditPage = () => {
       formDataToSend.append('title', formData.title);
       formDataToSend.append('content', formData.content);
 
-      console.log('Form Data:', formDataToSend);
+      if (uploadedUrl) {
+        formDataToSend.append('file', uploadedUrl);
+      }
 
       try {
         const response = await fetch(`http://localhost:8090/api/v1/study/${studyId}/articles`, {
@@ -168,7 +173,16 @@ const MyStudyEditPage = () => {
                   required
                 />
               </div>
-
+              {/* 파일 업로드 */}
+              <div className="mb-4">
+                <FileUploadButton
+                  uploadPath={`study/${studyId}/`}
+                  onUploadComplete={(url) => {
+                    setUploadedUrl(url);
+                  }
+                  }
+                />
+              </div>
               {/* 업로드 버튼 */}
               <div className="flex justify-end">
                 <button

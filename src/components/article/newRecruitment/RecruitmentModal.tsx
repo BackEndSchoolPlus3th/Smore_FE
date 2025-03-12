@@ -1,5 +1,5 @@
 import React from 'react';
-import HashtagInput from './HashtagInput';
+import { HashtagInput } from '../../../shared';
 import RegionSelect from './RegionSelect';
 import { FileUploadButton } from '../../../features';
 
