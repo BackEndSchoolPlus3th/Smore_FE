@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { apiClient } from '../../../shared';
+import { CancleButton } from '../../../shared';
 
 interface Study {
     id: number;
@@ -14,7 +15,6 @@ const StudyMainBoard: React.FC = () => {
     const { studyId } = useParams();
     const navigate = useNavigate();
     const [study, setStudy] = useState<Study>();
-    const token = localStorage.getItem("accessToken");
     const [studies, setStudies] = useState([]);
     const [articles, setArticles] = useState([]);
 
@@ -46,20 +46,14 @@ const StudyMainBoard: React.FC = () => {
         const userConfirmed = window.confirm("탈퇴하시겠습니까?");
         if (userConfirmed) {
             try {
-                const response = await fetch(`/api/v1/study/${studyId}/delete`, {
-                    method: "DELETE",
-                    headers: {
-                        "Authorization": `${token}`,
-                        "Content-Type": "application/json",  // Content-Type이 필요할 경우 추가
-                    },
-                });
-
-                if (!response.ok) {
+                const response = await apiClient.delete(`/api/v1/study/${studyId}/delete`);
+    
+                if (response.status === 200) {
+                    alert("탈퇴가 완료되었습니다.");
+                    navigate("/");  // 탈퇴 후 메인 페이지로 이동
+                } else {
                     throw new Error(`탈퇴 요청 실패: ${response.statusText}`);
                 }
-
-                alert("탈퇴가 완료되었습니다.");
-                navigate("/");  // 탈퇴 후 메인 페이지로 이동
             } catch (error) {
                 console.error("탈퇴 요청 실패:", error);
                 alert("탈퇴 요청 실패");
@@ -126,12 +120,10 @@ const StudyMainBoard: React.FC = () => {
         </div>
 
         <div className="flex justify-end">
-            <button
-                className="px-1 py-1 bg-dark-purple text-white font-semibold cursor-pointer rounded mt-2"
-                onClick={handleExitClick}
-            >
-                탈퇴
-            </button>
+            <CancleButton
+            label="탈퇴" 
+            onClick={handleExitClick} 
+            />
         </div>
     </div>
     );
