@@ -1,22 +1,22 @@
 import React, { useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import { Video } from "lucide-react";
 import Chat from "../Chat";
 import Participants from "../Participants";
 import { VideoChatPage } from "../../../pages";
 import  Sidebar  from "../Sidebar";
   
+// chatboard 들어오면 백에 요청보내서 채팅방 목록 가져오기
   const ChatBoard: React.FC = () => {
-    const [isVideoChatActive, setIsVideoChatActive] = useState(false);
     // 선택된 채팅방 정보
     const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
-    const [selectedChatType, setSelectedChatType] = useState<"dm" | "group" | null>(null);
     // 현재 사이드바에서 펼쳐진 카테고리 
     const [expandedCategory, setExpandedCategory] = useState<"dm" | "group">("dm");
   
-
+    const navigate = useNavigate();
   
     const handleVideoChat = () => {
-      setIsVideoChatActive(true);
+      navigate("/videochat");
     };
   
     return (
@@ -33,15 +33,9 @@ import  Sidebar  from "../Sidebar";
               <Video className="w-6 h-6 text-gray-700" />
             </button>
           </div>
-          {selectedRoomId ? (
-            isVideoChatActive ? (
-              <VideoChatPage />
-            ) : selectedChatType ? (
-              <Chat roomId={selectedRoomId} chatType={selectedChatType} />
-            ) : (
-              <div className="p-4">채팅할 방을 선택해주세요.</div>
-            )
-          ) : (
+          {selectedRoomId ? 
+             ( <Chat roomId={selectedRoomId}  />
+             ) : (
             <div className="p-4">채팅할 방을 선택해주세요.</div>
           )}
         </div>

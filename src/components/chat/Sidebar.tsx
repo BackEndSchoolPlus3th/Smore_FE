@@ -4,10 +4,8 @@ const Sidebar: React.FC = () => {
     type ChatRoom = {
         roomId: string;
         roomName: string;
-      };
+      };     
       
-      
-    const [isVideoChatActive, setIsVideoChatActive] = useState(false);
     // 선택된 채팅방 정보
     const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
     const [selectedChatType, setSelectedChatType] = useState<"dm" | "group" | null>(null);

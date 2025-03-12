@@ -2,7 +2,7 @@ import { Route, Routes } from 'react-router-dom';
 import {
     ChatPageForm,
     ChatBoard,
-    VideoChatBoard
+    // VideoChatBoard
 } from '../../components';
 
 const ChatPage = () => {
@@ -10,7 +10,7 @@ const ChatPage = () => {
         <Routes>
             <Route path="/" element={<ChatPageForm />}>
                 <Route index element={<ChatBoard />} />
-                {/* <Route path="room" element={<VideoChatBoard />} /> */}
+                {/* <Route path="/videochat" element={<VideoChatBoard />} /> */}
             </Route>
         </Routes>
     );
