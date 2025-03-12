@@ -3,26 +3,34 @@ import { ClipCardProps } from '../../../entities';
 import { Trash } from 'lucide-react';
 import { apiClient } from '../../../shared';
 
-const MyClipCard: React.FC<ClipCardProps> = (props: ClipCardProps) => {
+interface MyClipCardProps extends ClipCardProps {
+    onDelete?: (recruitmentArticleId: string | number) => void;
+}
+
+const MyClipCard: React.FC<MyClipCardProps> = (props: MyClipCardProps) => {
     const fetchDeleteClip = async () => {
         try {
-            const response = await apiClient.delete(
-                `/api/v1/recruitmentArticle/clip`,
-                {
-                    params: {
-                        recruitmentArticleId: props.recruitmentArticleId,
-                    },
-                }
-            );
-            console.log(response);
+            await apiClient.delete(`/api/v1/recruitmentArticle/clip`, {
+                params: {
+                    recruitmentArticleId: props.recruitmentArticleId,
+                },
+            });
+            alert('삭제되었습니다.');
+            if (props.onDelete) {
+                props.onDelete(props.recruitmentArticleId);
+            }
         } catch (error) {
             console.error(error);
         }
     };
 
-    const handleDelete = () => {
-        alert('삭제 하시겠습니까?');
-        fetchDeleteClip();
+    const handleDelete = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        if (window.confirm('삭제 하시겠습니까?')) {
+            fetchDeleteClip();
+        }
     };
 
     return (
@@ -49,8 +57,7 @@ const MyClipCard: React.FC<ClipCardProps> = (props: ClipCardProps) => {
             </div>
             <div className="flex flex-col">
                 <div
-                    className="p-2 hover:bg-red-100 rounded-lg
-                        cursor-pointer"
+                    className="p-2 hover:bg-red-100 rounded-lg cursor-pointer"
                     onClick={handleDelete}
                 >
                     <Trash size={20} />
