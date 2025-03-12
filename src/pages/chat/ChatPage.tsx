@@ -8,7 +8,7 @@ import {
 const ChatPage = () => {
   return (  
     <Routes>      
-      <Route path="/" element={<ChatPageForm />}>
+      <Route path="/:study_id?" element={<ChatPageForm />}>
       <Route index element={<ChatBoard />} />
       </Route>
     </Routes>
