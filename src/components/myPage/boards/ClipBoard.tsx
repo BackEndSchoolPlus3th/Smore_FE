@@ -5,7 +5,6 @@ import { MyClipCard } from '../../../widgets';
 
 const ClipBoard: React.FC = () => {
     const [clipList, setClipList] = useState<ClipCardProps[]>([]);
-
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<Error | null>(null);
 
@@ -31,9 +30,18 @@ const ClipBoard: React.FC = () => {
         }
     };
 
-    // useEffect(() => {
-    //     fetchClipListData();
-    // }, []);
+    // 삭제된 clip의 id를 받아 clipList에서 제거하는 함수
+    const handleRemoveClip = (recruitmentArticleId: string | number) => {
+        setClipList((prevList) =>
+            prevList.filter(
+                (clip) => clip.recruitmentArticleId !== recruitmentArticleId
+            )
+        );
+    };
+
+    useEffect(() => {
+        fetchClipListData();
+    }, []);
 
     return (
         <div className="flex flex-col w-full rounded-lg shadow-md bg-white p-4 h-full overflow-y-auto">
@@ -41,7 +49,7 @@ const ClipBoard: React.FC = () => {
                 <div>로딩중...</div>
             ) : error ? (
                 <div>에러 발생</div>
-            ) : clipList ? (
+            ) : clipList && clipList.length > 0 ? (
                 clipList.map((clip) => (
                     <MyClipCard
                         key={clip.recruitmentArticleId}
@@ -50,6 +58,7 @@ const ClipBoard: React.FC = () => {
                         introduction={clip.introduction}
                         isRecruiting={clip.isRecruiting}
                         hashTags={clip.hashTags}
+                        onDelete={handleRemoveClip}
                     />
                 ))
             ) : (
