@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { apiClient } from "../../shared";
 
 type ChatRoom = {
@@ -8,6 +9,7 @@ type ChatRoom = {
 };
 
 const Sidebar: React.FC = () => {
+  const navigate = useNavigate(); 
   // 비디오 채팅 활성화 여부
   const [isVideoChatActive, setIsVideoChatActive] = useState(false);
 
@@ -62,8 +64,6 @@ const Sidebar: React.FC = () => {
   const handleChatRoomSelect = (room: ChatRoom, chatType: "dm" | "group") => {
     setSelectedRoom(room);
     setSelectedChatType(chatType);
-    enterChatRoom();
-
   };
 
   /**
@@ -83,18 +83,20 @@ const Sidebar: React.FC = () => {
   };
 
   // 스터디 채팅방으로 이동
-  const enterChatRoom = async () => {
-    if (selectedChatType === "group" && selectedRoom) {
-      try {
-        const response = await apiClient.post(`/api/v1/chatrooms/group/${selectedRoom.roomId}`);
-        if (response.status === 200) {
-          window.location.href = `/chat/${selectedRoom.studyId}`;
-        } else {
-          console.error("채팅방 입장 실패:", response);
-        }
-      } catch (error) {
-        console.error("채팅방 입장 중 오류 발생:", error);
+  const handleChatRoomClick = async (room) => {
+    try {
+      const response = await apiClient.post(`/api/v1/chatrooms/group/${room.studyId}`, {
+        roomId: room.roomId, // 필요에 따라 추가 데이터 포함
+      });
+  
+      if (response.status === 200) {
+        handleChatRoomSelect(room, "group"); // 채팅방 선택 로직 실행
+        navigate(`/chat/${room.studyId}`);    // 채팅방 페이지로 이동동
+      } else {
+        console.error("채팅방 입장 실패:", response);
       }
+    } catch (error) {
+      console.error("채팅방 입장 중 오류 발생:", error);
     }
   };
 
@@ -149,7 +151,7 @@ const Sidebar: React.FC = () => {
                       ? "bg-yellow-300"
                       : ""
                   }`}
-                  onClick={() => handleChatRoomSelect(room, "group")}
+                  onClick={() => handleChatRoomClick(room)}
                 >
                   {room.roomName}
                 </li>
