@@ -8,8 +8,8 @@ import {
     RoomEvent
 } from 'livekit-client';
 import './VideoChatPage.css';
-import VideoComponent from '../../components/livekit/VideoComponent';
-import AudioComponent from '../../components/livekit/AudioComponent';
+import VideoComponent from '../../components/chat/livekit/VideoComponent';
+import AudioComponent from '../../components/chat/livekit/AudioComponent';
 import { getToken } from "../../features/videoChat/getToken";
 
 type TrackInfo = {

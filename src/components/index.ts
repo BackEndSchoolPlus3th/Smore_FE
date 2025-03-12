@@ -25,3 +25,8 @@ export { default as StudyArticleRegisterBoard } from './study/board/article/Stud
 export { default as StudyRecruitmentListBoard } from './study/board/recruitment/StudyRecruitmentListBoard';
 export { default as StudyRecruitmentRegisterBoard } from './study/board/recruitment/StudyRecruitmentRegisterBoard';
 export { default as StudyRecruitmentEditBoard } from './study/board/recruitment/StudyRecruitmentEditBoard';
+
+// Chat
+export { default as ChatPageForm } from './chat/form/ChatPageForm';
+export { default as ChatBoard } from './chat/board/ChatBoard';
+// export { default as VideoChatBoard } from './chat/board/VideoChatBoard';

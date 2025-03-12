@@ -28,6 +28,7 @@ const LoginForm = () => {
     }, [auth.user, navigate]);
 
     return (
+
         <div className="p-8 space-y-6 bg-white rounded-lg shadow-md w-full h-full">
             <h1 className="text-2xl font-bold text-center text-gray-900">
                 로그인
