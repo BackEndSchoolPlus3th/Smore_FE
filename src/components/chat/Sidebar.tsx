@@ -10,8 +10,6 @@ type ChatRoom = {
 
 const Sidebar: React.FC = () => {
   const navigate = useNavigate(); 
-  // 비디오 채팅 활성화 여부
-  const [isVideoChatActive, setIsVideoChatActive] = useState(false);
 
   // 현재 선택된 채팅방 정보(전체 객체)와 채팅 타입
   const [selectedRoom, setSelectedRoom] = useState<ChatRoom | null>(null);
@@ -77,10 +75,6 @@ const Sidebar: React.FC = () => {
     setSelectedChatType(null);
   };
 
-  // 비디오 채팅 버튼 클릭 시
-  const handleVideoChat = () => {
-    setIsVideoChatActive(true);
-  };
 
   // 스터디 채팅방으로 이동
   const handleChatRoomClick = async (room) => {
@@ -91,7 +85,7 @@ const Sidebar: React.FC = () => {
   
       if (response.status === 200) {
         handleChatRoomSelect(room, "group"); // 채팅방 선택 로직 실행
-        navigate(`/chat/${room.studyId}`);    // 채팅방 페이지로 이동동
+        navigate(`/chat/${room.studyId}`);    // 채팅방 페이지로 이동
       } else {
         console.error("채팅방 입장 실패:", response);
       }
