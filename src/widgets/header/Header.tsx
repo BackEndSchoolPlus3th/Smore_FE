@@ -38,12 +38,23 @@ const Header = () => {
         navigate('/login');
     };
 
-    const goToMyPagePage = () => {
-        navigate('/mypage');
-    };
-
     const handleShowMyPagePopup = () => {
         setShowMyPagePopup((prev) => !prev);
+    };
+
+    const handleMyPage = () => {
+        navigate('/mypage');
+        setShowMyPagePopup(false);
+    };
+
+    const handleSetting = () => {
+        navigate('/mypage/setting');
+        setShowMyPagePopup(false);
+    };
+
+    const handleHeart = () => {
+        navigate('/mypage/heart');
+        setShowMyPagePopup(false);
     };
 
     // 바깥 영역 클릭 시 드롭다운 닫기
@@ -108,11 +119,9 @@ const Header = () => {
                         >
                             {user.profileImageUrl ? (
                                 <img
-                                    className="rounded-full"
+                                    className="rounded-full w-7 h-7 cursor-pointer"
                                     src={user.profileImageUrl}
                                     alt={user.nickname}
-                                    width={20}
-                                    height={20}
                                     onClick={handleShowMyPagePopup}
                                 />
                             ) : (
@@ -126,10 +135,10 @@ const Header = () => {
                             {showMyPagePopup && user && (
                                 <div className="absolute top-full right-0 bg-white border border-gray-200 shadow-md rounded-md z-100 min-w-40">
                                     <div className="flex flex-col">
-                                        <div className="flex flex-row border-b border-gray-200">
+                                        <div className="flex flex-row border-b border-gray-200 hover:bg-gray-100">
                                             <button
                                                 className="flex items-center pb-4 pt-2 pl-2 pr-2 pt-4 cursor-pointer"
-                                                onClick={goToMyPagePage}
+                                                onClick={handleMyPage}
                                             >
                                                 {user.profileImageUrl ? (
                                                     <img
@@ -150,14 +159,14 @@ const Header = () => {
                                         </div>
                                         <button
                                             className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-2"
-                                            onClick={() => {}}
+                                            onClick={handleSetting}
                                         >
                                             <Settings size={20} />
                                             <span>설정</span>
                                         </button>
                                         <button
                                             className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-2"
-                                            onClick={() => {}}
+                                            onClick={handleHeart}
                                         >
                                             <Heart size={20} />
                                             <span>좋아요</span>
@@ -168,7 +177,7 @@ const Header = () => {
                                             onClick={logoutHandler}
                                         >
                                             <LogOut size={20} />
-                                            <span>로그아웃</span>
+                                            <span className="">로그아웃</span>
                                         </button>
                                     </div>
                                 </div>
@@ -177,7 +186,7 @@ const Header = () => {
                     </>
                 ) : (
                     <button
-                        className="p-2 rounded hover:bg-gray-100 cursor-pointer"
+                        className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-2"
                         onClick={goToLoginPage}
                     >
                         <User size={20} />
