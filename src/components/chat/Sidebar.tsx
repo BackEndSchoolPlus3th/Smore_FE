@@ -8,12 +8,14 @@ type ChatRoom = {
   studyId?: number;    // 그룹 채팅방이라면 studyId를 담아둠 (DM에는 필요없을 수도 있음)
 };
 
-const Sidebar: React.FC = () => {
+const Sidebar: React.FC<{
+  selectedRoom: ChatRoom | null;
+  selectedChatType: "dm" | "group" | null;
+  onRoomSelect: (room: ChatRoom) => void;
+  onChatTypeSelect: (type: "dm" | "group") => void;
+  }> = ({ selectedRoom, selectedChatType, onRoomSelect, onChatTypeSelect }) => {
   const navigate = useNavigate(); 
 
-  // 현재 선택된 채팅방 정보(전체 객체)와 채팅 타입
-  const [selectedRoom, setSelectedRoom] = useState<ChatRoom | null>(null);
-  const [selectedChatType, setSelectedChatType] = useState<"dm" | "group" | null>(null);
 
   // 사이드바에서 펼쳐진 카테고리 (기본 "dm")
   const [expandedCategory, setExpandedCategory] = useState<"dm" | "group">("dm");
@@ -51,7 +53,7 @@ const Sidebar: React.FC = () => {
           console.error("그룹 채팅방 목록 가져오기 실패:", error);
         });
     }
-  }, [expandedCategory]);
+  }, [expandedCategory,selectedRoom, selectedChatType]);
 
   /**
    * 채팅방 선택 시: 
@@ -60,8 +62,9 @@ const Sidebar: React.FC = () => {
    * - 채팅방 엔드포인트로 이동
    */
   const handleChatRoomSelect = (room: ChatRoom, chatType: "dm" | "group") => {
-    setSelectedRoom(room);
-    setSelectedChatType(chatType);
+    onRoomSelect(room);
+    onChatTypeSelect(chatType);
+    console.log("채팅방 선택:", selectedRoom, chatType);
   };
 
   /**
@@ -71,8 +74,8 @@ const Sidebar: React.FC = () => {
    */
   const toggleCategory = (category: "dm" | "group") => {
     setExpandedCategory(category);
-    setSelectedRoom(null);
-    setSelectedChatType(null);
+    onRoomSelect(null);
+    onChatTypeSelect(null);
   };
 
 
