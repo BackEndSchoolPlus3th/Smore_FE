@@ -1,4 +1,3 @@
-import MyPageContainer from '../../../features/member/MyPageContainer';
 import {
     MyPageForm,
     BioBoard,
