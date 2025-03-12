@@ -11,3 +11,7 @@ export { default as SettingInfoCard } from './mypage/setting/SettingInfoCard';
 export { default as SettingProfileCard } from './mypage/setting/SettingProfileCard';
 
 export { default as MyClipCard } from './mypage/clip/MyClipCard';
+
+// card
+export { default as ArticleCard } from './card/article/ArticleCard';
+export { default as RecruitmentCard } from './card/article/RecruitmentCard';
