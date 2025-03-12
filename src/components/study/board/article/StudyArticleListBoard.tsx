@@ -97,9 +97,9 @@ const StudyArticleListBoard: React.FC = () => {
                         {currentDisplayPosts.map((article) => (
                             <div
                                 onClick={() => handleArticleClick(article.id)} key={article.id} className="cursor-pointer p-4 bg-white shadow rounded">
-                                <div className="w-full h-32 bg-dark-purple"></div>
+                                <div className="w-full h-32 bg-gray-300"></div>
                                 <div className="flex items-center space-x-2 mt-2">
-                                    <div className="bg-dark-purple w-8 h-8 rounded-full"></div>
+                                    <div className="bg-gray-600 w-8 h-8 rounded-full"></div>
                                     <div className="mt-2 text-xl font-semibold text-black">
                                         {article.title}
                                     </div>
@@ -123,7 +123,7 @@ const StudyArticleListBoard: React.FC = () => {
                     <button
                         key={page}
                         onClick={() => handlePageClick(page)}
-                        className={`px-4 py-2 text-sm bg-whit hover:bg-gray-200 transition-colors border-gray-300 cursor-pointer text-black font-bold border rounded-lg ${currentPage === page ? 'bg-purple-600 text-white' : 'bg-white text-black cursor-pointer'}`}
+                        className={`px-4 py-2 text-sm bg-whit hover:bg-gray-200 transition-colors border-gray-300 cursor-pointer text-black font-bold border rounded-lg ${currentPage === page ? 'bg-gray-600 text-white' : 'bg-white text-black cursor-pointer'}`}
                     >
                         {page}
                     </button>
