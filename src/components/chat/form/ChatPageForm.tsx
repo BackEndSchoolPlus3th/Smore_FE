@@ -10,10 +10,10 @@ const ChatPageForm: React.FC = () => {
     };
     
         return (
-            <div className="flex flex-row w-full min-h-full">
+            <div className="flex flex-row w-full h-screen">
                 {/* 사이드바 */}
                 {isSidebarOpen && (
-                    <div className="w-1/5">
+                    <div className="w-1/5 h-full">
                         <Sidebar />
                     </div>
                 )}
@@ -25,7 +25,7 @@ const ChatPageForm: React.FC = () => {
                         =
                     </button>
                 </div>
-                <div className="w-full">
+                <div className="flex-1 h-full overflow-hidden">
                     {/* 보드 영역 */}
                     <div>
                         <Outlet />

@@ -43,61 +43,62 @@ const Sidebar: React.FC = () => {
     
 
     return (
-        <div className="flex h-screen">
-        {/* 왼쪽 사이드바: 카테고리별 채팅방 목록 */}
-            <div className="bg-light-lavender p-4">
-                <h2 className="text-xl font-bold mb-4">채팅방 목록</h2>
+        <div className="h-full flex flex-col min-h-0 overflow-y-auto p-4 bg-light-lavender">
+          <h2 className="text-xl font-bold mb-4">채팅방 목록</h2>
           {/* DM 카테고리 */}
-            <div>
-                <div
-                className="cursor-pointer font-bold flex items-center"
-                onClick={() => toggleCategory("dm")}
-                >
-                DM {expandedCategory === "dm" ? "🔽" : "▶️"}
-                </div>
-                {expandedCategory === "dm" && (
-                <ul className="mt-2 ml-4">
-                    {dmRooms.map((room) => (
-                    <li
-                        key={room.roomId}
-                        className={`p-2 cursor-pointer hover:bg-yellow-300 rounded mb-2 ${
-                        selectedRoomId === room.roomId ? "bg-yellow-300" : ""
-                        }`}
-                        onClick={() => handleChatRoomSelect(room.roomId, "dm")}
-                    >
-                        {room.roomName}
-                    </li>
-                    ))}
-                </ul>
-                )}
+          <div>
+            <div
+              className="cursor-pointer font-bold flex items-center"
+              onClick={() => toggleCategory("dm")}
+            >
+              DM {expandedCategory === "dm" ? "🔽" : "▶️"}
             </div>
-            {/* 그룹 카테고리 */}
-            <div className="mt-4">
-                <div
-                className="cursor-pointer font-bold flex items-center"
-                onClick={() => toggleCategory("group")}
-                >
-                그룹 {expandedCategory === "group" ? "🔽" : "▶️"}
-                </div>
-                {expandedCategory === "group" && (
-                <ul className="mt-2 ml-4">
-                    {groupRooms.map((room) => (
-                    <li
-                        key={room.roomId}
-                        className={`p-2 cursor-pointer hover:bg-yellow-300 rounded mb-2 ${
-                        selectedRoomId === room.roomId ? "bg-yellow-300" : ""
-                        }`}
-                        onClick={() => handleChatRoomSelect(room.roomId, "group")}
-                    >
-                        {room.roomName}
-                    </li>
-                    ))}
-                </ul>
-                )}
+            {expandedCategory === "dm" && (
+              <ul className="mt-2 ml-4">
+                {dmRooms.map((room) => (
+                  <li
+                    key={room.roomId}
+                    className={`p-2 cursor-pointer hover:bg-yellow-300 rounded mb-2 ${
+                      selectedRoomId === room.roomId && selectedChatType === "dm"
+                        ? "bg-yellow-300"
+                        : ""
+                    }`}
+                    onClick={() => handleChatRoomSelect(room.roomId, "dm")}
+                  >
+                    {room.roomName}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+          {/* 그룹 카테고리 */}
+          <div className="mt-4">
+            <div
+              className="cursor-pointer font-bold flex items-center"
+              onClick={() => toggleCategory("group")}
+            >
+              그룹 {expandedCategory === "group" ? "🔽" : "▶️"}
+            </div>
+            {expandedCategory === "group" && (
+              <ul className="mt-2 ml-4">
+                {groupRooms.map((room) => (
+                  <li
+                    key={room.roomId}
+                    className={`p-2 cursor-pointer hover:bg-yellow-300 rounded mb-2 ${
+                      selectedRoomId === room.roomId && selectedChatType === "group"
+                        ? "bg-yellow-300"
+                        : ""
+                    }`}
+                    onClick={() => handleChatRoomSelect(room.roomId, "group")}
+                  >
+                    {room.roomName}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         </div>
-        </div>
-    );
-};
+      );
+    };
 
 export default Sidebar;
