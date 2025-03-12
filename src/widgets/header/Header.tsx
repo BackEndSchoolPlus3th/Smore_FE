@@ -38,11 +38,11 @@ const Header = () => {
         navigate('/login');
     };
 
+
     const openAlarmPage = () => {
         setIsAlarm(true);
        // setHasNewAlarm(false);  // 알림을 확인했으므로 빨간 점 없애기
-    };
-
+    }  
     const handleShowMyPagePopup = () => {
         setShowMyPagePopup((prev) => !prev);
     };
@@ -61,6 +61,7 @@ const Header = () => {
         navigate('/mypage/heart');
         setShowMyPagePopup(false);
     };
+
 
     // 바깥 영역 클릭 시 드롭다운 닫기
     useEffect(() => {
@@ -199,7 +200,7 @@ const Header = () => {
                 )}
             </div>
         </div>
-    );
-};
+        );
+    };
 
 export default Header;

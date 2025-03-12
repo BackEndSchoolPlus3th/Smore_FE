@@ -128,102 +128,104 @@
 
 // export default apiClient;
 
-
-import axios from "axios";
+import axios from 'axios';
 
 // 쿠키에서 특정 값 가져오는 함수
 const getCookie = (name: string) => {
-  const matches = document.cookie.match(new RegExp(`(^| )${name}=([^;]+)`));
-  return matches ? decodeURIComponent(matches[2]) : null;
+    const matches = document.cookie.match(new RegExp(`(^| )${name}=([^;]+)`));
+    return matches ? decodeURIComponent(matches[2]) : null;
 };
 
 // Axios 클라이언트 생성
 const apiClient = axios.create({
-  baseURL: "http://localhost:8090",
-  headers: {
-    "Content-Type": "application/json",
-  },
-  withCredentials: true, //  쿠키 자동 포함
+    baseURL: import.meta.env.VITE_API_BASE_URL,
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    withCredentials: true, //  쿠키 자동 포함
 });
 
 // 요청 인터셉터 (Access Token & Refresh Token 자동 추가)
 apiClient.interceptors.request.use(
-  (config) => {
-    const accessToken = localStorage.getItem("accessToken");
-    const refreshToken = getCookie("refreshToken"); // 쿠키에서 Refresh Token 가져오기
+    (config) => {
+        const accessToken = localStorage.getItem('accessToken');
+        const refreshToken = getCookie('refreshToken'); // 쿠키에서 Refresh Token 가져오기
 
-    if (accessToken) {
-      config.headers["Authorization"] = `Bearer ${accessToken}`;
-    }
-    if (refreshToken) {
-      config.headers["Set-Cookie"] = `refreshToken=${refreshToken}`;
-    }
+        if (accessToken) {
+            config.headers['Authorization'] = `Bearer ${accessToken}`;
+        }
+        if (refreshToken) {
+            config.headers['Set-Cookie'] = `refreshToken=${refreshToken}`;
+        }
 
-    return config;
-  },
-  (error) => Promise.reject(error)
+        return config;
+    },
+    (error) => Promise.reject(error)
 );
 
 // 응답 인터셉터 (Access Token 자동 갱신)
 apiClient.interceptors.response.use(
-  (response) => {
-    const newAccessToken = response.headers["authorization"];
-    if (newAccessToken) {
-      const token = newAccessToken.startsWith("Bearer ")
-        ? newAccessToken.substring(7).trim()
-        : newAccessToken;
-      localStorage.setItem("accessToken", token);
-    }
-    return response;
-  },
-  async (error) => {
-    const originalRequest = error.config;
-
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-
-      try {
-        const refreshToken = getCookie("refreshToken");
-        if (!refreshToken) {
-          console.error("❌ Refresh Token 없음. 다시 로그인 필요!");
-          return Promise.reject(error);
-        }
-
-
-        const response = await axios.post(
-          "http://localhost:8090/api/auth/refresh",
-          { refreshToken },
-          { withCredentials: true }
-        );
-
-        const newAccessToken = response.headers["authorization"];
+    (response) => {
+        const newAccessToken = response.headers['authorization'];
         if (newAccessToken) {
-          const token = newAccessToken.startsWith("Bearer ")
-          ? newAccessToken.substring(7).trim()
-          : newAccessToken;
-          localStorage.setItem("accessToken", token);
-          originalRequest.headers["Authorization"] = `Bearer ${token}`;
-          return apiClient(originalRequest);
+            const token = newAccessToken.startsWith('Bearer ')
+                ? newAccessToken.substring(7).trim()
+                : newAccessToken;
+            localStorage.setItem('accessToken', token);
         }
-      } catch (refreshError) {
-        console.error("❌ Refresh Token 만료됨! 다시 로그인하세요.", refreshError);
-        localStorage.removeItem("accessToken");
-        return Promise.reject(refreshError);
-      }
+        return response;
+    },
+    async (error) => {
+        const originalRequest = error.config;
 
-      // 403 에러 처리: 접근 권한 없음
-      if (error.response?.status === 403) {
-          // 메인 페이지로 강제 이동
-          window.location.href = '/';
-          // 리다이렉트가 동작하지 않는 경우 alert 창 표시
-          alert('접근 권한이 없습니다.');
-          return Promise.reject(error);
-      }
+        if (error.response?.status === 401 && !originalRequest._retry) {
+            originalRequest._retry = true;
 
+            try {
+                const refreshToken = getCookie('refreshToken');
+                if (!refreshToken) {
+                    console.error('❌ Refresh Token 없음. 다시 로그인 필요!');
+                    return Promise.reject(error);
+                }
+
+                const response = await axios.post(
+                    import.meta.env.VITE_API_BASE_URL + '/api/auth/refresh',
+                    { refreshToken },
+                    { withCredentials: true }
+                );
+
+                const newAccessToken = response.headers['authorization'];
+                if (newAccessToken) {
+                    const token = newAccessToken.startsWith('Bearer ')
+                        ? newAccessToken.substring(7).trim()
+                        : newAccessToken;
+                    localStorage.setItem('accessToken', token);
+                    originalRequest.headers['Authorization'] =
+                        `Bearer ${token}`;
+                    return apiClient(originalRequest);
+                }
+            } catch (refreshError) {
+                console.error(
+                    '❌ Refresh Token 만료됨! 다시 로그인하세요.',
+                    refreshError
+                );
+                localStorage.removeItem('accessToken');
+                return Promise.reject(refreshError);
+            }
+
+            // 403 에러 처리: 접근 권한 없음
+            if (error.response?.status === 403) {
+                // 메인 페이지로 강제 이동
+                window.location.href = '/';
+                // 리다이렉트가 동작하지 않는 경우 alert 창 표시
+                alert('접근 권한이 없습니다.');
+                return Promise.reject(error);
+            }
+
+            return Promise.reject(error);
+        }
         return Promise.reject(error);
     }
-    return Promise.reject(error);
-  }
 );
 
 export default apiClient;

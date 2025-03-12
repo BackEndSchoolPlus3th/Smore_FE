@@ -34,10 +34,7 @@ export const login = createAsyncThunk(
             return { user: response.data };
         } catch (error) {
             if (error instanceof Error) {
-                return rejectWithValue(
-                    (error as { response?: { data: string } }).response?.data ||
-                        '로그인 실패'
-                );
+                return rejectWithValue('로그인 실패');
             }
             return rejectWithValue('로그인 실패');
         }

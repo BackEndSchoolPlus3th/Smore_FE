@@ -12,6 +12,9 @@ export type { MyStudyListArticleProps } from './article/myStudyList/MyStudyListA
 export type { CommentProps } from './comment/CommentProps';
 
 // myPage
-export type { UserInfoProps } from './mypage/user/UserInfoProps';
-export type { UserProfileProps } from './mypage/user/UserProfileProps';
-export type { UserSettingResponse } from './mypage/user/UserSettingResponse';
+export type { UserInfoProps } from './mypage/setting/UserInfoProps';
+export type { UserProfileProps } from './mypage/setting/UserProfileProps';
+export type { UserSettingResponse } from './mypage/setting/UserSettingResponse';
+
+export type { ClipCardProps } from './mypage/heart/ClipCardProps';
+export type { ClipListResponse } from './mypage/heart/ClipListResponse';
