@@ -26,13 +26,13 @@ const StudyPageForm: React.FC = () => {
                     =
                 </button>
             </div>
-            <div className="w-full">
+            <div className="flex flex-col w-full">
                 {/* nav바 */}
-                <div>
+                <div className="flex w-full">
                     <StudyNavBar />
                 </div>
                 {/* 보드 영역 */}
-                <div>
+                <div className="flex flex-1 w-full">
                     <Outlet />
                 </div>
             </div>

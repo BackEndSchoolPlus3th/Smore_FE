@@ -30,7 +30,7 @@ const StudySideBar: React.FC = () => {
     };
 
     useEffect(() => {
-        fetchStudies();
+        // fetchStudies();
     }, []);
 
     return (
@@ -42,9 +42,11 @@ const StudySideBar: React.FC = () => {
                         <li
                             key={study.id}
                             className={`p-3 rounded flex items-center space-x-2 cursor-pointer 
-                                ${selectedStudyId === study.id 
-                                    ? 'border-l-6 border-purple-600' // 선택된 스터디 배경 + 보라색 선
-                                    : ''}`}
+                                ${
+                                    selectedStudyId === study.id
+                                        ? 'border-l-6 border-purple-600' // 선택된 스터디 배경 + 보라색 선
+                                        : ''
+                                }`}
                             onClick={() => handleStudySelect(study.id)}
                         >
                             <Component className="w-5 h-5 text-gray-700" />

@@ -166,6 +166,10 @@ apiClient.interceptors.request.use(
 // 응답 인터셉터 (Access Token 자동 갱신)
 apiClient.interceptors.response.use(
     (response) => {
+        if (import.meta.env.DEV) {
+            console.log('response::::', response);
+        }
+
         const newAccessToken = response.headers['authorization'];
         if (newAccessToken) {
             const token = newAccessToken.startsWith('Bearer ')

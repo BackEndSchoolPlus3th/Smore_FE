@@ -38,11 +38,10 @@ const Header = () => {
         navigate('/login');
     };
 
-
     const openAlarmPage = () => {
         setIsAlarm(true);
-       // setHasNewAlarm(false);  // 알림을 확인했으므로 빨간 점 없애기
-    }  
+        // setHasNewAlarm(false);  // 알림을 확인했으므로 빨간 점 없애기
+    };
     const handleShowMyPagePopup = () => {
         setShowMyPagePopup((prev) => !prev);
     };
@@ -62,6 +61,10 @@ const Header = () => {
         setShowMyPagePopup(false);
     };
 
+    const handleLogout = () => {
+        logoutHandler();
+        setShowMyPagePopup(false);
+    };
 
     // 바깥 영역 클릭 시 드롭다운 닫기
     useEffect(() => {
@@ -107,7 +110,10 @@ const Header = () => {
                             </button>
                         </div>
                         <div className="flex items-center text-center w-full">
-                            <button className="p-2 rounded hover:bg-gray-100 cursor-pointer" onClick={openAlarmPage}>
+                            <button
+                                className="p-2 rounded hover:bg-gray-100 cursor-pointer"
+                                onClick={openAlarmPage}
+                            >
                                 <Bell size={20} />
                             </button>
                         </div>
@@ -180,7 +186,7 @@ const Header = () => {
 
                                         <button
                                             className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-2"
-                                            onClick={logoutHandler}
+                                            onClick={handleLogout}
                                         >
                                             <LogOut size={20} />
                                             <span className="">로그아웃</span>
@@ -200,7 +206,7 @@ const Header = () => {
                 )}
             </div>
         </div>
-        );
-    };
+    );
+};
 
 export default Header;

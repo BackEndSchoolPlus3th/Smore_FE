@@ -9,6 +9,7 @@ import {
     postRecruitmentArticle,
     MultiImageUploadRef,
 } from '../../../../features';
+import { SubmitButton, CancleButton } from '../../../../shared';
 
 const StudyRecruitmentRegisterBoard: React.FC = () => {
     const { studyId } = useParams<{ studyId: string }>();
@@ -35,16 +36,13 @@ const StudyRecruitmentRegisterBoard: React.FC = () => {
     // FileUploadButton 또는 MultiImageUpload 컴포넌트에 접근하기 위한 ref
     const multiImageUploadRef = useRef<MultiImageUploadRef>(null);
     const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
+    const uploadPath = `study/${studyId}/images`;
 
     if (!studyId) {
         alert('잘못된 접근입니다.');
         navigate('/');
         return null;
     }
-
-    const handlePublishClick = () => {
-        setIsModalOpen(true);
-    };
 
     const closeModal = () => {
         setIsClosing(true);
@@ -128,9 +126,6 @@ const StudyRecruitmentRegisterBoard: React.FC = () => {
             }
         }
 
-        console.log('Final Thumbnail:', thumbnail);
-        console.log('Final Image URLs (List):', finalImageUrlsList);
-
         try {
             await postRecruitmentArticle({
                 studyId,
@@ -146,36 +141,35 @@ const StudyRecruitmentRegisterBoard: React.FC = () => {
             });
             closeModal();
             alert('모집글이 성공적으로 게시되었습니다.');
+            navigate(`/study/${studyId}/recruitment`);
         } catch (error) {
             console.error('모집글 게시 중 오류 발생:', error);
             alert('모집글 게시 중 오류가 발생했습니다.');
         }
     };
 
-    // 업로드 경로는 studyId 기반으로 설정
-    const uploadPath = `study/${studyId}/images`;
+    const handlePublishClick = () => {
+        setIsModalOpen(true);
+    };
+
+    const handleCancelClick = () => {
+        navigate(`/study/${studyId}/recruitment`);
+    };
 
     return (
-        <div className="flex flex-col min-h-full">
+        <div className="flex flex-col h-full w-full">
             {/* 상단 헤더 */}
-            <div className="sticky top-0 p-4 flex justify-between items-center">
+            <div className="p-4 flex justify-between items-center">
                 <h1 className="text-xl font-bold">모집글 작성</h1>
                 <div className="flex space-x-4">
-                    <button className="bg-gray-300 hover:bg-gray-400 text-white px-4 py-2 rounded focus:outline-none cursor-pointer">
-                        임시저장
-                    </button>
-                    <button
-                        onClick={handlePublishClick}
-                        className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded focus:outline-none cursor-pointer"
-                    >
-                        게시
-                    </button>
+                    <CancleButton onClick={handleCancelClick} />
+                    <SubmitButton onClick={handlePublishClick} label="게시" />
                 </div>
             </div>
 
             {/* 본문 영역: 에디터 및 미리보기 */}
-            <div className="p-4">
-                <div className="flex flex-row space-x-4">
+            <div className="p-4 h-full">
+                <div className="flex flex-row space-x-4 h-full">
                     <Editor
                         title={title}
                         content={content}

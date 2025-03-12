@@ -8,11 +8,11 @@ const RecruitmentCard: React.FC<RecruitmentCardProps> = (
     return (
         <Link
             to={props.link}
-            className="flex flex-col h-lg w-3xs gap-2 border border-gray-200 p-2 
+            className="flex flex-col h-90 w-3xs gap-2 border border-gray-200 p-2 
             rounded-md bg-white shadow-md transform transition-transform transition-shadow duration-300 
             hover:-translate-y-1"
         >
-            <div className="flex-1 h-1/2">
+            <div className="flex-1 h-40">
                 <img
                     src={props.thumbnailUrl || '/images/default-thumbnail.png'}
                     alt="thumbnail"
