@@ -1,5 +1,5 @@
 import { apiClient } from '../../../../shared';
-import { RecruitmentArticleProps } from '../../../../entities';
+import { pagedResponse } from '../../../../entities';
 
 interface FetchRecruitmentArticlesParams {
     title: string;
@@ -9,11 +9,12 @@ interface FetchRecruitmentArticlesParams {
     region: string;
     page: number;
     size: number;
+    customRecommended: boolean;
 }
 
 export const fetchRecruitmentArticles = async (
     params: FetchRecruitmentArticlesParams
-): Promise<RecruitmentArticleProps[]> => {
+): Promise<pagedResponse> => {
     const response = await apiClient.get('/api/v1/recruitmentArticles', {
         params,
     });

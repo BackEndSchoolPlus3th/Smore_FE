@@ -4,17 +4,10 @@ import { EventApi } from "@fullcalendar/core";
 interface EventDetailPageProps {
   event: EventApi;
   onClose: () => void;
-  onDelete: () => void;
-  onUpdate: () => void; 
 }
 
-const EventDetailPage: React.FC<EventDetailPageProps> = ({ event, onClose, onDelete, onUpdate }) => {
+const EventDetailPage: React.FC<EventDetailPageProps> = ({ event, onClose }) => {
  
-
-  const handleDelete = () => {
-    onDelete(); 
-  };
-  
   return (
     <div style={formStyle}>
       <h2>일정 상세보기</h2>
@@ -38,9 +31,7 @@ const EventDetailPage: React.FC<EventDetailPageProps> = ({ event, onClose, onDel
      </div>
       )}
       <div style={{ display: "flex", gap: "10px" }}>
-        <button onClick={onClose}>닫기</button>
-        <button onClick={onUpdate}>수정</button>
-        <button onClick={handleDelete}>삭제</button>
+        <button onClick={onClose}>닫기</button>        
       </div>
     </div>
   );

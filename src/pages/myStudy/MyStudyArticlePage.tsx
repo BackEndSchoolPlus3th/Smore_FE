@@ -1,42 +1,88 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import Sidebar from "../../widgets/sidebar/Sidebar";
 import Navbar from "../../widgets/navbarArticle/Navbar";
 
 const MyStudyArticlePage = () => {
+    const token = localStorage.getItem("accessToken");
+    const { studyId } = useParams();
+
+    const fetchStudies = async () => {
+        try {
+            const response = await fetch("http://localhost:8090/api/v1/user/studies", {
+                method: "GET",
+                headers: {
+                    "Authorization": `${token}`,
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log("서버에서 반환된 데이터:", data); // 데이터 확인
+            setStudies(data);
+        } catch (error) {
+            console.error("스터디 목록 가져오기 실패:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchStudies();
+    }, []);
+
     const navigate = useNavigate();
 
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
-      const [studies, setStudies] = useState([]);
-      const [selectedStudy, setSelectedStudy] = useState(null);
+    const [studies, setStudies] = useState([]);
+    const [selectedStudy, setSelectedStudy] = useState(null);
     const [selectedTab, setSelectedTab] = useState("study");
+    const [articles, setArticles] = useState([]); // 게시글 상태 추가
+    const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
+    const postsPerPage = 16;
 
     const toggleSidebar = () => {
         setIsSidebarOpen(prevState => !prevState);
     };
 
-    const goToStudyMainPage = () => {
-        navigate("/mystudy");
+    const fetchArticles = async (studyId) => {
+        if (!studyId) return;
+
+        try {
+            const response = await fetch(
+                `http://localhost:8090/api/v1/study/${studyId}/articles`,
+                {
+                    method: "GET",
+                    headers: {
+                        "Authorization": `${token}`,
+                    },
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status}`);
+            }
+
+            const data = await response.json();
+            setArticles(data); // 받은 게시글 데이터를 상태에 저장
+        } catch (error) {
+            console.error("게시글 가져오기 실패:", error);
+        }
     };
-    const goToSchedulePage = () => {
-        navigate("/mystudyschedule");
+
+    const handleArticleClick = (articleId) => {
+        navigate(`/study/${studyId}/articles/${articleId}`);
     };
-    const goToDocumentPage = () => {
-        navigate("/document");
-    };
-    const goToStudyArticlePage = () => {
-        navigate("/study/:studyId/article");
-    };
-    const goToSettingPage = () => {
-        navigate("/studysetting");
-    };
+
     const goToStudyEditPage = () => {
-        navigate("/studyedit");
+        if (studyId) {
+            navigate(`/study/${studyId}/edit`);
+        } else {
+            alert("스터디를 선택해주세요.");
+        }
     };
-    const goToStudyArticleDetailPage = () => {
-      navigate("/studydetail");
-    }
 
     const handleSearchChange = (e) => {
         setSearchQuery(e.target.value);
@@ -48,24 +94,7 @@ const MyStudyArticlePage = () => {
         }
     };
 
-    const studyPosts = Array.from({ length: 500 }, (_, index) => ({
-        id: index + 1,
-        title: `스터디 게시글 ${index + 1}`,
-        content: `내용 ${index + 1}`,
-        type: "study", // 스터디글
-    }));
-
-    const recruitmentPosts = Array.from({ length: 10 }, (_, index) => ({
-        id: index + 1,
-        title: `모집 게시글 ${index + 1}`,
-        content: `내용 ${index + 1}`,
-        type: "recruitment", // 모집글
-    }));
-
-    const currentPosts = selectedTab === "study" ? studyPosts : recruitmentPosts;
-
-    const postsPerPage = 16;
-    const [currentPage, setCurrentPage] = useState(1);
+    const currentPosts = selectedTab === "study" ? articles : [];
 
     const totalPages = Math.ceil(currentPosts.length / postsPerPage);
     const currentDisplayPosts = currentPosts.slice((currentPage - 1) * postsPerPage, currentPage * postsPerPage);
@@ -78,7 +107,17 @@ const MyStudyArticlePage = () => {
 
     const handleStudySelect = (study) => {
         setSelectedStudy(study);
-      };
+    };
+
+    useEffect(() => {
+        fetchStudies();
+    }, []);
+
+    useEffect(() => {
+        if (studyId) {
+            fetchArticles(studyId);
+        }
+    }, [studyId]);
 
     const pageNumbers = [];
     const maxPagesToShow = 10;
@@ -93,22 +132,22 @@ const MyStudyArticlePage = () => {
         <div className="flex flex-col w-full h-screen bg-gray-100">
             <div className="flex flex-1">
                 {/* 사이드바 */}
-        <Sidebar
-          studies={studies}
-          onStudySelect={handleStudySelect}
-          isSidebarOpen={isSidebarOpen}
-          toggleSidebar={toggleSidebar}
-        />
+                <Sidebar
+                    studies={studies}
+                    onStudySelect={handleStudySelect}
+                    isSidebarOpen={isSidebarOpen}
+                    toggleSidebar={toggleSidebar}
+                />
 
-      {/* 버튼을 클릭하여 사이드바를 열고 닫을 수 있도록 */}
-      <div className="bg-muted-purple">
-          <button
-            onClick={toggleSidebar}
-            className="px-4 py-2 bg-dark-purple text-white mb-4"
-          >
-            {isSidebarOpen ? '=' : '='}
-          </button>
-        </div>
+                {/* 버튼을 클릭하여 사이드바를 열고 닫을 수 있도록 */}
+                <div className="bg-muted-purple">
+                    <button
+                        onClick={toggleSidebar}
+                        className="px-4 py-2 bg-dark-purple text-white mb-4"
+                    >
+                        {isSidebarOpen ? '=' : '='}
+                    </button>
+                </div>
 
                 {/* 메인 콘텐츠 */}
                 <div className="flex-1 pt-0 p-6 bg-purple-100">
@@ -156,12 +195,18 @@ const MyStudyArticlePage = () => {
 
                     {/* 게시판 */}
                     <div className="grid grid-cols-4 gap-4">
-                        {currentDisplayPosts.map((post) => (
-                            <div key={post.id} className="p-4 bg-white shadow rounded">
+                        {currentDisplayPosts.map((article) => (
+                            <div
+                                onClick={() => handleArticleClick(article.id)} key={article.id} className="cursor-pointer p-4 bg-white shadow rounded">
                                 <div className="w-full h-32 bg-dark-purple"></div>
                                 <div className="flex items-center space-x-2 mt-2">
                                     <div className="bg-dark-purple w-8 h-8 rounded-full"></div>
-                                    <div className="mt-2 text-lg font-semibold">{post.title}</div>
+                                    <div
+
+                                        className="mt-2 text-xl font-semibold text-black"
+                                    >
+                                        {article.title}
+                                    </div>
                                 </div>
                             </div>
                         ))}

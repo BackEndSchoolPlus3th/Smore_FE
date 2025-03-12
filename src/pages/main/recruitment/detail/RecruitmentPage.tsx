@@ -4,6 +4,7 @@ import { MarkdownRenderer } from '../../../../shared';
 import { FaSpinner } from 'react-icons/fa';
 import { apiClient } from '../../../../shared';
 import { RecruitmentArticleClip } from '../../../../features';
+import { CommentList } from '../../../../components';
 
 interface RecruitmentContentsProps {
     id: number;
@@ -21,14 +22,16 @@ interface RecruitmentContentsProps {
     clipCount: number;
     clipped: boolean;
     writerName: string;
-    writerProfileImageUrl?: string;
+    writerProfileImageUrl: string | null;
 }
 
-interface CommentProps {
+export interface CommentProps {
     id: number;
     comment: string;
     writerName: string;
     createdDate: string;
+    editable: boolean;
+    writerProfileImageUrl: string | null;
 }
 
 const RecuitmentContentPage: React.FC = () => {
@@ -38,7 +41,7 @@ const RecuitmentContentPage: React.FC = () => {
     const [comments, setComments] = useState<CommentProps[]>([]);
     const [newComment, setNewComment] = useState('');
     const [isProcessing, setIsProcessing] = useState(false);
-    const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
+    const [isLoading, setIsLoading] = useState(true);
 
     const fetchApply = async () => {
         try {
@@ -49,26 +52,26 @@ const RecuitmentContentPage: React.FC = () => {
             if (response.status === 200) alert('지원이 완료되었습니다.');
         } catch (error) {
             console.error('지원 에러:', error);
+        } finally {
+            setIsProcessing(false);
         }
     };
 
     // 모집글 상세조회
     const fetchRecruitmentContent = async () => {
         try {
-            setIsLoading(true); // 로딩 시작
+            setIsLoading(true);
             const response = await apiClient.get(
                 `/api/v1/recruitmentArticles/detail`,
                 {
-                    params: {
-                        recruitmentArticleId: recruitmentId,
-                    },
+                    params: { recruitmentArticleId: recruitmentId },
                 }
             );
             setRecruitmentContent(response.data);
         } catch (error) {
             console.error('모집글 조회 에러:', error);
         } finally {
-            setIsLoading(false); // 로딩 종료
+            setIsLoading(false);
         }
     };
 
@@ -78,14 +81,10 @@ const RecuitmentContentPage: React.FC = () => {
             const response = await apiClient.get(
                 `/api/v1/recruitmentArticles/${recruitmentId}/comments`,
                 {
-                    params: {
-                        recruitmentArticleId: recruitmentId,
-                    },
+                    params: { recruitmentArticleId: recruitmentId },
                 }
             );
-            console.log('댓글 목록 조회 response.data::::', response);
             if (response.data) {
-                console.log('댓글 목록 조회 response.data::::', response.data);
                 setComments(response.data);
             }
         } catch (error) {
@@ -93,10 +92,40 @@ const RecuitmentContentPage: React.FC = () => {
         }
     };
 
-    // 댓글 작성
+    // 댓글 수정 요청
+    const handleEditComment = async (
+        commentId: number,
+        newCommentText: string
+    ) => {
+        try {
+            await apiClient.put(
+                `/api/v1/recruitmentArticles/${recruitmentId}/comments/${commentId}/edit`,
+                {
+                    comment: newCommentText,
+                }
+            );
+            fetchComments();
+        } catch (error) {
+            console.error('댓글 수정 에러:', error);
+        }
+    };
+
+    // 댓글 삭제 요청
+    const handleDeleteComment = async (commentId: number) => {
+        if (!window.confirm('정말 삭제하시겠습니까?')) return;
+        try {
+            await apiClient.delete(
+                `/api/v1/recruitmentArticles/${recruitmentId}/comments/${commentId}`
+            );
+            fetchComments();
+        } catch (error) {
+            console.error('댓글 삭제 에러:', error);
+        }
+    };
+
+    // 댓글 작성 요청
     const handleCommentSubmit = async () => {
         if (!newComment.trim()) return;
-
         try {
             setIsProcessing(true);
             await apiClient.post(
@@ -125,31 +154,18 @@ const RecuitmentContentPage: React.FC = () => {
                 </div>
             ) : (
                 <>
+                    {/* 좌측 댓글 섹션 */}
                     <div className="lg:w-1/4 flex flex-col items-center gap-4">
-                        {/** 댓글 섹션 */}
                         <div className="sticky top-60 flex flex-col gap-4 border-2 border-gray-300 rounded-lg p-6 w-full shadow-lg bg-white h-110">
                             <h2 className="text-2xl font-bold text-gray-900 mb-1 border-b border-gray-200 pb-1">
                                 댓글 목록
                             </h2>
                             <div className="flex flex-col justify-between h-96 overflow-y-auto">
-                                <div className="flex flex-col gap-4 max-h-full h-full overflow-y-auto">
-                                    {comments.map((comment) => (
-                                        <div
-                                            key={comment.id}
-                                            className="border-b border-gray-200 pb-4"
-                                        >
-                                            <p className="text-gray-700">
-                                                {comment.comment}
-                                            </p>
-                                            <p className="text-sm text-gray-500">
-                                                {comment.writerName} -{' '}
-                                                {new Date(
-                                                    comment.createdDate
-                                                ).toLocaleDateString()}
-                                            </p>
-                                        </div>
-                                    ))}
-                                </div>
+                                <CommentList
+                                    comments={comments}
+                                    onEdit={handleEditComment}
+                                    onDelete={handleDeleteComment}
+                                />
                                 <div className="flex flex-row gap-4 mt-4 w-full items-center justify-center">
                                     <input
                                         className="w-full border border-gray-300 rounded-lg p-2"
@@ -170,9 +186,8 @@ const RecuitmentContentPage: React.FC = () => {
                             </div>
                         </div>
                     </div>
-                    {/** 모집글 상세 페이지 */}
+                    {/* 중앙 모집글 상세 페이지 */}
                     <div className="lg:w-2/4 flex flex-col items-center gap-8 p-6 bg-white rounded-lg shadow-lg">
-                        {/** 제목, 짧은 소개글, 작성날짜 */}
                         <div className="text-center mb-8 w-full border-b border-gray-200 pb-4">
                             <h1 className="text-4xl font-extrabold text-gray-900 mb-4">
                                 {recruitmentContent.title}
@@ -187,7 +202,6 @@ const RecuitmentContentPage: React.FC = () => {
                                     ).toLocaleDateString()}
                             </p>
                         </div>
-                        {/** 이미지들 */}
                         <div className="flex flex-wrap justify-center w-full border-b border-gray-200 pb-4">
                             {recruitmentContent.imageUrls
                                 ?.split(',')
@@ -200,8 +214,7 @@ const RecuitmentContentPage: React.FC = () => {
                                     />
                                 ))}
                         </div>
-                        {/** 내용 */}
-                        <div className="prose max-w-none w-full  pb-4">
+                        <div className="prose max-w-none w-full pb-4">
                             {recruitmentContent?.content && (
                                 <MarkdownRenderer
                                     content={recruitmentContent.content}
@@ -209,11 +222,9 @@ const RecuitmentContentPage: React.FC = () => {
                             )}
                         </div>
                     </div>
-                    {/** 해시태그, 모집 기간, 지역, 작성일, 작성자, 지원 버튼 */}
+                    {/* 우측 해시태그, 모집 정보, 지원 버튼 */}
                     <div className="lg:w-1/4 flex flex-col items-center gap-4">
-                        {/** 기타정보, 지원 버튼 박스 */}
                         <div className="sticky top-60 flex flex-col gap-4 border-2 border-gray-300 rounded-lg p-6 w-full shadow-lg bg-white">
-                            {/** 찜하기 버튼 */}
                             <div className="flex flex-row w-full justify-center">
                                 <RecruitmentArticleClip
                                     articleId={recruitmentContent.id}
@@ -225,7 +236,6 @@ const RecuitmentContentPage: React.FC = () => {
                                     }
                                 />
                             </div>
-                            {/** 해시태그 */}
                             <div className="flex flex-wrap gap-2">
                                 {recruitmentContent?.hashTags &&
                                     recruitmentContent.hashTags
@@ -239,7 +249,6 @@ const RecuitmentContentPage: React.FC = () => {
                                             </span>
                                         ))}
                             </div>
-                            {/** 모집 기간 */}
                             <div className="flex flex-col text-gray-600 gap-2">
                                 <span className="font-bold">
                                     시작:{' '}
@@ -256,24 +265,26 @@ const RecuitmentContentPage: React.FC = () => {
                                         ).toLocaleDateString()}
                                 </span>
                             </div>
-                            {/** 지역 */}
                             <div className="text-gray-600 font-bold">
                                 <span>지역: {recruitmentContent.region}</span>
                             </div>
-                            {/** 작성일, 작성자 */}
                             <div className="flex items-center gap-2 text-gray-600">
-                                <img
-                                    src={
-                                        recruitmentContent?.writerProfileImageUrl
-                                    }
-                                    alt="writer"
-                                    className="w-10 h-10 rounded-full border-2 border-gray-300"
-                                />
+                                {recruitmentContent.writerProfileImageUrl ===
+                                null ? (
+                                    <div className="w-10 h-10 rounded-full border-2 border-gray-300"></div>
+                                ) : (
+                                    <img
+                                        src={
+                                            recruitmentContent?.writerProfileImageUrl
+                                        }
+                                        alt="writer"
+                                        className="w-10 h-10 rounded-full border-2 border-gray-300"
+                                    />
+                                )}
                                 <span className="font-bold">
                                     {recruitmentContent?.writerName}
                                 </span>
                             </div>
-                            {/** 지원 버튼 */}
                             <div className="w-full">
                                 <button
                                     className="w-full bg-gradient-to-r from-blue-500 to-green-500 text-white py-2 rounded-lg hover:from-blue-600 hover:to-green-600 font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer transition-colors"

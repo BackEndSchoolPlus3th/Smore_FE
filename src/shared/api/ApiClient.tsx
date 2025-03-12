@@ -189,6 +189,7 @@ apiClient.interceptors.response.use(
           return Promise.reject(error);
         }
 
+
         const response = await axios.post(
           "http://localhost:8090/api/auth/refresh",
           { refreshToken },
@@ -209,6 +210,17 @@ apiClient.interceptors.response.use(
         localStorage.removeItem("accessToken");
         return Promise.reject(refreshError);
       }
+
+      // 403 에러 처리: 접근 권한 없음
+      if (error.response?.status === 403) {
+          // 메인 페이지로 강제 이동
+          window.location.href = '/';
+          // 리다이렉트가 동작하지 않는 경우 alert 창 표시
+          alert('접근 권한이 없습니다.');
+          return Promise.reject(error);
+      }
+
+        return Promise.reject(error);
     }
     return Promise.reject(error);
   }

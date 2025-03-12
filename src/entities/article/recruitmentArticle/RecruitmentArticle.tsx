@@ -2,10 +2,8 @@ import React from 'react';
 import { RecruitmentArticleProps } from './RecruitmentArticleProb';
 import { FaHeart } from 'react-icons/fa6';
 import './RecruitmentArticleStyle.css';
-import { Link } from 'react-router-dom';
 
 const RecruitmentArticle: React.FC<RecruitmentArticleProps> = ({
-    id,
     title,
     introduction,
     thumbnailUrl,
@@ -20,11 +18,16 @@ const RecruitmentArticle: React.FC<RecruitmentArticleProps> = ({
             <div className="flex flex-col space-y-4">
                 {/* 썸네일 */}
                 <div className="w-full h-48 overflow-hidden rounded-lg">
-                    <img
-                        src={thumbnailUrl}
-                        alt={title}
-                        className="object-cover w-full h-full"
-                    />
+                    {/* 썸네일 이미지, null일 경우 흰 배경 div */}
+                    {thumbnailUrl ? (
+                        <img
+                            src={thumbnailUrl}
+                            alt={title}
+                            className="object-cover w-full h-full"
+                        />
+                    ) : (
+                        <div className="bg-gray-100 w-full h-full"></div>
+                    )}
                 </div>
                 {/* 내용 */}
                 <div className="flex flex-col space-y-2">
@@ -36,14 +39,15 @@ const RecruitmentArticle: React.FC<RecruitmentArticleProps> = ({
             <div>
                 {/* 해시태그 */}
                 <div className="flex flex-wrap gap-2 mt-4">
-                    {hashTags.split(',').map((hashTag, index) => (
-                        <div
-                            key={index}
-                            className="px-2 py-1 bg-light-purple rounded-full text-sm"
-                        >
-                            #{hashTag}
-                        </div>
-                    ))}
+                    {hashTags &&
+                        hashTags.split(',').map((hashTag, index) => (
+                            <div
+                                key={index}
+                                className="px-2 py-1 bg-light-purple rounded-full text-sm"
+                            >
+                                #{hashTag}
+                            </div>
+                        ))}
                 </div>
                 {/* 작성자, 좋아요 */}
                 <div className="flex justify-between items-center mt-4">

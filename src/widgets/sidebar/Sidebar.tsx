@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from "react-router-dom"; 
 
 const Sidebar = ({ studies, onStudySelect, isSidebarOpen, toggleSidebar }) => {
   return (
@@ -9,7 +10,7 @@ const Sidebar = ({ studies, onStudySelect, isSidebarOpen, toggleSidebar }) => {
           studies.map((study) => (
             <li
               key={study.id}
-              className="p-2 bg-gray-500 text-white rounded mb-2 text-right flex items-center space-x-2 cursor-pointer"
+              className="p-2 bg-purple-500 text-white rounded mb-2 text-right flex items-center space-x-2 cursor-pointer"
               onClick={() => onStudySelect(study)}
             >
               <div className="bg-dark-purple w-8 h-8 rounded-full" />
