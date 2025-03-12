@@ -45,11 +45,11 @@ const StudyArticleListBoard: React.FC = () => {
     };
 
     const goToStudyEditPage = () => {
-        navigate(`/study/${studyId}/edit`);
+        navigate(`/study/${studyId}/article/edit`);
     };
 
     const handleArticleClick = (articleId) => {
-        navigate(`/study/${studyId}/articles/${articleId}`);
+        navigate(`/study/${studyId}/article/${articleId}`);
     };
 
     const handlePageClick = (page) => {
