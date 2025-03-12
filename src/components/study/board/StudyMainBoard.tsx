@@ -77,7 +77,7 @@ const StudyMainBoard: React.FC = () => {
     }, [studyId]);
 
     const handleArticleClick = (articleId) => {
-        navigate(`/study/${studyId}/articles/${articleId}`);
+        navigate(`/study/${studyId}/article/${articleId}`);
     };
 
     if (!study) {
