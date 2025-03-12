@@ -158,8 +158,8 @@ const StudyRecruitmentRegisterBoard: React.FC = () => {
     return (
         <div className="flex flex-col min-h-full">
             {/* 상단 헤더 */}
-            <div className="sticky top-0 bg-white shadow p-4 flex justify-between items-center">
-                <h1 className="text-xl font-bold">새 모집글 작성</h1>
+            <div className="sticky top-0 p-4 flex justify-between items-center">
+                <h1 className="text-xl font-bold">모집글 작성</h1>
                 <div className="flex space-x-4">
                     <button className="bg-gray-300 hover:bg-gray-400 text-white px-4 py-2 rounded focus:outline-none cursor-pointer">
                         임시저장
