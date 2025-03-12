@@ -24,14 +24,30 @@ const MyStudySelectPage = () => {
         }
     };
 
-    const handleExitClick = () => {
+    const handleExitClick = async () => {
         const userConfirmed = window.confirm("탈퇴하시겠습니까?");
         if (userConfirmed) {
-            alert("탈퇴가 완료되었습니다.");
-            navigate("/");
+            try {
+                const response = await fetch(`http://localhost:8090/api/v1/study/${studyId}/delete`, {
+                    method: "DELETE",
+                    headers: {
+                        "Authorization": `${token}`,
+                        "Content-Type": "application/json",  // Content-Type이 필요할 경우 추가
+                    },
+                });
+    
+                if (!response.ok) {
+                    throw new Error(`탈퇴 요청 실패: ${response.statusText}`);
+                }
+    
+                alert("탈퇴가 완료되었습니다.");
+                navigate("/");  // 탈퇴 후 메인 페이지로 이동
+            } catch (error) {
+                console.error("탈퇴 요청 실패:", error);
+                alert("탈퇴 요청 실패");
+            }
         }
     };
-
     const token = localStorage.getItem("accessToken");
 
     const fetchStudies = async () => {
@@ -105,7 +121,6 @@ const MyStudySelectPage = () => {
 
     const handleStudySelect = (study) => {
         if (study && study.id) {
-            console.log("선택된 스터디 ID:", study.id);  // 선택된 study.id 확인
             setSelectedStudy(study);
             navigate(`/study/${study.id}`);
         } else {
