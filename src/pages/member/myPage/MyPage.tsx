@@ -12,7 +12,7 @@ const MyPage = () => {
         <Routes>
             <Route path="/" element={<MyPageForm />}>
                 <Route index element={<BioBoard />} />
-                <Route path="clip" element={<ClipBoard />} />
+                <Route path="heart" element={<ClipBoard />} />
                 <Route path="setting" element={<SettingBoard />} />
             </Route>
         </Routes>
