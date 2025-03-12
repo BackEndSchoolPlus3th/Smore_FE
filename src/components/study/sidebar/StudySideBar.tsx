@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { apiClient } from '../../../shared';
+import { Component } from 'lucide-react';
 
 interface Study {
     id: number;
@@ -33,7 +34,7 @@ const StudySideBar: React.FC = () => {
 
     return (
         <>
-            <div className="mb-4 font-bold">스터디 목록</div>
+            <div className="mb-4 font-medium">스터디 목록</div>
             <ul>
                 {Array.isArray(studies) && studies.length > 0 ? (
                     studies.map((study) => (

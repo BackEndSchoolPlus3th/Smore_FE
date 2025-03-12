@@ -179,9 +179,9 @@ const RecruitmentArticlesPage: React.FC = () => {
     return (
         <div className="flex flex-col gap-4 w-full pb-4">
             {/* 상단 고정 헤더 */}
-            <div className="sticky top-0 flex justify-between items-center w-full bg-white shadow p-4">
-                <p className="text-2xl font-bold text-dark-purple">
-                    스터디 모집 게시판
+            <div className="sticky top-0 flex justify-between items-center w-full bg-[#FAFBFF] shadow p-2">
+                <p className="font-bold text-dark-purple">
+                    모집글 목록 ({totalCount}건)
                 </p>
 
                 <div className="flex gap-4 items-center">
