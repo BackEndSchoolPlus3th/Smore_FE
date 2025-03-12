@@ -57,10 +57,13 @@ const Sidebar: React.FC = () => {
    * 채팅방 선택 시: 
    * - 선택된 방 정보(객체)를 state에 저장
    * - DM인지 group인지 타입도 별도로 저장
+   * - 채팅방 엔드포인트로 이동
    */
   const handleChatRoomSelect = (room: ChatRoom, chatType: "dm" | "group") => {
     setSelectedRoom(room);
     setSelectedChatType(chatType);
+    enterChatRoom();
+
   };
 
   /**
@@ -78,7 +81,22 @@ const Sidebar: React.FC = () => {
   const handleVideoChat = () => {
     setIsVideoChatActive(true);
   };
-    
+
+  // 스터디 채팅방으로 이동
+  const enterChatRoom = async () => {
+    if (selectedChatType === "group" && selectedRoom) {
+      try {
+        const response = await apiClient.post(`/api/v1/chatrooms/group/${selectedRoom.roomId}`);
+        if (response.status === 200) {
+          window.location.href = `/chat/${selectedRoom.studyId}`;
+        } else {
+          console.error("채팅방 입장 실패:", response);
+        }
+      } catch (error) {
+        console.error("채팅방 입장 중 오류 발생:", error);
+      }
+    }
+  };
 
     return (
       <div className="flex h-screen">
