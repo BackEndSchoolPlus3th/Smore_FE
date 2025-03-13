@@ -28,7 +28,7 @@ const StudySideBar: React.FC = () => {
     };
 
     useEffect(() => {
-        // fetchStudies();
+        fetchStudies();
     }, []);
 
     return (
