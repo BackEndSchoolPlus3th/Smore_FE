@@ -47,19 +47,6 @@ const ChatBoard: React.FC<ChatBoardProps> = ({ selectedRoom, selectedChatType })
           <div className="p-4">채팅할 방을 선택해주세요.</div>
         )}
       </div>
-      
-    
-
-      {/* 오른쪽 참여자 목록 */}
-      {/**
-       * 만약 그룹 채팅인 경우에만 참여자 목록을 보여주고 싶다면,
-       * <Participants chatType={selectedChatType} studyId={selectedRoom?.studyId} />
-       * 처럼 조건부로 렌더링할 수도 있습니다.
-       */}
-      {/* <Participants
-        chatType={selectedChatType}
-        studyId={selectedRoom?.studyId}
-      /> */}
     </div>
   );
 };
