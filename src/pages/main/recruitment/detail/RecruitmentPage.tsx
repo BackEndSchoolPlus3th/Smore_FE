@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { MarkdownRenderer } from '../../../../shared';
 import { FaSpinner } from 'react-icons/fa';
-import { apiClient } from '../../../../shared';
+import { apiClient, SubmitButton, CancleButton } from '../../../../shared';
 import { RecruitmentArticleClip } from '../../../../features';
-import { CommentList } from '../../../../components';
+import { CommentForm } from '../../../../components';
 
 interface RecruitmentContentsProps {
     id: number;
@@ -21,6 +21,7 @@ interface RecruitmentContentsProps {
     hashTags?: string;
     clipCount: number;
     clipped: boolean;
+    permission: boolean;
     writerName: string;
     writerProfileImageUrl: string | null;
 }
@@ -35,25 +36,21 @@ export interface CommentProps {
 }
 
 const RecuitmentContentPage: React.FC = () => {
+    const navigate = useNavigate();
+
     const { recruitmentId } = useParams<{ recruitmentId: string }>();
     const [recruitmentContent, setRecruitmentContent] =
         useState<RecruitmentContentsProps>({} as RecruitmentContentsProps);
-    const [comments, setComments] = useState<CommentProps[]>([]);
-    const [newComment, setNewComment] = useState('');
-    const [isProcessing, setIsProcessing] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
     const fetchApply = async () => {
         try {
-            setIsProcessing(true);
             const response = await apiClient.post(
                 `/api/v1/recruitmentArticles/${recruitmentId}/apply`
             );
             if (response.status === 200) alert('지원이 완료되었습니다.');
         } catch (error) {
             console.error('지원 에러:', error);
-        } finally {
-            setIsProcessing(false);
         }
     };
 
@@ -75,75 +72,35 @@ const RecuitmentContentPage: React.FC = () => {
         }
     };
 
-    // 댓글 목록 조회
-    const fetchComments = async () => {
+    // 모집글 삭제
+    const fetchDeleteRecruitment = async () => {
         try {
-            const response = await apiClient.get(
-                `/api/v1/recruitmentArticles/${recruitmentId}/comments`,
-                {
-                    params: { recruitmentArticleId: recruitmentId },
-                }
+            const response = await apiClient.delete(
+                `/api/v1/recruitmentArticles/${recruitmentId}`
             );
-            if (response.data) {
-                setComments(response.data);
+            if (response.status === 200) {
+                alert('삭제가 완료되었습니다.');
+                navigate('/');
             }
         } catch (error) {
-            console.error('댓글 조회 에러:', error);
+            console.error('삭제 에러:', error);
         }
     };
 
-    // 댓글 수정 요청
-    const handleEditComment = async (
-        commentId: number,
-        newCommentText: string
-    ) => {
-        try {
-            await apiClient.put(
-                `/api/v1/recruitmentArticles/${recruitmentId}/comments/${commentId}/edit`,
-                {
-                    comment: newCommentText,
-                }
-            );
-            fetchComments();
-        } catch (error) {
-            console.error('댓글 수정 에러:', error);
-        }
+    // 모집글 수정
+    const handleEditRecruitment = () => {
+        alert('모집글 수정');
     };
 
-    // 댓글 삭제 요청
-    const handleDeleteComment = async (commentId: number) => {
-        if (!window.confirm('정말 삭제하시겠습니까?')) return;
-        try {
-            await apiClient.delete(
-                `/api/v1/recruitmentArticles/${recruitmentId}/comments/${commentId}`
-            );
-            fetchComments();
-        } catch (error) {
-            console.error('댓글 삭제 에러:', error);
-        }
-    };
-
-    // 댓글 작성 요청
-    const handleCommentSubmit = async () => {
-        if (!newComment.trim()) return;
-        try {
-            setIsProcessing(true);
-            await apiClient.post(
-                `/api/v1/recruitmentArticles/${recruitmentId}/comments`,
-                { comment: newComment }
-            );
-            setNewComment('');
-            fetchComments();
-        } catch (error) {
-            console.error('댓글 작성 에러:', error);
-        } finally {
-            setIsProcessing(false);
+    // 모집글 삭제
+    const handleDeleteRecruitment = () => {
+        if (window.confirm('삭제하시겠습니까?')) {
+            fetchDeleteRecruitment();
         }
     };
 
     useEffect(() => {
         fetchRecruitmentContent();
-        fetchComments();
     }, [recruitmentId]);
 
     return (
@@ -154,77 +111,53 @@ const RecuitmentContentPage: React.FC = () => {
                 </div>
             ) : (
                 <>
-                    {/* 좌측 댓글 섹션 */}
-                    <div className="lg:w-1/4 flex flex-col items-center gap-4">
-                        <div className="sticky top-60 flex flex-col gap-4 border-2 border-gray-300 rounded-lg p-6 w-full shadow-lg bg-white h-110">
-                            <h2 className="text-2xl font-bold text-gray-900 mb-1 border-b border-gray-200 pb-1">
-                                댓글 목록
-                            </h2>
-                            <div className="flex flex-col justify-between h-96 overflow-y-auto">
-                                <CommentList
-                                    comments={comments}
-                                    onEdit={handleEditComment}
-                                    onDelete={handleDeleteComment}
-                                />
-                                <div className="flex flex-row gap-4 mt-4 w-full items-center justify-center">
-                                    <input
-                                        className="w-full border border-gray-300 rounded-lg p-2"
-                                        value={newComment}
-                                        onChange={(e) =>
-                                            setNewComment(e.target.value)
-                                        }
-                                        placeholder="댓글을 작성하세요..."
+                    {/* 중앙 모집글 상세 페이지 */}
+                    <div className="lg:w-3/4 flex flex-col items-center gap-8 min-h-full">
+                        <div className="w-full flex flex-col gap-4 items-center border-2 border-gray-300 rounded-lg p-6 shadow-lg bg-white min-h-screen">
+                            <div className="text-center mb-8 w-full border-b border-gray-200 pb-4">
+                                <h1 className="text-4xl font-extrabold text-gray-900 mb-4">
+                                    {recruitmentContent.title}
+                                </h1>
+                                <p className="text-lg text-gray-700 mb-2">
+                                    {recruitmentContent.introduction}
+                                </p>
+                                <p className="text-sm text-gray-500">
+                                    {recruitmentContent.createdDate &&
+                                        new Date(
+                                            recruitmentContent.createdDate
+                                        ).toLocaleDateString()}
+                                </p>
+                            </div>
+                            <div className="flex flex-wrap justify-center w-full border-b border-gray-200 pb-4">
+                                {recruitmentContent.imageUrls
+                                    ?.split(',')
+                                    .map((url, index) => (
+                                        <img
+                                            key={index}
+                                            src={url}
+                                            alt="recruitment"
+                                            className="w-full h-auto"
+                                        />
+                                    ))}
+                            </div>
+                            <div className="prose max-w-none w-full pb-4">
+                                {recruitmentContent?.content && (
+                                    <MarkdownRenderer
+                                        content={recruitmentContent.content}
                                     />
-                                    <button
-                                        className="w-40 bg-[#7743DB] text-white py-2 rounded-lg hover:bg-blue-600 font-bold"
-                                        onClick={handleCommentSubmit}
-                                        disabled={isProcessing}
-                                    >
-                                        작성
-                                    </button>
-                                </div>
+                                )}
                             </div>
                         </div>
-                    </div>
-                    {/* 중앙 모집글 상세 페이지 */}
-                    <div className="lg:w-2/4 flex flex-col items-center gap-8 p-6 bg-white rounded-lg shadow-lg">
-                        <div className="text-center mb-8 w-full border-b border-gray-200 pb-4">
-                            <h1 className="text-4xl font-extrabold text-gray-900 mb-4">
-                                {recruitmentContent.title}
-                            </h1>
-                            <p className="text-lg text-gray-700 mb-2">
-                                {recruitmentContent.introduction}
-                            </p>
-                            <p className="text-sm text-gray-500">
-                                {recruitmentContent.createdDate &&
-                                    new Date(
-                                        recruitmentContent.createdDate
-                                    ).toLocaleDateString()}
-                            </p>
-                        </div>
-                        <div className="flex flex-wrap justify-center w-full border-b border-gray-200 pb-4">
-                            {recruitmentContent.imageUrls
-                                ?.split(',')
-                                .map((url, index) => (
-                                    <img
-                                        key={index}
-                                        src={url}
-                                        alt="recruitment"
-                                        className="w-full h-auto"
-                                    />
-                                ))}
-                        </div>
-                        <div className="prose max-w-none w-full pb-4">
-                            {recruitmentContent?.content && (
-                                <MarkdownRenderer
-                                    content={recruitmentContent.content}
-                                />
+                        {/* 댓글 섹션 */}
+                        <div className="flex flex-col w-full">
+                            {recruitmentId && (
+                                <CommentForm recruitmentId={recruitmentId} />
                             )}
                         </div>
                     </div>
                     {/* 우측 해시태그, 모집 정보, 지원 버튼 */}
                     <div className="lg:w-1/4 flex flex-col items-center gap-4">
-                        <div className="sticky top-60 flex flex-col gap-4 border-2 border-gray-300 rounded-lg p-6 w-full shadow-lg bg-white">
+                        <div className="sticky top-10 flex flex-col gap-4 border-2 border-gray-300 rounded-lg p-6 w-full shadow-lg bg-white mt-50">
                             <div className="flex flex-row w-full justify-center">
                                 <RecruitmentArticleClip
                                     articleId={recruitmentContent.id}
@@ -286,20 +219,29 @@ const RecuitmentContentPage: React.FC = () => {
                                 </span>
                             </div>
                             <div className="w-full">
-                                <button
-                                    className="w-full bg-[#7743DB] to-green-500 text-white py-2 rounded-lg hover:from-blue-600 hover:to-green-600 font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer transition-colors"
-                                    disabled={
-                                        !recruitmentContent.isRecruiting ||
-                                        (recruitmentContent.endDate
-                                            ? new Date(
-                                                  recruitmentContent.endDate
-                                              ) < new Date()
-                                            : false)
-                                    }
-                                    onClick={fetchApply}
-                                >
-                                    지원하기
-                                </button>
+                                {recruitmentContent.permission ? (
+                                    <div className="flex flex-row gap-4 w-full justify-center">
+                                        <CancleButton
+                                            label="삭제하기"
+                                            onClick={handleDeleteRecruitment}
+                                            isFit={false}
+                                        />
+                                        <SubmitButton
+                                            label="수정하기"
+                                            onClick={handleEditRecruitment}
+                                            isFit={false}
+                                        />
+                                    </div>
+                                ) : (
+                                    <div className="w-full">
+                                        <SubmitButton
+                                            label="지원하기"
+                                            onClick={fetchApply}
+                                            isFit={false}
+                                        />
+                                    </div>
+                                )}
+
                             </div>
                         </div>
                     </div>

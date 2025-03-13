@@ -3,8 +3,6 @@ export { default as Editor } from './article/newRecruitment/Editor';
 export { default as MarkdownPreview } from './article/newRecruitment/MarkdownPreview';
 export { default as RecruitmentModal } from './article/newRecruitment/RecruitmentModal';
 
-export { default as CommentList } from './article/comment/CommentList';
-
 // myPage
 export { default as MyPageForm } from './myPage/form/MyPageForm';
 export { default as BioBoard } from './myPage/boards/BioBoard';
@@ -30,5 +28,10 @@ export { default as StudyRecruitmentEditBoard } from './study/board/recruitment/
 export { default as ChatPageForm } from './chat/form/ChatPageForm';
 export { default as InitialChatBoard } from './chat/board/InitialChatBoard';
 export { default as ChatBoard } from './chat/board/ChatBoard';
+
+// article
+export { default as CommentForm } from './article/commnet/CommentForm';
+
 export { default as VideoChatBoard } from './chat/board/VideoChatBoard';
 export { default as Sidebar } from './chat/Sidebar';
+
