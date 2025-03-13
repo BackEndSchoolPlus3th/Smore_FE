@@ -41,7 +41,7 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
             }}
         >
             {/* 선택창 */}
-            <div className="top-full right-0 bg-white border border-gray-200 shadow-md rounded-md z-50 cursor-pointer p-1">
+            <div className="top-full right-0 bg-white border border-gray-200 rounded-md z-50 cursor-pointer p-1">
                 <span className="text-gray-700 flex items-center justify-between p-0.5">
                     {value ? value.label : placeholder}{' '}
                     <ChevronDown size={15} />

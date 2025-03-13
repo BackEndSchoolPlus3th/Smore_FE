@@ -1,28 +1,25 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { PagingButton } from '../../widgets';
-import { fetchMyStudyList, MyStudyArticle } from '../../features';
-import { MyStudyListArticleProps } from '../../entities';
+import { fetchMyStudyList } from '../../features';
+import { MyStudyListResponse } from '../../entities';
 import { PageSizeSelect } from '../../shared';
+import { MyStudyCard } from '../../widgets';
 
 const MyStudyListPage: React.FC = () => {
-    const [articles, setArticles] = useState<MyStudyListArticleProps[]>([]);
+    const [articles, setArticles] = useState<MyStudyListResponse[]>([]);
     const [displayedArticles, setDisplayedArticles] = useState<
-        MyStudyListArticleProps[]
+        MyStudyListResponse[]
     >([]);
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(16);
-    const [isLoading, setIsLoading] = useState(true);
 
     // 전체 데이터를 한 번만 가져오기
     const fetchArticles = async () => {
         try {
-            const data: MyStudyListArticleProps[] = await fetchMyStudyList();
+            const data: MyStudyListResponse[] = await fetchMyStudyList();
             setArticles(data);
-            setIsLoading(false);
         } catch (error) {
             console.error('모집글 조회 에러:', error);
-            setIsLoading(false);
         }
     };
 
@@ -57,8 +54,8 @@ const MyStudyListPage: React.FC = () => {
     }, [articles]);
 
     return (
-        <div className="flex flex-col gap-4 w-full pb-4">
-            <div className="sticky top-0 flex justify-between items-center w-full bg-[#FAFBFF] shadow p-2">
+        <>
+            <div className="sticky top-0 flex justify-between items-center bg-[#FAFBFF] shadow p-2 z-10 col-span-12">
                 <p className="font-bold text-dark-purple">내 스터디 목록</p>
                 {/* 페이지 사이즈 설정 드롭다운 */}
                 <PageSizeSelect
@@ -71,35 +68,23 @@ const MyStudyListPage: React.FC = () => {
                 />
             </div>
             {/* 게시글 목록 */}
-            <div className="items-center w-full">
-                <div className="flex flex-wrap gap-4 w-full justify-center">
-                    {isLoading
-                        ? Array.from({ length: pageSize }).map((_, index) => (
-                              <div
-                                  className="recruitment-article-card card bg-light-lavender p-4 bg-white shadow-lg rounded-lg w-80 min-w-80 h-96"
-                                  key={index}
-                              >
-                                  <div className="animate-pulse bg-light-lavender h-full w-full rounded"></div>
-                              </div>
-                          ))
-                        : displayedArticles.map((article) => (
-                              <Link
-                                  to={`/study/${article.id}`}
-                                  className={`recruitment-article-card card p-4 bg-white shadow-lg rounded-lg w-80 min-w-80 h-110 bg-light-lavender
-                                    ${
-                                        article.studyPosition === 'LEADER'
-                                            ? 'border-2 border-yellow-400'
-                                            : ''
-                                    }`}
-                                  key={article.id}
-                              >
-                                  <MyStudyArticle {...article} />
-                              </Link>
-                          ))}
-                </div>
-            </div>
+            {displayedArticles.map((article) => (
+                <MyStudyCard
+                    key={article.id}
+                    title={article.title}
+                    introduction={article.introduction}
+                    thumbnailUrl={article.thumbnailUrl}
+                    hashtagList={
+                        article.hashTags ? article.hashTags.split(',') : []
+                    }
+                    registrationDate={article.registrationDate}
+                    memberCnt={article.memberCnt}
+                    link={`/study/${article.id}`}
+                    studyPosition={article.studyPosition}
+                />
+            ))}
             {/* 페이지네이션 */}
-            <div className="flex justify-center items-center w-full">
+            <div className="flex justify-center items-center col-span-12">
                 <PagingButton
                     setPage={(newPage) => handlePageChange(newPage)}
                     page={page}
@@ -107,7 +92,7 @@ const MyStudyListPage: React.FC = () => {
                     pageSize={pageSize}
                 />
             </div>
-        </div>
+        </>
     );
 };
 

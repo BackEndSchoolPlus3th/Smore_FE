@@ -15,3 +15,4 @@ export { default as MyClipCard } from './mypage/clip/MyClipCard';
 // card
 export { default as ArticleCard } from './card/article/ArticleCard';
 export { default as RecruitmentCard } from './card/article/RecruitmentCard';
+export { default as MyStudyCard } from './card/article/MyStudyCard';

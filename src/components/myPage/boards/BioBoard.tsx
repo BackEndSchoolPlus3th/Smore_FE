@@ -46,10 +46,10 @@ const BioBoard: React.FC = () => {
     }, []);
 
     return (
-        <div className="flex flex-col h-full gap-4">
+        <div className="flex flex-col h-full gap-6">
             <div className="flex h-full">
                 {isEdit ? (
-                    <div className="flex flex-row gap-4 w-full h-full">
+                    <div className="flex flex-row gap-6 w-full h-full">
                         <div className="w-1/2 h-full">
                             <Editor
                                 content={editBio}

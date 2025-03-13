@@ -3,7 +3,7 @@ export { default as RecruitmentArticle } from './article/recruitmentArticle/Recr
 
 export type { RecruitmentArticleProps } from './article/recruitmentArticle/RecruitmentArticleProb';
 
-export type { MyStudyListArticleProps } from './article/myStudyList/MyStudyListArticleProps';
+export type { MyStudyLisProps } from './article/myStudyList/MyStudyLisProps';
 
 export type { CommentProps } from './comment/CommentProps';
 
@@ -21,6 +21,7 @@ export type { RecruitmentCardProps } from './article/card/RecruitmentCardProps';
 export type { SimpleArticleResponse } from './article/response/SimpleArticleResponse';
 export type { SimpleRecruitmentResponse } from './article/response/SimpleRecruitmentResponse';
 export type { PagedArticleResponse } from './article/response/PagedArticleResponse';
+export type { MyStudyListResponse } from './article/response/MyStudyListResponse';
 
 // fetch
 export type { FetchRecruitmentArticlesParams } from './article/fetch/FetchRecruitmentArticlesParams';

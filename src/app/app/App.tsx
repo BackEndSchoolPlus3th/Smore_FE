@@ -24,7 +24,6 @@ function App() {
             <Router>
                 <div className="App h-screen flex flex-col items-center justify-start bg-white">
                     <Header />
-                    {/* Tailwind CSS 클래스로 Main-Grid 역할 수행 */}
                     <div className="mx-10 w-[75rem] grid grid-cols-12 gap-6">
                         <Routes>
                             <Route

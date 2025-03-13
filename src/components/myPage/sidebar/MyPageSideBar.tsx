@@ -2,7 +2,7 @@ import { ProfileWidget, NavigationMenuWidget } from '../../../widgets';
 
 const MyPageSideBar: React.FC = () => {
     return (
-        <div className="flex flex-col items-center w-full h-full p-8 bg-white">
+        <div className="flex flex-col items-center w-full h-full p-6 bg-white mt-6">
             {/* 프로필 아이콘 영역 */}
             <ProfileWidget />
 
