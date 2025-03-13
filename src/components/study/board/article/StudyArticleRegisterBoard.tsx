@@ -80,7 +80,7 @@ const StudyArticleRegisterBoard: React.FC = () => {
     const uploadPath = `study/${studyId}/article/images`;
 
     return (
-        <div className="flex flex-col min-h-full">
+        <div className="flex flex-col w-full min-h-full">
             {/* 상단 헤더 */}
             <div className="sticky top-0 p-4 flex justify-between items-center">
                 <h1 className="text-xl font-bold">새 글 작성</h1>

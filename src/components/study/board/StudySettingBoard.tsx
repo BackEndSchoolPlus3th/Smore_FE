@@ -1,6 +1,7 @@
 import { apiClient } from '../../../shared';
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { BookOpen } from 'lucide-react';
 
 const StudySettingBoard: React.FC = () => {
     const { studyId } = useParams();
@@ -20,24 +21,6 @@ const StudySettingBoard: React.FC = () => {
     const [members, setMembers] = useState([]);
     const [selectedPermissionKey, setSelectedPermissionKey] = useState("");
     const [selectedMembers, setSelectedMembers] = useState([]);
-
-    const fetchStudyById = async (studyId: string) => {
-        try {
-            // apiClient를 사용하여 GET 요청 보내기
-            const response = await apiClient.get(`/api/v1/study/${studyId}`);
-
-            if (response.status === 200) {
-                const data = response.data;
-                setStudyName(data.title);
-                setStudyDescription(data.introduction);
-                setStudyHashtags(data.hashtags);
-            } else {
-                throw new Error(`Error: ${response.status}`);
-            }
-        } catch (error) {
-            console.error("스터디 정보 조회 실패:", error);
-        }
-    };
 
     const handleAddPerson = async (key: string) => {
         if (!selectedMember) {
@@ -241,7 +224,6 @@ const StudySettingBoard: React.FC = () => {
     useEffect(() => {
         fetchStudies();
         fetchMembers();
-        fetchStudyById(studyId);
         fetchPermissions(studyId);
     }, [studyId]);
 
@@ -255,7 +237,7 @@ const StudySettingBoard: React.FC = () => {
                     {/* 스터디 프로필 */}
                     <div className="mb-4 flex justify-center space-x-10 items-center">
                         <div className="flex items-center space-x-4 justify-center">
-                            <div className="w-50 h-50 bg-gray-600 rounded-full"></div>
+                            <div className="w-50 h-50 bg-gray-300 rounded-full flex justify-center items-center"><BookOpen color={"white"} size={130} /></div>
                             <div className="pl-10">
                                 {/* 스터디명 */}
                                 {isEditingProfile ? (
