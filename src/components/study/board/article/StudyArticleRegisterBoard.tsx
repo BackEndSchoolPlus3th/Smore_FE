@@ -90,7 +90,7 @@ const StudyArticleRegisterBoard: React.FC = () => {
                     </button>
                     <button
                         onClick={handlePublishClick}
-                        className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded focus:outline-none cursor-pointer"
+                        className="bg-[#7743DB] hover:bg-blue-600 text-white px-4 py-2 rounded focus:outline-none cursor-pointer"
                     >
                         게시
                     </button>

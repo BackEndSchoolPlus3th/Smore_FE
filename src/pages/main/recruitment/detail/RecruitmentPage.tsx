@@ -176,7 +176,7 @@ const RecuitmentContentPage: React.FC = () => {
                                         placeholder="댓글을 작성하세요..."
                                     />
                                     <button
-                                        className="w-40 bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 font-bold"
+                                        className="w-40 bg-[#7743DB] text-white py-2 rounded-lg hover:bg-blue-600 font-bold"
                                         onClick={handleCommentSubmit}
                                         disabled={isProcessing}
                                     >
@@ -287,7 +287,7 @@ const RecuitmentContentPage: React.FC = () => {
                             </div>
                             <div className="w-full">
                                 <button
-                                    className="w-full bg-gradient-to-r from-blue-500 to-green-500 text-white py-2 rounded-lg hover:from-blue-600 hover:to-green-600 font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer transition-colors"
+                                    className="w-full bg-[#7743DB] to-green-500 text-white py-2 rounded-lg hover:from-blue-600 hover:to-green-600 font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer transition-colors"
                                     disabled={
                                         !recruitmentContent.isRecruiting ||
                                         (recruitmentContent.endDate

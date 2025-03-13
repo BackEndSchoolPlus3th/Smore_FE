@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiClient } from "../../shared";
+import { SquareArrowRight, SquareArrowDown } from "lucide-react";
 
 type ChatRoom = {
   roomId: string;      // 백엔드에서 roomId(Long)을 받아오면 문자열로 변환
@@ -106,10 +107,15 @@ const Sidebar: React.FC<{
         {/* DM 카테고리 */}
         <div>
           <div
-            className="cursor-pointer font-bold flex items-center"
+            className="cursor-pointer font-bold flex items-center gap-2"
             onClick={() => toggleCategory("dm")}
           >
-            DM {expandedCategory === "dm" ? "🔽" : "▶️"}
+            <span>DM</span> 
+            {expandedCategory === "dm" ? (
+              <SquareArrowDown size={20} />
+          ) : (
+            <SquareArrowRight size={20} />
+          )}
           </div>
           {expandedCategory === "dm" && (
             <ul className="mt-2 ml-4">
@@ -133,10 +139,16 @@ const Sidebar: React.FC<{
         {/* 그룹 카테고리 */}
         <div className="mt-4">
           <div
-            className="cursor-pointer font-bold flex items-center"
+            className="cursor-pointer font-bold flex items-center gap-2"
             onClick={() => toggleCategory("group")}
           >
-            그룹 {expandedCategory === "group" ? "🔽" : "▶️"}
+            <span>그룹</span> 
+            {expandedCategory === "group" ? 
+            (
+              <SquareArrowDown size={20} />
+          ) : (
+            <SquareArrowRight size={20} />
+          )}
           </div>
           {expandedCategory === "group" && (
             <ul className="mt-2 ml-4">

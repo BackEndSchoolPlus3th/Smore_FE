@@ -12,8 +12,7 @@ import UpdateEventPopup from './UpdateEventPopup';
 import EventDetailPopup from './EventDetailPopup';
 import { apiClient } from '../../shared';
 import moment from 'moment';
-import { set } from 'lodash';
-
+import './Calendar.css';
 const Calender: React.FC = () => {
     const calendarRef = useRef<HTMLDivElement>(null);
     const [showAddEventPopup, setShowAddEventPopup] = useState(false);

@@ -6,6 +6,7 @@ import {
   ChatBoard,  
   VideoChatBoard
 } from "../../components";
+import { AlignJustify } from 'lucide-react';
 
 type ChatRoom = {
   roomId: string;
@@ -17,17 +18,45 @@ type ChatRoom = {
 const ChatPage: React.FC = () => {
   const [selectedRoom, setSelectedRoom] = useState<ChatRoom | null>(null);
   const [selectedChatType, setSelectedChatType] = useState<"dm" | "group" | null>(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const handleToggleSidebar = () => {
+    setIsSidebarOpen((prev) => !prev);
+};
 
   return (
     <div className="flex h-screen">
-      {/* 사이드바 */}
-      <div className="w-1/4 min-w-[250px] max-w-[300px] h-full border-r border-gray-200 overflow-y-auto">
-        <Sidebar 
-          selectedRoom={selectedRoom}
-          selectedChatType={selectedChatType}
-          onRoomSelect={setSelectedRoom}
-          onChatTypeSelect={setSelectedChatType}
-        />
+      {/* 사이드바 컨테이너 */}
+      <div 
+        className={`
+          transition-all duration-300 ease-in-out
+          border-r border-gray-200 
+          ${isSidebarOpen ? 'w-[300px]' : 'w-[50px]'}
+        `}
+      >
+        {/* 사이드바 내용 */}
+        <div className="h-full flex flex-col">
+          {/* 토글 버튼 */}
+          <button
+            className="p-2 hover:bg-gray-200 transition"
+            onClick={handleToggleSidebar}
+          >
+            <AlignJustify className="w-6 h-6 text-gray-700" />
+          </button>
+
+          {/* 사이드바 컨텐츠 */}
+          <div className={`
+            flex-1 overflow-y-auto
+            ${isSidebarOpen ? 'opacity-100' : 'opacity-0'}
+            transition-opacity duration-300
+          `}>
+            <Sidebar
+              selectedRoom={selectedRoom}
+              selectedChatType={selectedChatType}
+              onRoomSelect={setSelectedRoom}
+              onChatTypeSelect={setSelectedChatType}
+            />
+          </div>
+        </div>
       </div>
 
       {/* 채팅 화면 */}
