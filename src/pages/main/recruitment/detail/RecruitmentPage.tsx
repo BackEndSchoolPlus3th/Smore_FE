@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { MarkdownRenderer } from '../../../../shared';
 import { FaSpinner } from 'react-icons/fa';
 import { apiClient, SubmitButton, CancleButton } from '../../../../shared';
@@ -21,7 +21,7 @@ interface RecruitmentContentsProps {
     hashTags?: string;
     clipCount: number;
     clipped: boolean;
-    writer: boolean;
+    permission: boolean;
     writerName: string;
     writerProfileImageUrl: string | null;
 }
@@ -36,6 +36,8 @@ export interface CommentProps {
 }
 
 const RecuitmentContentPage: React.FC = () => {
+    const navigate = useNavigate();
+
     const { recruitmentId } = useParams<{ recruitmentId: string }>();
     const [recruitmentContent, setRecruitmentContent] =
         useState<RecruitmentContentsProps>({} as RecruitmentContentsProps);
@@ -70,6 +72,21 @@ const RecuitmentContentPage: React.FC = () => {
         }
     };
 
+    // 모집글 삭제
+    const fetchDeleteRecruitment = async () => {
+        try {
+            const response = await apiClient.delete(
+                `/api/v1/recruitmentArticles/${recruitmentId}`
+            );
+            if (response.status === 200) {
+                alert('삭제가 완료되었습니다.');
+                navigate('/');
+            }
+        } catch (error) {
+            console.error('삭제 에러:', error);
+        }
+    };
+
     // 모집글 수정
     const handleEditRecruitment = () => {
         alert('모집글 수정');
@@ -78,7 +95,7 @@ const RecuitmentContentPage: React.FC = () => {
     // 모집글 삭제
     const handleDeleteRecruitment = () => {
         if (window.confirm('삭제하시겠습니까?')) {
-            alert('삭제 완료되었습니다.');
+            fetchDeleteRecruitment();
         }
     };
 
@@ -202,7 +219,7 @@ const RecuitmentContentPage: React.FC = () => {
                                 </span>
                             </div>
                             <div className="w-full">
-                                {!recruitmentContent.writer ? (
+                                {recruitmentContent.permission ? (
                                     <div className="flex flex-row gap-4 w-full justify-center">
                                         <CancleButton
                                             label="삭제하기"

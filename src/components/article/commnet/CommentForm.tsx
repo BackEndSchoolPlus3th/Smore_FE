@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { CommentList } from '../../../widgets';
-import { apiClient, SubmitButton } from '../../../shared';
+import { apiClient } from '../../../shared';
 import { CommentProps } from '../../../entities';
 
 interface CommentFormProps {
@@ -76,6 +76,55 @@ const CommentForm: React.FC<CommentFormProps> = (props: CommentFormProps) => {
 
     useEffect(() => {
         fetchComments();
+        setComments([
+            {
+                id: 1,
+                comment:
+                    '댓글1댓글1댓글1댓글1댓글1댓글1댓글1댓글1댓글1댓글1댓글1댓글1댓글1댓글1',
+                isPublisher: false,
+                writerName: '사용자1',
+                createdDate: '2021-09-01',
+                editable: false,
+                writerProfileImageUrl: 'https://picsum.photos/200/300?random=1',
+            },
+            {
+                id: 2,
+                comment:
+                    '댓글2댓글2댓글2댓글2댓글2댓글2댓글2댓글2댓글2댓글2댓글2댓글2댓글2댓글2댓글2댓글2댓글2댓글2댓글2댓글2댓글2댓글2',
+                isPublisher: true,
+                writerName: '게시자',
+                createdDate: '2021-09-01',
+                editable: false,
+                writerProfileImageUrl: 'https://picsum.photos/200/300?random=2',
+            },
+            {
+                id: 3,
+                comment: '댓글3',
+                isPublisher: false,
+                writerName: '사용자2',
+                createdDate: '2021-09-03',
+                editable: true,
+                writerProfileImageUrl: 'https://picsum.photos/200/300?random=3',
+            },
+            {
+                id: 4,
+                comment: '댓글4',
+                isPublisher: true,
+                writerName: '게시자',
+                createdDate: '2021-09-04',
+                editable: false,
+                writerProfileImageUrl: 'https://picsum.photos/200/300?random=4',
+            },
+            {
+                id: 5,
+                comment: '댓글5',
+                isPublisher: true,
+                writerName: '스터디장',
+                createdDate: '2021-09-04',
+                editable: true,
+                writerProfileImageUrl: 'https://picsum.photos/200/300?random=5',
+            },
+        ]);
     }, []);
 
     return (
@@ -94,9 +143,13 @@ const CommentForm: React.FC<CommentFormProps> = (props: CommentFormProps) => {
                         className="flex-1 border border-gray-300 rounded-lg p-2 text-sm"
                         value={newComment}
                         onChange={(e) => setNewComment(e.target.value)}
-                        placeholder="댓글을 작성하세요..."
+                        placeholder="댓글을 작성하세요"
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                handleCommentSubmit();
+                            }
+                        }}
                     />
-                    <SubmitButton label="작성" onClick={handleCommentSubmit} />
                 </div>
             </div>
         </div>

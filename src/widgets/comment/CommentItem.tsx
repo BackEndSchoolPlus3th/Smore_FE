@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { CommentProps } from '../../entities';
-import { SubmitButton, CancleButton } from '../../shared';
 
 interface CommentItemProps {
     comment: CommentProps;
@@ -16,79 +15,156 @@ const CommentItem: React.FC<CommentItemProps> = ({
     // 로컬 편집 상태 관리
     const [isEditing, setIsEditing] = useState(false);
     const [inputValue, setInputValue] = useState(comment.comment);
-    const [isConfirming, setIsConfirming] = useState(false);
 
     const handleEditClick = () => {
         setIsEditing(true);
         setInputValue(comment.comment);
     };
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setInputValue(e.target.value);
     };
 
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if (e.key === 'Enter') {
-            setIsConfirming(true);
+            handleConfirm();
         }
     };
 
     const handleConfirm = async () => {
         await onEdit(comment.id, inputValue);
         setIsEditing(false);
-        setIsConfirming(false);
     };
 
     const handleCancel = () => {
         setIsEditing(false);
-        setIsConfirming(false);
         setInputValue(comment.comment);
     };
 
     return (
-        <div className="border-b border-gray-200 pb-4">
-            {isEditing ? (
-                isConfirming ? (
-                    <div className="mt-2">
-                        <p className="text-gray-700 text-sm">{inputValue}</p>
-                        <div className="flex gap-2 mt-2">
-                            <CancleButton label="취소" onClick={handleCancel} />
-                            <SubmitButton
-                                label="확인"
-                                onClick={handleConfirm}
-                            />
+        <div className="flex flex-col gap-2 w-full">
+            {comment.isPublisher ? (
+                <div className="flex flex-row justify-start items-start">
+                    <img
+                        src={comment.writerProfileImageUrl ?? undefined}
+                        alt="profile"
+                        className="w-8 h-8 rounded-full"
+                    />
+                    <div className="ml-2">
+                        <div className="font-bold">{comment.writerName}</div>
+                        <div className="relative bg-blue-100 border border-gray-300 rounded-r-lg rounded-bl-lg p-2 max-w-xs break-words">
+                            <div className="absolute top-0 left-0 w-0 h-0 border-t-0 border-r-8 border-b-8 border-l-8 border-transparent border-b-blue-100"></div>
+                            {isEditing ? (
+                                <textarea
+                                    value={inputValue}
+                                    onChange={handleInputChange}
+                                    onKeyDown={handleKeyDown}
+                                    className="w-full p-1 border-0 rounded"
+                                />
+                            ) : (
+                                comment.comment
+                            )}
+                        </div>
+                        <div className="flex flex-row text-xs text-gray-500 mt-1">
+                            <div>{comment.createdDate}</div>
+                            {isEditing ? (
+                                <>
+                                    <button
+                                        className="ml-2 cursor-pointer text-green-900 hover:underline"
+                                        onClick={handleConfirm}
+                                    >
+                                        확인
+                                    </button>
+                                    <button
+                                        className="ml-2 cursor-pointer text-red-900 hover:underline"
+                                        onClick={handleCancel}
+                                    >
+                                        취소
+                                    </button>
+                                </>
+                            ) : (
+                                comment.editable && (
+                                    <>
+                                        <button
+                                            className="ml-2 cursor-pointer text-green-900 hover:underline"
+                                            onClick={handleEditClick}
+                                        >
+                                            수정
+                                        </button>
+                                        <button
+                                            className="ml-2 cursor-pointer text-red-900 hover:underline"
+                                            onClick={() => onDelete(comment.id)}
+                                        >
+                                            삭제
+                                        </button>
+                                    </>
+                                )
+                            )}
                         </div>
                     </div>
-                ) : (
-                    <input
-                        className="w-full border border-gray-300 rounded-lg p-2"
-                        value={inputValue}
-                        onChange={handleInputChange}
-                        onKeyDown={handleKeyDown}
-                    />
-                )
+                </div>
             ) : (
-                <>
-                    <div className="flex flex-row justify-between items-center">
-                        <p className="text-gray-700">{comment.comment}</p>
-                        {comment.editable && (
-                            <div className="flex gap-2">
-                                <CancleButton
-                                    label="삭제"
-                                    onClick={() => onDelete(comment.id)}
+                <div className="flex flex-row justify-end items-start">
+                    <div className="mr-2">
+                        <div className="font-bold text-right">
+                            {comment.writerName}
+                        </div>
+                        <div className="relative bg-gray-100 border border-gray-300 rounded-l-lg rounded-br-lg p-2 max-w-xs break-words">
+                            <div className="absolute top-0 right-0 w-0 h-0 border-t-0 border-l-8 border-b-8 border-r-8 border-transparent border-b-gray-100"></div>
+                            {isEditing ? (
+                                <textarea
+                                    value={inputValue}
+                                    onChange={handleInputChange}
+                                    onKeyDown={handleKeyDown}
+                                    className="w-full p-1 border-0 rounded"
                                 />
-                                <SubmitButton
-                                    label="수정"
-                                    onClick={handleEditClick}
-                                />
-                            </div>
-                        )}
+                            ) : (
+                                comment.comment
+                            )}
+                        </div>
+                        <div className="flex flex-row justify-end text-xs text-gray-500 mt-1">
+                            <div>{comment.createdDate}</div>
+                            {isEditing ? (
+                                <>
+                                    <button
+                                        className="ml-2 cursor-pointer text-green-900 hover:underline"
+                                        onClick={handleConfirm}
+                                    >
+                                        확인
+                                    </button>
+                                    <button
+                                        className="ml-2 cursor-pointer text-red-900 hover:underline"
+                                        onClick={handleCancel}
+                                    >
+                                        취소
+                                    </button>
+                                </>
+                            ) : (
+                                comment.editable && (
+                                    <>
+                                        <button
+                                            className="ml-2 cursor-pointer text-green-900 hover:underline"
+                                            onClick={handleEditClick}
+                                        >
+                                            수정
+                                        </button>
+                                        <button
+                                            className="ml-2 cursor-pointer text-red-900 hover:underline"
+                                            onClick={() => onDelete(comment.id)}
+                                        >
+                                            삭제
+                                        </button>
+                                    </>
+                                )
+                            )}
+                        </div>
                     </div>
-                    <p className="text-sm text-gray-500">
-                        {comment.writerName} -{' '}
-                        {new Date(comment.createdDate).toLocaleDateString()}
-                    </p>
-                </>
+                    <img
+                        src={comment.writerProfileImageUrl ?? undefined}
+                        alt="profile"
+                        className="w-8 h-8 rounded-full"
+                    />
+                </div>
             )}
         </div>
     );
