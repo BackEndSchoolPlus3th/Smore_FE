@@ -1,6 +1,7 @@
 import { apiClient } from '../../../../shared';
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { Editor, MarkdownPreview } from '../../../../components';
 
 const StudyArticleDetailBoard: React.FC = () => {
     const navigate = useNavigate();
@@ -274,14 +275,7 @@ const StudyArticleDetailBoard: React.FC = () => {
                                         className="w-full p-2 border rounded bg-gray-100"
                                     />
                                 ) : (
-                                    <textarea
-                                        id="content"
-                                        name="content"
-                                        value={articleData.content}
-                                        disabled
-                                        rows="6"
-                                        className="w-full p-2 border rounded bg-gray-100"
-                                    />
+                                    <MarkdownPreview content={articleData.content} />
                                 )}
                             </div>
                             {/* 첨부파일 */}
