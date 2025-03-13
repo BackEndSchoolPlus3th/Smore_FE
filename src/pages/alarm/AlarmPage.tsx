@@ -22,15 +22,16 @@ interface AlarmPageProps {
   onClose: () => void;
 }
 
-const AlarmPage: React.FC<AlarmPageProps> = ({ isOpen, onClose }) => {
+const AlarmPage: React.FC<AlarmPageProps> = ({ isOpen, onClose, events }) => {
   const [alarms, setAlarms] = useState<Alarm[]>([]);
-  const { events: sseEvents } = useGlobalEvents();
+ // const { events: sseEvents } = useGlobalEvents();
   
   // 3. API 호출 함수 최적화 (useCallback 사용)
   const fetchAlarms = useCallback(async () => {
     try {
       const response = await apiClient.get(`/api/v1/alarm`); // 슬래시 추가
       setAlarms(response.data);
+      console.log("계속 갱신 되고 있는지 확인하기")
     } catch (error) {
       console.error("알림 조회 실패:", error);
     }
@@ -99,10 +100,21 @@ const AlarmPage: React.FC<AlarmPageProps> = ({ isOpen, onClose }) => {
       console.error("알림 확인 실패:", error);
     }
   };
-  
   useEffect(() => {
-    isOpen && fetchAlarms();
-  }, [isOpen, fetchAlarms, sseEvents]); // 의존성 배열 정확히 지정
+    if (isOpen) {
+      fetchAlarms();
+    }
+  }, [isOpen, fetchAlarms]);
+  
+  // SSE 이벤트가 발생할 때 자동으로 알림 목록을 갱신
+  useEffect(() => {
+    if (events.length > 0) {
+      fetchAlarms();
+    }
+  }, [events, fetchAlarms]);
+  // useEffect(() => {
+  //   isOpen && fetchAlarms();
+  // }, [isOpen, fetchAlarms, sseEvents]); // 의존성 배열 정확히 지정
 
   // 5. 렌더링 로직 개선
   const renderNotification = (alarm: Alarm) => {
