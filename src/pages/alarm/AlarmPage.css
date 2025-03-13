@@ -74,34 +74,34 @@
 
 /* 수락 버튼 */
 .accept {
-  background: #E5D9F2;
-  color: rgb(62, 58, 58);
+  background: #7743DB;
+  color: white; 
 }
 
 .accept:hover {
-  background: #E5D9F2;
+  background: #7743DB;
   transform: scale(1.05);
 }
 
 /* 거절 버튼 */
 .reject {
-  background: #E5D9F2;
-  color: rgb(62, 58, 58);
+  background: #7743DB;
+  color: white;
 }
 
 .reject:hover {
-  background: #E5D9F2;
+  background: #7743DB;
   transform: scale(1.05);
 }
 
 /* 채팅 버튼 */
 .chat {
-  background: #E5D9F2;
-  color: rgb(62, 58, 58);
+  background: #7743DB;
+  color: white;
 }
 
 .chat:hover {
-  background: #E5D9F2;
+  background: #7743DB;
   transform: scale(1.05);
 }
 
@@ -118,8 +118,8 @@
 }
 /* 확인 버튼 스타일 */
 .check {
-  background: #E5D9F2;
-  color: rgb(62, 58, 58);
+  background: #7743DB;
+  color: white;
   border: none;
   padding: 6px 10px;
   font-size: 13px;
@@ -132,7 +132,7 @@
 }
 
 .check:hover {
-  background: #E5D9F2;
+  background: #7743DB;
   transform: scale(1.05);
 }
 

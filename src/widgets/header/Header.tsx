@@ -120,7 +120,7 @@ const Header = () => {
                                 onClick={openAlarmPage}
                             >
                                 <Bell size={20} />
-                                {hasNewAlarm && (
+                                {hasNewAlarm && !isAlarm && (
                                   <span className="absolute top-5 right-30 w-2 h-2 bg-red-500 rounded-full"></span>
                                 )} 
                              
