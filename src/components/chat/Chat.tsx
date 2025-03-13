@@ -327,7 +327,7 @@ const Chat: React.FC<ChatProps> = ({ roomId, chatType }) => {
                 hour12: true,
               });
 
-              let newMessages = [...prevMessages];
+              const newMessages = [...prevMessages];
               if (
                 newMessages.length === 0 ||
                 (newMessages[newMessages.length - 1].type === "message" &&

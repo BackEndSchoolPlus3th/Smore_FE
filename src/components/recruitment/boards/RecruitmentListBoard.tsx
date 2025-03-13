@@ -1,22 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import type { RootState } from '../../../../shared';
+import type { RootState } from '../../../shared';
 import {
     PagedArticleResponse,
     SimpleRecruitmentResponse,
-} from '../../../../entities';
-import '../../../../shared/style/ArticleListPageStyle.css';
-import { PagingButton, RecruitmentCard } from '../../../../widgets';
+} from '../../../entities';
+import '../../../shared/style/ArticleListPageStyle.css';
+import { PagingButton, RecruitmentCard } from '../../../widgets';
 import {
     RecruitmentArticleSearch,
     fetchRecruitmentArticles,
-} from '../../../../features';
-import { PageSizeSelect } from '../../../../shared';
+} from '../../../features';
+import { PageSizeSelect } from '../../../shared';
 
 const pagesPerBlock = 10;
 
-const RecruitmentArticlesPage: React.FC = () => {
+const RecruitmentListBoard = () => {
     const [searchParams, setSearchParams] = useSearchParams();
 
     // 초기 URL 파라미터 읽기
@@ -352,7 +352,7 @@ const RecruitmentArticlesPage: React.FC = () => {
                             writerName={article.writerName}
                             writerProfile={article.writerProfile}
                             thumbnailUrl={article.thumbnailUrl}
-                            link={`/recruitment/${article.id}`}
+                            link={`/${article.id}`}
                         />
                     ))}
                 </div>
@@ -371,4 +371,4 @@ const RecruitmentArticlesPage: React.FC = () => {
     );
 };
 
-export default RecruitmentArticlesPage;
+export default RecruitmentListBoard;

@@ -3,9 +3,8 @@ export { default as StudyArticlePage } from './study/article/StudyArticlePage';
 export { default as ChatPage } from './chat/ChatPage';
 export { default as LoginPage } from './member/auth/login/LoginPage';
 export { default as CalenderPage } from './study/schedule/CalenderPage';
-export { default as RecruitmentContentPage } from './main/recruitment/detail/RecruitmentPage';
+export { default as RecruitmentPage } from './recruitment/RecruitmentPage';
 export { default as MyPage } from './member/myPage/MyPage';
-export { default as TestPage } from '../pages/testPage';
 
 // 새 소개 작성 페이지
 export { default as NewRecruitmentPage } from './study/article/recruitment/NewRecruitmentPage';

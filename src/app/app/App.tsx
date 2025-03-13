@@ -8,14 +8,13 @@ import {
     ChatPage,
     LoginPage,
     RecruitmentArticlesPage,
-    RecruitmentContentPage,
     NewRecruitmentPage,
     ErrorPage,
     SignupPage,
     MyStudyListPage,
     MyPage,
-    TestPage,
     StudyPage,
+    RecruitmentPage,
 } from '../../pages';
 import { Header } from '../../widgets';
 import { EventProvider } from '../../shared/sse/EventProvider';
@@ -39,14 +38,6 @@ function App() {
                             />
                             <Route path="/chat/*" element={<ChatPage />} />
                             <Route
-                                path="/"
-                                element={<RecruitmentArticlesPage />}
-                            />
-                            <Route
-                                path="/recruitment/:recruitmentId"
-                                element={<RecruitmentContentPage />}
-                            />
-                            <Route
                                 path="/study/:studyId/article/recruitment/new"
                                 element={<NewRecruitmentPage />}
                             />
@@ -54,7 +45,7 @@ function App() {
                             <Route path="/signup" element={<SignupPage />} />
                             <Route path="/mypage/*" element={<MyPage />} />
                             <Route path="/error" element={<ErrorPage />} />
-                            <Route path="/test" element={<TestPage />} />
+                            <Route path="/*" element={<RecruitmentPage />} />
                         </Routes>
                     </div>
                 </div>

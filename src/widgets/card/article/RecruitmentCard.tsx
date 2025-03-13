@@ -34,9 +34,9 @@ const RecruitmentCard: React.FC<RecruitmentCardProps> = (
                             props.hashtagList.map((hashtag, index) => (
                                 <span
                                     key={index}
-                                    className="text-xs text-blue-500"
+                                    className="text-xs text-blue-500 rounded-full px-2 py-0.5 border border-gray-200"
                                 >
-                                    #{hashtag}
+                                    {hashtag}
                                 </span>
                             ))}
                     </div>

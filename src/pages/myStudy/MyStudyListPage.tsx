@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { PagingButton } from '../../../widgets';
-import { fetchMyStudyList, MyStudyArticle } from '../../../features';
-import { MyStudyListArticleProps } from '../../../entities';
-import { PageSizeSelect } from '../../../shared';
+import { PagingButton } from '../../widgets';
+import { fetchMyStudyList, MyStudyArticle } from '../../features';
+import { MyStudyListArticleProps } from '../../entities';
+import { PageSizeSelect } from '../../shared';
 import '../../../shared/style/ArticleListPageStyle.css';
 import './MyStudyListPageStyle.css';
 
@@ -61,9 +61,7 @@ const MyStudyListPage: React.FC = () => {
     return (
         <div className="flex flex-col gap-4 w-full pb-4">
             <div className="sticky top-0 flex justify-between items-center w-full bg-[#FAFBFF] shadow p-2">
-                <p className="font-bold text-dark-purple">
-                    내 스터디 목록
-                </p>
+                <p className="font-bold text-dark-purple">내 스터디 목록</p>
                 {/* 페이지 사이즈 설정 드롭다운 */}
                 <PageSizeSelect
                     value={pageSize}

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { MarkdownRenderer } from '../../../../shared';
-import { apiClient, SubmitButton, CancleButton } from '../../../../shared';
-import { RecruitmentArticleClip } from '../../../../features';
-import { CommentForm } from '../../../../components';
+import { MarkdownRenderer } from '../../../shared';
+import { apiClient, SubmitButton, CancleButton } from '../../../shared';
+import { RecruitmentArticleClip } from '../../../features';
+import { CommentForm } from '../../../components';
 
 interface RecruitmentContentsProps {
     id: number;
@@ -34,7 +34,7 @@ export interface CommentProps {
     writerProfileImageUrl: string | null;
 }
 
-const RecuitmentContentPage: React.FC = () => {
+const RecruitmentDetailBoard = () => {
     const navigate = useNavigate();
 
     const { recruitmentId } = useParams<{ recruitmentId: string }>();
@@ -230,4 +230,4 @@ const RecuitmentContentPage: React.FC = () => {
     );
 };
 
-export default RecuitmentContentPage;
+export default RecruitmentDetailBoard;
