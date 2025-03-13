@@ -25,6 +25,7 @@ const Header = () => {
     const { events } = useGlobalEvents() || { events: [] };
     const [showMyPagePopup, setShowMyPagePopup] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
+    const [hasNewAlarm, setHasNewAlarm] = useState(false);
 
     const goToStudyMainPage = () => {
         navigate('/mystudy');
@@ -40,8 +41,9 @@ const Header = () => {
 
     const openAlarmPage = () => {
         setIsAlarm(true);
-        // setHasNewAlarm(false);  // 알림을 확인했으므로 빨간 점 없애기
+        setHasNewAlarm(false);  // 알림을 확인했으므로 빨간 점 없애기
     };
+    
     const handleShowMyPagePopup = () => {
         setShowMyPagePopup((prev) => !prev);
     };
@@ -77,11 +79,14 @@ const Header = () => {
                 setShowMyPagePopup(false);
             }
         }
+        if (events.length > 0) {
+            setHasNewAlarm(true);
+        }
         document.addEventListener('mousedown', handleClickOutside);
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
-    }, []);
+    }, [events]);
 
     return (
         <div className="flex justify-between items-center bg-[#FAFBFF] border-b border-gray-200 shadow-md h-16 w-full z-50">
@@ -115,6 +120,10 @@ const Header = () => {
                                 onClick={openAlarmPage}
                             >
                                 <Bell size={20} />
+                                {hasNewAlarm && !isAlarm && (
+                                  <span className="absolute top-5 right-30 w-2 h-2 bg-red-500 rounded-full"></span>
+                                )} 
+                             
                             </button>
                         </div>
                         <div className="flex items-center text-center w-full">

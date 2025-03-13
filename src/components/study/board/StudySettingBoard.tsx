@@ -1,123 +1,257 @@
-import { useNavigate, useParams } from 'react-router-dom';
 import { apiClient } from '../../../shared';
 import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { BookOpen } from 'lucide-react';
 
 const StudySettingBoard: React.FC = () => {
-    const navigate = useNavigate();
+    const { studyId } = useParams();
+    const [permissions, setPermissions] = useState({
+        recruitManage: [],
+        articleManage: [],
+        calendarManage: [],
+        settingManage: [],
+    });
+    const [studies, setStudies] = useState([]);
     const [isEditingProfile, setIsEditingProfile] = useState(false);
     const [isEditingPermissions, setIsEditingPermissions] = useState(false);
-    
-    const [studyName, setStudyName] = useState("스터디명"); // 스터디명
-    const [studyDescription, setStudyDescription] = useState("스터디 소개(과목, 운영 시간)"); // 스터디 소개
-    const [studyHashtags, setStudyHashtags] = useState("해시태그");
-    
-    const [permissions, setPermissions] = useState({
-            allPermissions: [],
-            manageStudyPosts: [],
-            manageStudyArticles: [],
-            manageStudyCalendar: [],
-            manageStudySettings: [],
-            manageMembers: [],
-        });
-
-    const [allMembers, setAllMembers] = useState([
-            "멤버A",
-            "멤버B",
-            "멤버C",
-            "멤버D",
-        ]); // 가데이터 멤버 목록
-    
+    const [studyName, setStudyName] = useState("");
+    const [studyDescription, setStudyDescription] = useState("");
+    const [studyHashtags, setStudyHashtags] = useState("");
     const [selectedMember, setSelectedMember] = useState("");
+    const [members, setMembers] = useState([]);
+    const [selectedPermissionKey, setSelectedPermissionKey] = useState("");
+    const [selectedMembers, setSelectedMembers] = useState([]);
 
-    const handleExitClick = () => {
-        const userConfirmed = window.confirm('탈퇴하시겠습니까?');
-        if (userConfirmed) {
-            alert('탈퇴가 완료되었습니다.');
-            navigate('/');
-        }
-    };
-
-    const handleAddPerson = (permissionKey) => {
-        if (!isEditingPermissions) {
-            alert("권한 수정 모드를 활성화한 후 추가할 수 있습니다.");
-            return;
-        }
+    const handleAddPerson = async (key: string) => {
         if (!selectedMember) {
-            alert("추가할 멤버를 선택하세요.");
+            alert("먼저 멤버를 선택해주세요.");
             return;
         }
-        const isAlreadyAdded = permissions[permissionKey].includes(selectedMember);
-        if (isAlreadyAdded) {
-            alert(`${selectedMember}님은 이미 권한을 가지고 있습니다.`);
-            return;
+
+        try {
+            // selectedMember가 멤버 객체라면 id와 해당 권한을 포함한 객체로 전달
+            const updatedPermissions = {
+                [selectedMember]: {  // memberId를 key로 사용
+                    [key]: true,  // 권한을 true로 설정
+                },
+            };
+            console.log("updatedPermissions", updatedPermissions);
+
+            // apiClient를 사용하여 PUT 요청 보내기
+            const response = await apiClient.put(`/api/v1/study/${studyId}/permissions`, updatedPermissions);
+
+            if (response.status !== 200) {
+                throw new Error("권한 추가 실패");
+            }
+
+            // 권한이 추가된 후 UI 업데이트
+            const updatedPermissionsUI = { ...permissions };
+            if (!updatedPermissionsUI[key]) {
+                updatedPermissionsUI[key] = [];
+            }
+            updatedPermissionsUI[key].push(selectedMember);
+            setPermissions(updatedPermissionsUI);
+
+            // 멤버 선택 초기화
+            setSelectedMember("");
+            setSelectedPermissionKey(""); // 권한 키 초기화
+            alert("권한이 성공적으로 추가되었습니다.");
+        } catch (error) {
+            console.error("권한 추가 실패:", error);
+            alert("권한 추가 실패");
         }
-        setPermissions((prevPermissions) => ({
-            ...prevPermissions,
-            [permissionKey]: [...prevPermissions[permissionKey], selectedMember],
-        }));
-        setSelectedMember(""); // 선택된 멤버 초기화
     };
 
-    const handleRemovePerson = (permissionKey, member) => {
-        setPermissions(prevPermissions => ({
-            ...prevPermissions,
-            [permissionKey]: prevPermissions[permissionKey].filter(person => person !== member),
-        }));
+    const handleSavePermissions = async () => {
+        try {
+            const response = await apiClient.get(`/api/v1/study/${studyId}/members`);
+
+            if (response.status === 200) {
+                const data = response.data;
+                setMembers(data);
+                setIsEditingPermissions(false);
+            } else {
+                throw new Error('저장 실패');
+            }
+        } catch (error) {
+            console.error("저장 실패:", error);
+        }
     };
 
-    const handleStudyNameChange = (e) => {
-        setStudyName(e.target.value);
+    const handleRemovePerson = async (key: string, memberId: number) => {
+        try {
+            const response = await apiClient.delete(`/api/v1/study/${studyId}/permissions`, {
+                data: {
+                    [key]: [memberId],  // 삭제할 멤버를 배열로 보내기
+                },
+            });
+
+            if (response.status !== 200) {
+                throw new Error("권한 삭제 실패");
+            }
+
+            // 권한 삭제 후 UI에서 해당 멤버 제거
+            const updatedPermissions = { ...permissions };
+
+            // key가 permissions에 없으면 빈 배열로 처리
+            if (updatedPermissions[key]) {
+                updatedPermissions[key] = updatedPermissions[key].filter(id => id !== memberId);
+            } else {
+                updatedPermissions[key] = [];  // 해당 권한이 없으면 빈 배열로 초기화
+            }
+
+            setPermissions(updatedPermissions);
+
+            // 선택된 멤버 목록에서 해당 멤버 제거
+            setSelectedMembers(selectedMembers.filter(item => item.memberId !== memberId));
+
+            alert("권한이 성공적으로 삭제되었습니다.");
+        } catch (error) {
+            console.error("권한 삭제 실패:", error);
+            alert("권한 삭제 실패");
+        }
     };
 
-    const handleStudyDescriptionChange = (e) => {
-        setStudyDescription(e.target.value);
+    const updateStudyInfo = async () => {
+        const studyDto = {
+            title: studyName,
+            introduction: studyDescription,
+            hashtags: studyHashtags,
+        };
+
+        try {
+            const response = await apiClient.put(`/api/v1/study/${studyId}/introduction`, studyDto);
+
+            if (response.status === 200) {
+                const updatedStudyDto = response.data;  // apiClient는 자동으로 응답 데이터 처리
+                alert("스터디 정보가 수정되었습니다.");
+                setIsEditingProfile(false); // 수정 모드 종료
+
+                // 수정된 정보로 UI 업데이트
+                setStudyName(updatedStudyDto.title);
+                setStudyDescription(updatedStudyDto.introduction);
+                setStudyHashtags(updatedStudyDto.hashtags);
+            } else {
+                throw new Error("스터디 정보 수정 실패");
+            }
+        } catch (error) {
+            console.error("스터디 정보 수정 실패:", error);
+            alert("스터디 정보 수정에 실패했습니다.");
+        }
     };
 
-    const handleStudyHashtagsChange = (e) => {
-        setStudyHashtags(e.target.value);
+    // 수정 버튼 클릭
+    const handleSaveProfile = () => {
+        updateStudyInfo();
     };
 
-    const handleSaveChanges = () => {
-        console.log("저장된 정보:", studyName, studyDescription, studyHashtags);
-        setIsEditingProfile(false);
-    };
-
-    const handleSavePermissions = () => {
-        console.log("저장된 권한:", permissions);
+    // 권한 수정 모드를 종료하는 함수
+    const exitEditingPermissionsMode = () => {
         setIsEditingPermissions(false);
     };
 
-    const getAvailableMembers = () => {
-        const allAssignedMembers = Object.values(permissions).flat();
-        return allMembers.filter(member => !allAssignedMembers.includes(member));
+    // 수정 버튼 클릭
+    const handlePermissionsEditToggle = () => {
+        if (isEditingPermissions) {
+            handleSavePermissions(); // 저장 시 처리
+        } else {
+            setIsEditingPermissions(true); // 수정 모드 시작
+        }
     };
 
-    const handleStudySelect = (study) => {
-        setSelectedStudy(study);
-      };
+    // 토큰으로 스터디 목록 가져오기
+    const fetchStudies = async () => {
+        try {
+            const response = await apiClient.get("/api/v1/user/studies");
 
-      return (
-        <div className="flex flex-col w-full h-screen bg-[#FAFBFF]">
-            <div className="flex flex-1">           
-                {/* 메인 콘텐츠 */}
-                <div className="flex-1 pt-0 p-6 bg-[#FAFBFF]">               
+            if (response.status !== 200) {
+                throw new Error(`Error: ${response.status}`);
+            }
+
+            const data = response.data;  // apiClient는 자동으로 응답 데이터를 처리
+            setStudies(data);
+        } catch (error) {
+            console.error("스터디 목록 가져오기 실패:", error);
+        }
+    };
+
+    // 스터디 권한 조회
+    const fetchPermissions = async (studyId: string) => {
+        try {
+            const response = await apiClient.get(`/api/v1/study/${studyId}/checkPermission`);
+
+            if (response.status === 200) {
+                const data = response.data;
+                setPermissions(data);
+            } else {
+                throw new Error('권한을 조회할 수 없습니다.');
+            }
+        } catch (error) {
+            console.error("권한 조회 실패:", error);
+        }
+    };
+
+    // 현재 유저 정보 가져오기
+    const fetchCurrentUser = async () => {
+        try {
+            const response = await apiClient.get('/api/v1/current-user');
+
+            if (response.status === 200) {
+                return response.data;  // 응답 데이터 반환
+            } else {
+                throw new Error('사용자 정보를 가져올 수 없습니다.');
+            }
+        } catch (error) {
+            console.error('사용자 정보 로딩 실패:', error);
+            throw error;
+        }
+    };
+
+    const fetchMembers = async () => {
+        try {
+            const response = await apiClient.get(`/api/v1/study/${studyId}/members`);
+
+            if (response.status === 200) {
+                setMembers(response.data);  // 멤버 목록 업데이트
+            } else {
+                throw new Error('멤버 목록을 조회할 수 없습니다.');
+            }
+        } catch (error) {
+            console.error("멤버 목록 조회 실패:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchStudies();
+        fetchMembers();
+        fetchPermissions(studyId);
+    }, [studyId]);
+
+    return (
+        <div className="flex flex-col w-full h-screen">
+            <div className="flex flex-1 py-10">
+            
+
+                <div className="flex-1 pt-0 p-6">
+
+                    {/* 스터디 프로필 */}
                     <div className="mb-4 flex justify-center space-x-10 items-center">
                         <div className="flex items-center space-x-4 justify-center">
-                            <div className="w-30 h-30 bg-dark-purple rounded-full"></div>
+                            <div className="w-50 h-50 bg-gray-300 rounded-full flex justify-center items-center"><BookOpen color={"white"} size={130} /></div>
                             <div className="pl-10">
                                 {/* 스터디명 */}
                                 {isEditingProfile ? (
                                     <>
-                                        <div className="text-gray-500 text-sm mt-3">스터디명</div>
+                                        <div className="text-gray-500 text-sm">스터디명</div>
                                         <input
                                             type="text"
                                             value={studyName}
-                                            onChange={handleStudyNameChange}
+                                            onChange={(e) => setStudyName(e.target.value)}
                                             className="text-sm border-2 border-gray-400 rounded-md p-2 w-full"
                                         />
                                     </>
                                 ) : (
-                                    <div className="text-xl font-medium pb-2 mt-4">{studyName}</div>
+                                    <div className="text-xl font-bold pb-5">{studyName}</div>
                                 )}
 
                                 {/* 스터디 소개 */}
@@ -126,13 +260,13 @@ const StudySettingBoard: React.FC = () => {
                                         <div className="text-gray-500 text-sm">스터디 소개(과목, 운영 시간)</div>
                                         <textarea
                                             value={studyDescription}
-                                            onChange={handleStudyDescriptionChange}
+                                            onChange={(e) => setStudyDescription(e.target.value)}
                                             className="text-sm border-2 border-gray-400 rounded-md p-2 w-full"
                                             rows={4}
                                         />
                                     </>
                                 ) : (
-                                    <div className="text-sm text-gray-700 pb-2">{studyDescription}</div>
+                                    <div className="text-sm text-gray-700 pb-5">{studyDescription}</div>
                                 )}
 
                                 {/* 해시태그 */}
@@ -142,7 +276,7 @@ const StudySettingBoard: React.FC = () => {
                                         <input
                                             type="text"
                                             value={studyHashtags}
-                                            onChange={handleStudyHashtagsChange}
+                                            onChange={(e) => setStudyHashtags(e.target.value)}
                                             className="text-sm border-2 border-gray-400 rounded-md p-2 w-full"
                                         />
                                     </>
@@ -150,101 +284,133 @@ const StudySettingBoard: React.FC = () => {
                                     <div className="text-sm text-gray-700">{studyHashtags}</div>
                                 )}
                                 {/* 프로필 수정 버튼 */}
+
                                 <div className="flex justify-end mt-3">
-                                    <button
-                                        onClick={() => {
-                                            if (isEditingProfile) {
-                                                handleSaveChanges();
-                                            } else {
-                                                setIsEditingProfile(true);
-                                            }
-                                        }}
-                                        className="px-3 py-1 bg-dark-purple text-white rounded"
-                                    >
-                                        {isEditingProfile ? "저장" : "수정"}
-                                    </button>
+                                    {permissions.settingManage && (
+                                        <button
+                                            onClick={() => {
+                                                if (isEditingProfile) {
+                                                    handleSaveProfile(); // 저장 시 처리
+                                                } else {
+                                                    setIsEditingProfile(true);
+                                                }
+                                            }}
+                                            className={`px-3 py-1 bg-[#7743DB] text-white rounded`}
+                                        >
+                                            {isEditingProfile ? "저장" : "수정"}
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     {/* 권한 설정 */}
-                    <div className="p-6 bg-[#FAFBFF] rounded mt-6">
-                        <h2 className="text-xl font-medium mb-4">권한 설정</h2>
+                    <div className="p-6 bg-white shadow rounded mt-6">
+                        <h2 className="text-2xl font-bold mb-4">권한 설정</h2>
                         <div className="space-y-4">
                             {[
-                                { label: "모든 권한 (멤버 관리 제외)", key: "allPermissions" },
-                                { label: "스터디 모집글 관리 권한(작성, 수정, 삭제)", key: "manageStudyPosts" },
-                                { label: "스터디 내 게시글 관리 권한(수정, 삭제)", key: "manageStudyArticles" },
-                                { label: "스터디 내 캘린더 관리 권한(작성, 수정, 삭제)", key: "manageStudyCalendar" },
-                                { label: "스터디 내 설정 수정 권한", key: "manageStudySettings" },
-                                { label: "멤버 관리 (관리자)", key: "manageMembers" },
+                                { label: "스터디 모집글 관리 권한", key: "permissionRecruitManage" },
+                                { label: "스터디 내 게시글 관리 권한", key: "permissionArticleManage" },
+                                { label: "스터디 내 캘린더 관리 권한", key: "permissionCalendarManage" },
+                                { label: "스터디 내 설정 수정 권한", key: "permissionSettingManage" },
                             ].map(({ label, key }) => (
                                 <div key={key} className="space-y-2">
                                     <div className="flex justify-between items-center">
                                         <div>{label}</div>
-                                        <button
-                                            onClick={() => handleAddPerson(key)}
-                                            className={`px-2 py-1 bg-dark-purple text-white rounded ${!isEditingPermissions && "cursor-not-allowed opacity-50"}`}
-                                            disabled={!isEditingPermissions} // 수정 모드가 아닐 때는 버튼 비활성화
-                                        >
-                                            +
-                                        </button>
+                                        <div className="flex space-x-2">
+                                            {isEditingPermissions && (
+                                                <button
+                                                    onClick={() => { setSelectedPermissionKey(key); }}
+                                                    className="px-2 py-1 bg-[#7743DB] text-white rounded"
+                                                >
+                                                    +
+                                                </button>
+                                            )}
+                                        </div>
                                     </div>
-
-                                    {/* 권한별 멤버 프로필 박스 */}
-                                    <div className="p-1 border-2 border-gray-300 rounded-md mt-2 h-13">
-                                        <div className="flex space-x-4">
-                                            {permissions[key].map((person, index) => (
-                                                <div key={index} className="relative w-10 h-10 bg-gray-500 rounded-full flex items-center justify-center text-white">
-                                                    {person[0]} {/* 이름의 첫 글자를 프로필에 표시 */}
+                                    <div className="h-16 flex items-center space-x-2 border-2 border-gray-400">
+                                        {members
+                                            .filter((member) => member[key] === true)
+                                            .map((member) => (
+                                                <div key={member.memberId} className="relative w-12 h-12 bg-gray-500 rounded-full flex items-center justify-center text-white">
+                                                    {member.memberName.charAt(0).toUpperCase()}
                                                     {isEditingPermissions && (
                                                     <button
-                                                        onClick={() => handleRemovePerson(key, person)}
-                                                        className="absolute top-0 right-0 text-xs text-white bg-black rounded-full w-5 h-5 flex justify-center items-center"
+                                                        onClick={() => handleRemovePerson(key, member.memberId)}
+                                                        className="absolute top-0 right-0 bg-red-500 text-white rounded-full text-xs w-6 h-6 flex items-center justify-center"
                                                     >
                                                         -
                                                     </button>
                                                     )}
                                                 </div>
                                             ))}
-                                        </div>
                                     </div>
-                                    {/* 드롭다운 멤버 선택 */}
-                                    {isEditingPermissions && (
+                                    {/* 새로 추가된 멤버들 */}
+                                    {selectedMembers
+                                        .filter((item) => item.permissionKey === key)
+                                        .map((item) => {
+                                            const member = members.find((m) => m.memberId === item.memberId);
+                                            return (
+                                                <div key={item.memberId} className="relative w-12 h-12 bg-gray-500 rounded-full flex items-center justify-center text-white">
+                                                    {member?.memberName.charAt(0).toUpperCase()}
+                                                    <button
+                                                        onClick={() => handleRemovePerson(key, item.memberId)}
+                                                        className="absolute top-0 right-0 bg-red-500 text-white rounded-full text-xs w-6 h-6 flex items-center justify-center"
+                                                    >
+                                                        -
+                                                    </button>
+                                                </div>
+                                            );
+                                        })}
+                                    {/* 수정 모드일 때만 드롭다운 표시 */}
+                                    {isEditingPermissions && selectedPermissionKey === key && (
                                         <div className="mt-2">
+                                            <label className="block text-sm text-gray-600">멤버 선택</label>
                                             <select
+                                                className="w-full mt-1 p-2 border-2 border-gray-400 rounded"
+                                                onChange={(e) => setSelectedMember(e.target.value)} // 선택된 멤버 처리
                                                 value={selectedMember}
-                                                onChange={(e) => setSelectedMember(e.target.value)}
-                                                className="p-2 border-2 border-gray-300 rounded-md"
                                             >
                                                 <option value="">멤버 선택</option>
-                                                {getAvailableMembers().map((member, index) => (
-                                                    <option key={index} value={member}>
-                                                        {member}
-                                                    </option>
-                                                ))}
+                                                {members
+                                                    .filter(
+                                                        (member) =>
+                                                            !member[key] === true // 이미 권한이 부여된 멤버는 제외
+                                                    )
+                                                    .map((member) => (
+                                                        <option key={member.memberId} value={member.memberId}>
+                                                            {member.memberName}
+                                                        </option>
+                                                    ))}
                                             </select>
+                                            <button
+                                                onClick={() => handleAddPerson(key)}
+                                                className="mt-2 px-4 py-1 bg-[#7743DB] text-white rounded"
+                                            >
+                                                추가
+                                            </button>
                                         </div>
                                     )}
                                 </div>
                             ))}
-                        </div>
-
-                        {/* 저장 버튼 */}
-                        <div className="flex justify-center">
-                            <button
-                                onClick={() => {
-                                    if (isEditingPermissions) {
-                                        handleSavePermissions();
-                                    } else {
-                                        setIsEditingPermissions(true);
-                                    }
-                                }}
-                                className="p-1 bg-dark-purple text-white rounded cursor-pointer mt-2"
-                            >
-                                {isEditingPermissions ? "저장" : "수정"}
-                            </button>
+                            {/* 권한 저장 버튼 */}
+                            <div className="flex justify-center">
+    {permissions.settingManage && (
+        <button
+            onClick={() => {
+                if (isEditingPermissions) {
+                    handleSavePermissions(); // 저장 시 권한을 서버에 반영
+                } else {
+                    setIsEditingPermissions(true); // 수정 모드 시작
+                }
+            }}
+            className={`p-1 bg-[#7743DB] text-white rounded mt-2`}
+        >
+            {isEditingPermissions ? "저장" : "수정"}
+        </button>
+    )}
+</div>
                         </div>
                     </div>
                 </div>

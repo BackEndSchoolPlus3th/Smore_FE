@@ -45,11 +45,11 @@ const StudyArticleListBoard: React.FC = () => {
     };
 
     const goToStudyEditPage = () => {
-        navigate(`/study/${studyId}/edit`);
+        navigate(`/study/${studyId}/article/edit`);
     };
 
     const handleArticleClick = (articleId) => {
-        navigate(`/study/${studyId}/articles/${articleId}`);
+        navigate(`/study/${studyId}/article/${articleId}`);
     };
 
     const handlePageClick = (page) => {
@@ -74,6 +74,7 @@ const StudyArticleListBoard: React.FC = () => {
 
     return (
         <>
+        <div className="p-4 w-full">
             <div className="mb-4 flex justify-end space-x-2 items-center p-10">
                 {/* 검색창 */}
                 <div className="flex items-center space-x-2 w-full max-w-xs">
@@ -123,7 +124,7 @@ const StudyArticleListBoard: React.FC = () => {
                     <button
                         key={page}
                         onClick={() => handlePageClick(page)}
-                        className={`px-4 py-2 text-sm bg-whit hover:bg-gray-200 transition-colors border-gray-300 cursor-pointer text-black font-bold border rounded-lg ${currentPage === page ? 'bg-gray-600 text-white' : 'bg-white text-black cursor-pointer'}`}
+                        className={`px-4 py-2 text-sm bg-whit hover:bg-gray-200 transition-colors border-gray-300 cursor-pointer text-black font-bold border rounded-lg ${currentPage === page ? 'bg-[#7743DB] text-white' : 'bg-white text-black cursor-pointer'}`}
                     >
                         {page}
                     </button>
@@ -136,6 +137,7 @@ const StudyArticleListBoard: React.FC = () => {
                 >
                     다음
                 </button>
+            </div>
             </div>
         </>
     );

@@ -241,6 +241,7 @@ const RecuitmentContentPage: React.FC = () => {
                                         />
                                     </div>
                                 )}
+
                             </div>
                         </div>
                     </div>

@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { apiClient } from "../../shared";
+import { SquareArrowRight, SquareArrowDown } from "lucide-react";
 
 type ChatRoom = {
   roomId: string;      // 백엔드에서 roomId(Long)을 받아오면 문자열로 변환
@@ -7,13 +9,14 @@ type ChatRoom = {
   studyId?: number;    // 그룹 채팅방이라면 studyId를 담아둠 (DM에는 필요없을 수도 있음)
 };
 
-const Sidebar: React.FC = () => {
-  // 비디오 채팅 활성화 여부
-  const [isVideoChatActive, setIsVideoChatActive] = useState(false);
+const Sidebar: React.FC<{
+  selectedRoom: ChatRoom | null;
+  selectedChatType: "dm" | "group" | null;
+  onRoomSelect: (room: ChatRoom) => void;
+  onChatTypeSelect: (type: "dm" | "group") => void;
+  }> = ({ selectedRoom, selectedChatType, onRoomSelect, onChatTypeSelect }) => {
+  const navigate = useNavigate(); 
 
-  // 현재 선택된 채팅방 정보(전체 객체)와 채팅 타입
-  const [selectedRoom, setSelectedRoom] = useState<ChatRoom | null>(null);
-  const [selectedChatType, setSelectedChatType] = useState<"dm" | "group" | null>(null);
 
   // 사이드바에서 펼쳐진 카테고리 (기본 "dm")
   const [expandedCategory, setExpandedCategory] = useState<"dm" | "group">("dm");
@@ -51,16 +54,18 @@ const Sidebar: React.FC = () => {
           console.error("그룹 채팅방 목록 가져오기 실패:", error);
         });
     }
-  }, [expandedCategory]);
+  }, [expandedCategory,selectedRoom, selectedChatType]);
 
   /**
    * 채팅방 선택 시: 
    * - 선택된 방 정보(객체)를 state에 저장
    * - DM인지 group인지 타입도 별도로 저장
+   * - 채팅방 엔드포인트로 이동
    */
   const handleChatRoomSelect = (room: ChatRoom, chatType: "dm" | "group") => {
-    setSelectedRoom(room);
-    setSelectedChatType(chatType);
+    onRoomSelect(room);
+    onChatTypeSelect(chatType);
+    console.log("채팅방 선택:", selectedRoom, chatType);
   };
 
   /**
@@ -70,15 +75,28 @@ const Sidebar: React.FC = () => {
    */
   const toggleCategory = (category: "dm" | "group") => {
     setExpandedCategory(category);
-    setSelectedRoom(null);
-    setSelectedChatType(null);
+    onRoomSelect(null);
+    onChatTypeSelect(null);
   };
 
-  // 비디오 채팅 버튼 클릭 시
-  const handleVideoChat = () => {
-    setIsVideoChatActive(true);
+
+  // 스터디 채팅방으로 이동
+  const handleChatRoomClick = async (room) => {
+    try {
+      const response = await apiClient.post(`/api/v1/chatrooms/group/${room.studyId}`, {
+        roomId: room.roomId, // 필요에 따라 추가 데이터 포함
+      });
+  
+      if (response.status === 200) {
+        handleChatRoomSelect(room, "group"); // 채팅방 선택 로직 실행
+        navigate(`/chat/${room.studyId}`);    // 채팅방 페이지로 이동
+      } else {
+        console.error("채팅방 입장 실패:", response);
+      }
+    } catch (error) {
+      console.error("채팅방 입장 중 오류 발생:", error);
+    }
   };
-    
 
     return (
       <div className="flex h-screen">
@@ -89,10 +107,15 @@ const Sidebar: React.FC = () => {
         {/* DM 카테고리 */}
         <div>
           <div
-            className="cursor-pointer font-bold flex items-center"
+            className="cursor-pointer font-bold flex items-center gap-2"
             onClick={() => toggleCategory("dm")}
           >
-            DM {expandedCategory === "dm" ? "🔽" : "▶️"}
+            <span>DM</span> 
+            {expandedCategory === "dm" ? (
+              <SquareArrowDown size={20} />
+          ) : (
+            <SquareArrowRight size={20} />
+          )}
           </div>
           {expandedCategory === "dm" && (
             <ul className="mt-2 ml-4">
@@ -116,10 +139,16 @@ const Sidebar: React.FC = () => {
         {/* 그룹 카테고리 */}
         <div className="mt-4">
           <div
-            className="cursor-pointer font-bold flex items-center"
+            className="cursor-pointer font-bold flex items-center gap-2"
             onClick={() => toggleCategory("group")}
           >
-            그룹 {expandedCategory === "group" ? "🔽" : "▶️"}
+            <span>그룹</span> 
+            {expandedCategory === "group" ? 
+            (
+              <SquareArrowDown size={20} />
+          ) : (
+            <SquareArrowRight size={20} />
+          )}
           </div>
           {expandedCategory === "group" && (
             <ul className="mt-2 ml-4">
@@ -131,7 +160,7 @@ const Sidebar: React.FC = () => {
                       ? "bg-yellow-300"
                       : ""
                   }`}
-                  onClick={() => handleChatRoomSelect(room, "group")}
+                  onClick={() => handleChatRoomClick(room)}
                 >
                   {room.roomName}
                 </li>

@@ -18,7 +18,7 @@ export const EventProvider = ({ children }: EventProviderProps) => {
   const [accessToken, setAccessToken] = useState(
     localStorage.getItem("accessToken") == null 
     ? "" 
-    : localStorage.getItem("accessToken")?.substring(7) || ""
+    : localStorage.getItem("accessToken") || ""
   );
 
   useEffect(() => {
