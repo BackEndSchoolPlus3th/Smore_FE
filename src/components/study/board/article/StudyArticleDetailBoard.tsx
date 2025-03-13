@@ -283,10 +283,6 @@ const StudyArticleDetailBoard: React.FC = () => {
                                 <div className="mb-6">
                                     <label className="block text-sm font-semibold mb-2">첨부파일</label>
                                     <div>
-                                        {/* 단일 이미지 URL인 경우 */}
-                                        <button onClick={() => handleDownload(articleData.imageUrls)} className="text-blue-500 cursor-pointer">
-                                            다운로드
-                                        </button>
                                         {/* 이미지라면 미리보기 */}
                                         {articleData.imageUrls.match(/\.(jpeg|jpg|gif|png)$/) && (
                                             <img
