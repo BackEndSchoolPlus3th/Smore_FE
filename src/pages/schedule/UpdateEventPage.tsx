@@ -40,7 +40,7 @@ const UpdateEventPage: React.FC<UpdateEventPageProps> = ({ event, onClose, onUpd
 
   return (
     <div style={formStyle}>
-      <h2>일정 수정</h2>
+      <h2 style={{  textAlign: 'center', fontSize: '20px' }}>일정 수정</h2>
       <label>제목</label>
       <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
       <label>내용</label>

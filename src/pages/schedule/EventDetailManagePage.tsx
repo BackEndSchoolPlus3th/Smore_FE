@@ -17,7 +17,7 @@ const EventDetailManagePage: React.FC<EventDetailManagePageProps> = ({ event, on
   
   return (
     <div style={formStyle}>
-      <h2>일정 상세보기</h2>
+      <h2 style={{  textAlign: 'center', fontSize: '20px' }}>일정 상세보기</h2>
       <div>
         <strong>제목:</strong> {event.title}
       </div>

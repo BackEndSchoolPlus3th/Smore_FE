@@ -26,11 +26,12 @@ const AddEventPage: React.FC<AddEventPageProps> = ({ onSubmit, onCancel }) => {
 
   return (
     <div style={formStyle}>
-      <h2>일정 추가하기</h2>
-      <label>제목:</label>
+      <h2 style={{  textAlign: 'center', fontSize: '20px' }}>일정 추가</h2>
+      <br />
+      <label>제목</label>
       <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
       
-      <label>내용:</label>
+      <label>내용</label>
       <input type="text" value={content} onChange={(e) => setContent(e.target.value)} />
 
       <label>
@@ -38,22 +39,22 @@ const AddEventPage: React.FC<AddEventPageProps> = ({ onSubmit, onCancel }) => {
         종일(All Day)
       </label>
 
-      <label>시작 날짜:</label>
+      <label>시작 날짜</label>
       <input 
         type={allDay ? "date" : "datetime-local"} // All Day일 때는 "date", 아니면 "datetime-local"
         value={startdate} 
         onChange={(e) => setStartDate(e.target.value)} 
       />
 
-      <label>종료 날짜:</label>
+      <label>종료 날짜</label>
       <input 
         type={allDay ? "date" : "datetime-local"} // All Day일 때는 "date", 아니면 "datetime-local"
         value={endDate} 
         onChange={(e) => setEndDate(e.target.value)} 
       />
 
-      <button onClick={handleSubmit}>일정 추가</button>
-      <button onClick={onCancel} style={{ marginLeft: "10px" }}>닫기</button>
+      <button onClick={handleSubmit}>완료</button>
+      {/* <button onClick={onCancel} style={{ marginLeft: "10px" }}>닫기</button> */}
     </div>
   );
 };
