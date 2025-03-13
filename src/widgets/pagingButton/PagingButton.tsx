@@ -93,8 +93,8 @@ const PagingButton: React.FC<PagingButtonProps> = ({
                     onClick={() => handleSwitchPage(pageButton)}
                     className={`w-8 p-1 rounded justify-center text-align-center aspect-square ${
                         page === pageButton
-                            ? 'font-bold bg-bright-purple text-white'
-                            : 'bg-muted-purple cursor-pointer'
+                            ? 'font-bold bg-[#7743DB] text-white'
+                            : 'cursor-pointer'
                     }`}
                     style={{ aspectRatio: '1 / 1' }}
                 >

@@ -144,7 +144,7 @@ export const RecruitmentArticleSearch: React.FC<
                 <div className="">
                     <button
                         onClick={handleSearchClick}
-                        className="w-full py-2 px-4 bg-purple-600 text-white rounded-md hover:bg-purple-700 cursor-pointer"
+                        className="w-full py-2 px-4 bg-[#7743DB] text-white rounded-md hover:bg-purple-700 cursor-pointer"
                     >
                         검색
                     </button>

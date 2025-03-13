@@ -25,7 +25,7 @@ const Navbar = () => {
           <button
             key={path}
             className={`px-4 py-2 text-sm font-medium ${
-              isActive ? "border-b-2 border-purple-500 text-black font-medium" : "text-gray-500"
+              isActive ? "border-b-2 border-[#7743DB] text-black font-medium" : "text-gray-500"
             }`}
             onClick={() => navigate(path)}
           >

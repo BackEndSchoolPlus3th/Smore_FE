@@ -313,7 +313,7 @@ const StudySettingBoard: React.FC = () => {
                                                     setIsEditingProfile(true);
                                                 }
                                             }}
-                                            className={`px-3 py-1 bg-dark-purple text-white rounded`}
+                                            className={`px-3 py-1 bg-[#7743DB] text-white rounded`}
                                         >
                                             {isEditingProfile ? "저장" : "수정"}
                                         </button>
@@ -340,7 +340,7 @@ const StudySettingBoard: React.FC = () => {
                                             {isEditingPermissions && (
                                                 <button
                                                     onClick={() => { setSelectedPermissionKey(key); }}
-                                                    className="px-2 py-1 bg-dark-purple text-white rounded"
+                                                    className="px-2 py-1 bg-[#7743DB] text-white rounded"
                                                 >
                                                     +
                                                 </button>
@@ -404,7 +404,7 @@ const StudySettingBoard: React.FC = () => {
                                             </select>
                                             <button
                                                 onClick={() => handleAddPerson(key)}
-                                                className="mt-2 px-4 py-1 bg-dark-purple text-white rounded"
+                                                className="mt-2 px-4 py-1 bg-[#7743DB] text-white rounded"
                                             >
                                                 추가
                                             </button>
@@ -423,7 +423,7 @@ const StudySettingBoard: React.FC = () => {
                     setIsEditingPermissions(true); // 수정 모드 시작
                 }
             }}
-            className={`p-1 bg-dark-purple text-white rounded mt-2`}
+            className={`p-1 bg-[#7743DB] text-white rounded mt-2`}
         >
             {isEditingPermissions ? "저장" : "수정"}
         </button>

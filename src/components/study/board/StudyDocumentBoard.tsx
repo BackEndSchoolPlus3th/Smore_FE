@@ -63,7 +63,7 @@ const StudyDocumentBoard: React.FC = () => {
                                             onClick={() =>
                                                 handleDownload(file.name)
                                             }
-                                            className="px-4 py-2 bg-gray-600 text-white rounded cursor-pointer"
+                                            className="px-4 py-2 bg-[#7743DB] text-white rounded cursor-pointer"
                                         >
                                             다운로드
                                         </button>
