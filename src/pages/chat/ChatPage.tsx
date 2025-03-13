@@ -31,14 +31,14 @@ const ChatPage: React.FC = () => {
       </div>
 
       {/* 채팅 화면 */}
-      <div className="flex-1 min-w-0 h-full border-r border-gray-200 overflow-y-auto">
-        <ChatBoard selectedRoom={selectedRoom} selectedChatType={selectedChatType}>
+      <div className="flex-1 h-full">
+        <div className="w-full h-full border-r border-gray-200 overflow-y-auto">        
           <Routes>
             <Route path="/" element={<InitialChatBoard />} />
             <Route path="/:study_id" element={<ChatBoard selectedRoom={selectedRoom} selectedChatType={selectedChatType} />} />
             <Route path="/:study_id/video" element={<VideoChatBoard />} />
           </Routes>
-        </ChatBoard>
+        </div>
       </div>
     </div>
   );
