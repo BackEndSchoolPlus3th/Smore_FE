@@ -9,7 +9,7 @@ const MyPageForm: React.FC = () => {
                 <MyPageSideBar />
             </div>
             {/* 보드 영역*/}
-            <div className="h-full col-span-9 mt-6">
+            <div className="h-full col-span-9 pt-6 pb-6">
                 <Outlet />
             </div>
         </>

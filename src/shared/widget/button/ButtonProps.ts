@@ -4,4 +4,7 @@ export interface ButtonProps {
     disabled?: boolean;
     isFit?: boolean;
     className?: string;
+    color?: string;
+    clickColor?: string;
+    isSubmit?: boolean;
 }

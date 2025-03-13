@@ -61,7 +61,7 @@ const RecruitmentDetailBoard = () => {
                     params: { recruitmentArticleId: recruitmentId },
                 }
             );
-            setRecruitmentContent(response.data);
+            await setRecruitmentContent(response.data);
         } catch (error) {
             console.error('모집글 조회 에러:', error);
         }
@@ -161,7 +161,7 @@ const RecruitmentDetailBoard = () => {
                                 .map((hashtag, index) => (
                                     <span
                                         key={index}
-                                        className="bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold"
+                                        className="bg-white text-black border border-purple-500 px-2 py-1 rounded-full"
                                     >
                                         #{hashtag}
                                     </span>

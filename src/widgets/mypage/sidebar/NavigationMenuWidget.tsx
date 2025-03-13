@@ -25,7 +25,7 @@ const NavigationMenuWidget: React.FC = () => {
     ];
 
     return (
-        <nav className="flex flex-col w-full">
+        <nav className="flex flex-col w-full mt-6">
             <ul className="space-y-6 text-base font-medium text-gray-700">
                 {navItems.map(({ path, label, icon }) => {
                     const isActive =
