@@ -1,11 +1,1 @@
-/* 기본 설정: 데스크톱 및 큰 화면 */
-html {
-    font-size: clamp(12px, 1.5vw, 16px);
-}
 
-/* 모바일 (최대 너비 480px)에서는 더 민감하게 반응하도록 설정 */
-@media (max-width: 480px) {
-    html {
-        font-size: clamp(10px, 2.5vw, 14px);
-    }
-}

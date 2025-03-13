@@ -104,150 +104,134 @@ const RecuitmentContentPage: React.FC = () => {
     }, [recruitmentId]);
 
     return (
-        <div className="flex flex-col lg:flex-row gap-8 p-4 min-h-223">
-            {isLoading ? (
-                <div className="flex justify-center items-center w-full h-full">
-                    <FaSpinner className="text-blue-500 text-5xl animate-spin" />
-                </div>
-            ) : (
-                <>
-                    {/* 중앙 모집글 상세 페이지 */}
-                    <div className="lg:w-3/4 flex flex-col items-center gap-8 min-h-full">
-                        <div className="w-full flex flex-col gap-4 items-center border-2 border-gray-300 rounded-lg p-6 shadow-lg bg-white min-h-screen">
-                            <div className="text-center mb-8 w-full border-b border-gray-200 pb-4">
-                                <h1 className="text-4xl font-extrabold text-gray-900 mb-4">
-                                    {recruitmentContent.title}
-                                </h1>
-                                <p className="text-lg text-gray-700 mb-2">
-                                    {recruitmentContent.introduction}
-                                </p>
-                                <p className="text-sm text-gray-500">
-                                    {recruitmentContent.createdDate &&
-                                        new Date(
-                                            recruitmentContent.createdDate
-                                        ).toLocaleDateString()}
-                                </p>
-                            </div>
-                            <div className="flex flex-wrap justify-center w-full border-b border-gray-200 pb-4">
-                                {recruitmentContent.imageUrls
-                                    ?.split(',')
-                                    .map((url, index) => (
-                                        <img
-                                            key={index}
-                                            src={url}
-                                            alt="recruitment"
-                                            className="w-full h-auto"
-                                        />
-                                    ))}
-                            </div>
-                            <div className="prose max-w-none w-full pb-4">
-                                {recruitmentContent?.content && (
-                                    <MarkdownRenderer
-                                        content={recruitmentContent.content}
-                                    />
-                                )}
-                            </div>
-                        </div>
-                        {/* 댓글 섹션 */}
-                        <div className="flex flex-col w-full">
-                            {recruitmentId && (
-                                <CommentForm recruitmentId={recruitmentId} />
-                            )}
-                        </div>
+        <>
+            {/* 중앙 모집글 상세 페이지 */}
+            <div className="col-span-9 flex flex-col gap-6 mt-6">
+                <div className="w-full flex flex-col gap-4 items-center border-2 border-gray-300 rounded-lg p-6 shadow-lg bg-white min-h-screen">
+                    <div className="text-center mb-8 w-full border-b border-gray-200 pb-4">
+                        <h1 className="text-4xl font-extrabold text-gray-900 mb-4">
+                            {recruitmentContent.title}
+                        </h1>
+                        <p className="text-lg text-gray-700 mb-2">
+                            {recruitmentContent.introduction}
+                        </p>
+                        <p className="text-sm text-gray-500">
+                            {recruitmentContent.createdDate &&
+                                new Date(
+                                    recruitmentContent.createdDate
+                                ).toLocaleDateString()}
+                        </p>
                     </div>
-                    {/* 우측 해시태그, 모집 정보, 지원 버튼 */}
-                    <div className="lg:w-1/4 flex flex-col items-center gap-4">
-                        <div className="sticky top-10 flex flex-col gap-4 border-2 border-gray-300 rounded-lg p-6 w-full shadow-lg bg-white mt-50">
-                            <div className="flex flex-row w-full justify-center">
-                                <RecruitmentArticleClip
-                                    articleId={recruitmentContent.id}
-                                    initialClipCount={
-                                        recruitmentContent.clipCount
-                                    }
-                                    initialIsClipped={
-                                        recruitmentContent.clipped
-                                    }
+                    <div className="flex flex-wrap justify-center w-full border-b border-gray-200 pb-4">
+                        {recruitmentContent.imageUrls
+                            ?.split(',')
+                            .map((url, index) => (
+                                <img
+                                    key={index}
+                                    src={url}
+                                    alt="recruitment"
+                                    className="w-full h-auto"
+                                />
+                            ))}
+                    </div>
+                    <div className="prose max-w-none w-full pb-4">
+                        {recruitmentContent?.content && (
+                            <MarkdownRenderer
+                                content={recruitmentContent.content}
+                            />
+                        )}
+                    </div>
+                </div>
+                {/* 댓글 섹션 */}
+                <div className="flex flex-col w-full">
+                    {recruitmentId && (
+                        <CommentForm recruitmentId={recruitmentId} />
+                    )}
+                </div>
+            </div>
+            {/* 우측 해시태그, 모집 정보, 지원 버튼 */}
+            <div className="col-span-3 gap-4">
+                <div className="sticky top-10 flex flex-col gap-4 border-2 border-gray-300 rounded-lg p-6 w-full shadow-lg bg-white mt-50">
+                    <div className="flex flex-row w-full justify-center">
+                        <RecruitmentArticleClip
+                            articleId={recruitmentContent.id}
+                            initialClipCount={recruitmentContent.clipCount}
+                            initialIsClipped={recruitmentContent.clipped}
+                        />
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                        {recruitmentContent?.hashTags &&
+                            recruitmentContent.hashTags
+                                .split(',')
+                                .map((hashtag, index) => (
+                                    <span
+                                        key={index}
+                                        className="bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold"
+                                    >
+                                        #{hashtag}
+                                    </span>
+                                ))}
+                    </div>
+                    <div className="flex flex-col text-gray-600 gap-2">
+                        <span className="font-bold">
+                            시작:{' '}
+                            {recruitmentContent?.startDate &&
+                                new Date(
+                                    recruitmentContent.startDate
+                                ).toLocaleDateString()}
+                        </span>
+                        <span className="font-bold">
+                            마감:{' '}
+                            {recruitmentContent?.endDate &&
+                                new Date(
+                                    recruitmentContent.endDate
+                                ).toLocaleDateString()}
+                        </span>
+                    </div>
+                    <div className="text-gray-600 font-bold">
+                        <span>지역: {recruitmentContent.region}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-gray-600">
+                        {recruitmentContent.writerProfileImageUrl === null ? (
+                            <div className="w-10 h-10 rounded-full border-2 border-gray-300"></div>
+                        ) : (
+                            <img
+                                src={recruitmentContent?.writerProfileImageUrl}
+                                alt="writer"
+                                className="w-10 h-10 rounded-full border-2 border-gray-300"
+                            />
+                        )}
+                        <span className="font-bold">
+                            {recruitmentContent?.writerName}
+                        </span>
+                    </div>
+                    <div className="w-full">
+                        {recruitmentContent.permission ? (
+                            <div className="flex flex-row gap-4 w-full justify-center">
+                                <CancleButton
+                                    label="삭제하기"
+                                    onClick={handleDeleteRecruitment}
+                                    isFit={false}
+                                />
+                                <SubmitButton
+                                    label="수정하기"
+                                    onClick={handleEditRecruitment}
+                                    isFit={false}
                                 />
                             </div>
-                            <div className="flex flex-wrap gap-2">
-                                {recruitmentContent?.hashTags &&
-                                    recruitmentContent.hashTags
-                                        .split(',')
-                                        .map((hashtag, index) => (
-                                            <span
-                                                key={index}
-                                                className="bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold"
-                                            >
-                                                #{hashtag}
-                                            </span>
-                                        ))}
-                            </div>
-                            <div className="flex flex-col text-gray-600 gap-2">
-                                <span className="font-bold">
-                                    시작:{' '}
-                                    {recruitmentContent?.startDate &&
-                                        new Date(
-                                            recruitmentContent.startDate
-                                        ).toLocaleDateString()}
-                                </span>
-                                <span className="font-bold">
-                                    마감:{' '}
-                                    {recruitmentContent?.endDate &&
-                                        new Date(
-                                            recruitmentContent.endDate
-                                        ).toLocaleDateString()}
-                                </span>
-                            </div>
-                            <div className="text-gray-600 font-bold">
-                                <span>지역: {recruitmentContent.region}</span>
-                            </div>
-                            <div className="flex items-center gap-2 text-gray-600">
-                                {recruitmentContent.writerProfileImageUrl ===
-                                null ? (
-                                    <div className="w-10 h-10 rounded-full border-2 border-gray-300"></div>
-                                ) : (
-                                    <img
-                                        src={
-                                            recruitmentContent?.writerProfileImageUrl
-                                        }
-                                        alt="writer"
-                                        className="w-10 h-10 rounded-full border-2 border-gray-300"
-                                    />
-                                )}
-                                <span className="font-bold">
-                                    {recruitmentContent?.writerName}
-                                </span>
-                            </div>
+                        ) : (
                             <div className="w-full">
-                                {recruitmentContent.permission ? (
-                                    <div className="flex flex-row gap-4 w-full justify-center">
-                                        <CancleButton
-                                            label="삭제하기"
-                                            onClick={handleDeleteRecruitment}
-                                            isFit={false}
-                                        />
-                                        <SubmitButton
-                                            label="수정하기"
-                                            onClick={handleEditRecruitment}
-                                            isFit={false}
-                                        />
-                                    </div>
-                                ) : (
-                                    <div className="w-full">
-                                        <SubmitButton
-                                            label="지원하기"
-                                            onClick={fetchApply}
-                                            isFit={false}
-                                        />
-                                    </div>
-                                )}
-
+                                <SubmitButton
+                                    label="지원하기"
+                                    onClick={fetchApply}
+                                    isFit={false}
+                                />
                             </div>
-                        </div>
+                        )}
                     </div>
-                </>
-            )}
-        </div>
+                </div>
+            </div>
+        </>
     );
 };
 
