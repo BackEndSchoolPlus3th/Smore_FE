@@ -21,7 +21,7 @@ const ChatBoard: React.FC<ChatBoardProps> = ({ selectedRoom, selectedChatType })
 
   // 비디오 채팅 버튼 클릭 시
   const handleVideoChat = () => {  
-    console.log(selectedRoom?.studyId);
+    console.log("현재 선택된 채팅방:", selectedRoom);
     navigate(`/chat/${selectedRoom?.studyId}/video`);    
   };
   useEffect(() => {
@@ -32,7 +32,7 @@ const ChatBoard: React.FC<ChatBoardProps> = ({ selectedRoom, selectedChatType })
     <div className="flex h-screen">      
       {/* 중앙 영역: 채팅창 및 비디오 채팅 */}
       <div className="flex-1 flex flex-col bg-muted-purple">
-        <div className="flex items-center justify-between p-4">
+        <div className="flex items-center justify-between">
           <h1 className="text-lg font-bold">채팅방</h1>
           <button
             className="p-2 rounded-full hover:bg-gray-200 transition"
