@@ -1,7 +1,7 @@
 export { default as Header } from './header/Header';
 export { default as PagingButton } from './pagingButton/PagingButton';
 
-export { default as CommentItem } from './comment/CommentItem';
+export { default as CommentList } from './comment/CommentList';
 
 // myPage
 export { default as ProfileWidget } from './mypage/sidebar/ProfileWidget';

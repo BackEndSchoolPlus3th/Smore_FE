@@ -1,6 +1,6 @@
 import React from 'react';
-import { CommentItem } from '../../../widgets';
-import { CommentProps } from '../../../entities';
+import { CommentProps } from '../../entities';
+import CommentItem from './CommentItem';
 
 interface CommentListProps {
     comments: CommentProps[];

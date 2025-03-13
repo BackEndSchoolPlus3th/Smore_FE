@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { CommentProps } from '../../entities';
+import { SubmitButton, CancleButton } from '../../shared';
 
 interface CommentItemProps {
     comment: CommentProps;
@@ -49,20 +50,13 @@ const CommentItem: React.FC<CommentItemProps> = ({
             {isEditing ? (
                 isConfirming ? (
                     <div className="mt-2">
-                        <p className="text-gray-700">{inputValue}</p>
+                        <p className="text-gray-700 text-sm">{inputValue}</p>
                         <div className="flex gap-2 mt-2">
-                            <button
-                                className="text-sm text-blue-500 hover:text-blue-700 transition-colors duration-200 cursor-pointer"
+                            <CancleButton label="취소" onClick={handleCancel} />
+                            <SubmitButton
+                                label="확인"
                                 onClick={handleConfirm}
-                            >
-                                확인
-                            </button>
-                            <button
-                                className="text-sm text-red-500 hover:text-red-700 transition-colors duration-200 cursor-pointer"
-                                onClick={handleCancel}
-                            >
-                                취소
-                            </button>
+                            />
                         </div>
                     </div>
                 ) : (
@@ -79,18 +73,14 @@ const CommentItem: React.FC<CommentItemProps> = ({
                         <p className="text-gray-700">{comment.comment}</p>
                         {comment.editable && (
                             <div className="flex gap-2">
-                                <button
-                                    className="text-sm text-blue-500 hover:text-blue-700 transition-colors duration-200 cursor-pointer"
-                                    onClick={handleEditClick}
-                                >
-                                    수정
-                                </button>
-                                <button
-                                    className="text-sm text-red-500 hover:text-red-700 transition-colors duration-200 cursor-pointer"
+                                <CancleButton
+                                    label="삭제"
                                     onClick={() => onDelete(comment.id)}
-                                >
-                                    삭제
-                                </button>
+                                />
+                                <SubmitButton
+                                    label="수정"
+                                    onClick={handleEditClick}
+                                />
                             </div>
                         )}
                     </div>
