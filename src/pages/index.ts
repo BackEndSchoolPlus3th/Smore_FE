@@ -1,4 +1,3 @@
-export { default as RecruitmentArticlesPage } from './main/recruitment/articles/RecruitmentArticlesPage';
 export { default as StudyArticlePage } from './study/article/StudyArticlePage';
 export { default as ChatPage } from './chat/ChatPage';
 export { default as LoginPage } from './member/auth/login/LoginPage';
@@ -17,7 +16,7 @@ export { default as VideoChatPage } from './videoChat/VideoChatPage';
 export { default as SignupPage } from './member/auth/signup/SignupPage';
 
 // 내 스터디 목록 페이지
-export { default as MyStudyListPage } from './main/myStudy/MyStudyListPage';
+export { default as MyStudyListPage } from './myStudy/MyStudyListPage';
 
 // 스터디 페이지
 export { default as StudyPage } from './study/StudyPage';

@@ -44,10 +44,6 @@ const Header = () => {
         setHasNewAlarm(false); // 알림 확인 시 빨간 점 제거
     };
 
-    const handleShowMyPagePopup = () => {
-        setShowMyPagePopup((prev) => !prev);
-    };
-
     const handleMyPage = () => {
         navigate('/mypage');
         setShowMyPagePopup(false);
@@ -88,7 +84,7 @@ const Header = () => {
     }, [events]);
 
     return (
-        <div className="flex flex-col w-screen bg-white shadow-md items-center z-49">
+        <div className="flex flex-col w-full bg-white shadow-md items-center z-49">
             <div className="w-[75rem] mx-10 grid grid-cols-12 gap-6">
                 {/* 로고: 왼쪽 2컬럼 사용 */}
                 <div className="col-span-2 flex items-center">
@@ -140,21 +136,39 @@ const Header = () => {
                                         className="rounded-full w-7 h-7 cursor-pointer"
                                         src={user.profileImageUrl}
                                         alt={user.nickname}
-                                        onClick={handleShowMyPagePopup}
+                                        onMouseEnter={() =>
+                                            setShowMyPagePopup(true)
+                                        }
+                                        onMouseLeave={() =>
+                                            setShowMyPagePopup(false)
+                                        }
                                     />
                                 ) : (
                                     <button
                                         className="p-2 rounded hover:bg-gray-100 cursor-pointer"
-                                        onClick={handleShowMyPagePopup}
+                                        onMouseEnter={() =>
+                                            setShowMyPagePopup(true)
+                                        }
+                                        onMouseLeave={() =>
+                                            setShowMyPagePopup(false)
+                                        }
                                     >
                                         <User size={20} />
                                     </button>
                                 )}
                                 {showMyPagePopup && user && (
-                                    <div className="absolute top-full right-0 bg-white border border-gray-200 shadow-md rounded-md z-50 min-w-[160px]">
+                                    <div
+                                        className="absolute top-full right-0 bg-white border border-gray-200 shadow-md rounded-md z-50 min-w-[160px]"
+                                        onMouseEnter={() =>
+                                            setShowMyPagePopup(true)
+                                        }
+                                        onMouseLeave={() =>
+                                            setShowMyPagePopup(false)
+                                        }
+                                    >
                                         <div className="flex flex-col">
                                             <button
-                                                className="flex items-center gap-2 p-2 hover:bg-gray-100"
+                                                className="flex items-center gap-2 p-2 hover:bg-gray-100 cursor-pointer"
                                                 onClick={handleMyPage}
                                             >
                                                 {user.profileImageUrl ? (
@@ -172,21 +186,21 @@ const Header = () => {
                                                 <ChevronRight size={20} />
                                             </button>
                                             <button
-                                                className="flex items-center gap-2 p-2 hover:bg-gray-100"
+                                                className="flex items-center gap-2 p-2 hover:bg-gray-100 cursor-pointer"
                                                 onClick={handleSetting}
                                             >
                                                 <Settings size={20} />
                                                 <span>설정</span>
                                             </button>
                                             <button
-                                                className="flex items-center gap-2 p-2 hover:bg-gray-100"
+                                                className="flex items-center gap-2 p-2 hover:bg-gray-100 cursor-pointer"
                                                 onClick={handleHeart}
                                             >
                                                 <Heart size={20} />
                                                 <span>좋아요</span>
                                             </button>
                                             <button
-                                                className="flex items-center gap-2 p-2 hover:bg-gray-100"
+                                                className="flex items-center gap-2 p-2 hover:bg-gray-100 cursor-pointer"
                                                 onClick={handleLogout}
                                             >
                                                 <LogOut size={20} />

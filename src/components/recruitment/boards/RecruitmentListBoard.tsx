@@ -6,7 +6,6 @@ import {
     PagedArticleResponse,
     SimpleRecruitmentResponse,
 } from '../../../entities';
-import '../../../shared/style/ArticleListPageStyle.css';
 import { PagingButton, RecruitmentCard } from '../../../widgets';
 import {
     RecruitmentArticleSearch,
@@ -168,177 +167,52 @@ const RecruitmentListBoard = () => {
     // 페이지, 검색 필터 또는 추천 상태가 변경될 때 데이터 로드
     useEffect(() => {
         handlePageChange(page);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [page, searchFilters, isCustomRecommended]);
-
-    const sampleArticles: SimpleRecruitmentResponse[] = [
-        {
-            id: 1,
-            title: '제목1',
-            introduction: '소개1',
-            thumbnailUrl: 'https://picsum.photos/200/300?random=1',
-            writerName: '작성자1',
-            writerProfile: 'https://picsum.photos/200/300?random=2',
-            clipCount: 1,
-            hashTags: '태그1,태그2',
-            isRecruiting: true,
-        },
-        {
-            id: 2,
-            title: '제목2',
-            introduction: '소개2',
-            thumbnailUrl: 'https://picsum.photos/200/300?random=3',
-            writerName: '작성자2',
-            writerProfile: 'https://picsum.photos/200/300?random=4',
-            clipCount: 2,
-            hashTags: '태그3,태그4',
-            isRecruiting: true,
-        },
-        {
-            id: 3,
-            title: '제목3',
-            introduction: '소개3',
-            thumbnailUrl: 'https://picsum.photos/200/300?random=5',
-            writerName: '작성자3',
-            writerProfile: 'https://picsum.photos/200/300?random=6',
-            clipCount: 3,
-            hashTags: '태그5,태그6',
-            isRecruiting: false,
-        },
-        {
-            id: 4,
-            title: '제목4',
-            introduction: '소개4',
-            thumbnailUrl: 'https://picsum.photos/200/300?random=7',
-            writerName: '작성자4',
-            writerProfile: 'https://picsum.photos/200/300?random=8',
-            clipCount: 4,
-            hashTags: '태그7,태그8',
-            isRecruiting: true,
-        },
-        {
-            id: 5,
-            title: '제목5',
-            introduction: '소개5',
-            thumbnailUrl: 'https://picsum.photos/200/300?random=9',
-            writerName: '작성자5',
-            writerProfile: 'https://picsum.photos/200/300?random=10',
-            clipCount: 5,
-            hashTags: '태그9,태그10',
-            isRecruiting: true,
-        },
-        {
-            id: 6,
-            title: '제목6',
-            introduction: '소개6',
-            thumbnailUrl: 'https://picsum.photos/200/300?random=11',
-            writerName: '작성자6',
-            writerProfile: 'https://picsum.photos/200/300?random=12',
-            clipCount: 6,
-            hashTags: '태그11,태그12',
-            isRecruiting: false,
-        },
-        {
-            id: 7,
-            title: '제목7',
-            introduction: '소개7',
-            thumbnailUrl: null,
-            writerName: '작성자7',
-            writerProfile: 'https://picsum.photos/200/300?random=14',
-            clipCount: 7,
-            hashTags: '태그13,태그14',
-            isRecruiting: true,
-        },
-        {
-            id: 8,
-            title: '제목8',
-            introduction: '소개8',
-            thumbnailUrl: 'https://picsum.photos/200/300?random=15',
-            writerName: '작성자8',
-            writerProfile: 'https://picsum.photos/200/300?random=16',
-            clipCount: 8,
-            hashTags: '태그15,태그16',
-            isRecruiting: true,
-        },
-        {
-            id: 9,
-            title: '제목9',
-            introduction: '소개9',
-            thumbnailUrl: 'https://picsum.photos/200/300?random=17',
-            writerName: '작성자9',
-            writerProfile: 'https://picsum.photos/200/300?random=18',
-            clipCount: 9,
-            hashTags: '태그17,태그18',
-            isRecruiting: false,
-        },
-        {
-            id: 10,
-            title: '제목10',
-            introduction: '소개10',
-            thumbnailUrl: 'https://picsum.photos/200/300?random=19',
-            writerName: '작성자10',
-            writerProfile: 'https://picsum.photos/200/300?random=20',
-            clipCount: 10,
-            hashTags: '태그19,태그20',
-            isRecruiting: true,
-        },
-        {
-            id: 11,
-            title: '제목11',
-            introduction: '소개11',
-            thumbnailUrl: 'https://picsum.photos/200/300?random=21',
-            writerName: '작성자11',
-            writerProfile: 'https://picsum.photos/200/300?random=22',
-            clipCount: 11,
-            hashTags: '태그21,태그22',
-            isRecruiting: true,
-        },
-    ];
-
-    useEffect(() => {
-        setTotalCount(sampleArticles.length);
-        setDisplayedArticles(sampleArticles.slice(0, pageSize));
-    }, [pageSize]);
 
     return (
         <>
             {/* 상단 고정 헤더 */}
-            <div className="sticky top-0 flex justify-between items-center w-full bg-[#FAFBFF] shadow p-2 col-span-12 rounded-b-md z-30">
-                <p className="font-bold text-dark-purple">모집글 목록</p>
+            <div
+                className="sticky top-0 w-full bg-[#FAFBFF] shadow p-2 col-span-12 rounded-b-md z-30
+                            grid grid-cols-12 gap-6
+            "
+            >
+                <p className="font-bold text-dark-purple col-span-5 flex items-center">
+                    모집글 목록
+                </p>
 
-                <div className="flex gap-4 items-center">
+                <div className="col-span-3 flex justify-end items-center gap-4">
                     {/* 로그인 된 경우에만 맞춤 추천 체크박스 표시 */}
                     {isLoggedIn && (
-                        <div>
-                            <label className="flex items-center gap-2 cursor-pointer">
-                                <input
-                                    type="checkbox"
-                                    checked={isCustomRecommended}
-                                    onChange={handleCustomRecommendationToggle}
-                                    className="form-checkbox h-5 w-5 text-indigo-600 transition duration-150 ease-in-out"
-                                />
-                                <span className="text-sm font-medium text-gray-700">
-                                    맞춤 추천
-                                </span>
-                            </label>
-                        </div>
+                        <label className="flex items-center gap-1 cursor-pointer">
+                            <input
+                                type="checkbox"
+                                checked={isCustomRecommended}
+                                onChange={handleCustomRecommendationToggle}
+                                className="form-checkbox h-3 w-3 text-indigo-600 
+                                transition duration-150 ease-in-out
+                                text-indigo-400 focus:ring-indigo-500
+                                "
+                            />
+                            <span className="text-sm font-medium text-gray-700">
+                                맞춤 추천
+                            </span>
+                        </label>
                     )}
-                    <div>
-                        <PageSizeSelect
-                            value={pageSize}
-                            onChange={handlePageSizeChange}
-                        />
-                    </div>
-                    <div>
-                        <RecruitmentArticleSearch onSearch={onSearch} />
-                    </div>
+                    <PageSizeSelect
+                        value={pageSize}
+                        onChange={handlePageSizeChange}
+                    />
+                </div>
+                <div className="col-span-4">
+                    <RecruitmentArticleSearch onSearch={onSearch} />
                 </div>
             </div>
 
             {/* 게시글 목록 */}
             <div className="col-span-12 gap-4">
                 <div className="w-[75rem] grid grid-cols-12 gap-6">
-                    {sampleArticles.map((article) => (
+                    {displayedArticles.map((article) => (
                         <RecruitmentCard
                             key={article.id}
                             title={article.title}

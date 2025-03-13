@@ -4,8 +4,6 @@ import { PagingButton } from '../../widgets';
 import { fetchMyStudyList, MyStudyArticle } from '../../features';
 import { MyStudyListArticleProps } from '../../entities';
 import { PageSizeSelect } from '../../shared';
-import '../../../shared/style/ArticleListPageStyle.css';
-import './MyStudyListPageStyle.css';
 
 const MyStudyListPage: React.FC = () => {
     const [articles, setArticles] = useState<MyStudyListArticleProps[]>([]);
