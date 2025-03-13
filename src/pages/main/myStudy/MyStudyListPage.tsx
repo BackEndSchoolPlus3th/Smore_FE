@@ -60,8 +60,8 @@ const MyStudyListPage: React.FC = () => {
 
     return (
         <div className="flex flex-col gap-4 w-full pb-4">
-            <div className="sticky top-0 flex justify-between items-center w-full bg-white shadow p-4">
-                <p className="text-2xl font-bold text-dark-purple">
+            <div className="sticky top-0 flex justify-between items-center w-full bg-[#FAFBFF] shadow p-2">
+                <p className="font-bold text-dark-purple">
                     내 스터디 목록
                 </p>
                 {/* 페이지 사이즈 설정 드롭다운 */}
