@@ -16,7 +16,7 @@ const SubmitButton: React.FC<ButtonProps> = ({
             className={`px-4 py-2 text-sm active:scale-95 transition-transform transform
                 border-gray-300 cursor-pointer text-black font-bold border rounded-lg
                 ${isFit ? '' : 'w-full'} 
-                ${color} ${clickColor}
+                ${color} ${clickColor} ${props.className}
                 `}
             disabled={props.disabled}
         >

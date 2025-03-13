@@ -24,7 +24,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
     isViewImageUpload = true,
 }) => {
     return (
-        <div className="flex space-x-2 mb-2 items-center">
+        <div className="flex space-x-2 items-center">
             <button
                 className="p-2 rounded focus:outline-none cursor-pointer hover:text-purple-700"
                 title="Bold"

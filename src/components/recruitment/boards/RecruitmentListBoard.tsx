@@ -174,7 +174,7 @@ const RecruitmentListBoard = () => {
             {/* 상단 고정 헤더 */}
             <div
                 className="sticky top-0 w-full bg-[#FAFBFF] shadow p-2 col-span-12 rounded-b-md z-30
-                            grid grid-cols-12 gap-6
+                            grid grid-cols-12 gap-6 h-fit
             "
             >
                 <p className="font-bold text-dark-purple col-span-5 flex items-center">
@@ -204,7 +204,7 @@ const RecruitmentListBoard = () => {
                         onChange={handlePageSizeChange}
                     />
                 </div>
-                <div className="col-span-4">
+                <div className="col-span-4 flex justify-end items-center gap-4">
                     <RecruitmentArticleSearch onSearch={onSearch} />
                 </div>
             </div>

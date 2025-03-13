@@ -136,8 +136,8 @@ const StudyRecruitmentRegisterBoard: React.FC = () => {
                 region,
                 recruitmentPeriod,
                 maxMember,
-                thumbnail, // 업로드된 썸네일의 S3 URL
-                imageUrls: finalImageUrlsList, // List<string> 형태로 전송
+                thumbnail,
+                imageUrls: finalImageUrlsList,
             });
             closeModal();
             alert('모집글이 성공적으로 게시되었습니다.');
@@ -157,30 +157,32 @@ const StudyRecruitmentRegisterBoard: React.FC = () => {
     };
 
     return (
-        <div className="flex flex-col h-full w-full">
+        <>
             {/* 상단 헤더 */}
-            <div className="p-4 flex justify-between items-center">
-                <h1 className="text-xl font-bold">모집글 작성</h1>
-                <div className="flex space-x-4">
-                    <CancleButton onClick={handleCancelClick} />
-                    <SubmitButton onClick={handlePublishClick} label="게시" />
-                </div>
-            </div>
+            <h1 className="text-xl font-bold col-span-10 border-b-2">
+                모집글 작성
+            </h1>
+            <CancleButton onClick={handleCancelClick} className="col-span-1" />
+            <SubmitButton
+                onClick={handlePublishClick}
+                label="게시"
+                className="col-span-1"
+            />
 
             {/* 본문 영역: 에디터 및 미리보기 */}
-            <div className="p-4 h-full">
-                <div className="flex flex-row space-x-4 h-full">
-                    <Editor
-                        title={title}
-                        content={content}
-                        setTitle={setTitle}
-                        setContent={setContent}
-                        textAreaRef={textAreaRef}
-                        uploadPath={uploadPath}
-                        multiImageUploadRef={multiImageUploadRef}
-                    />
-                    <MarkdownPreview content={content} />
-                </div>
+            <div className="col-span-6 min-h-[49rem]">
+                <Editor
+                    title={title}
+                    content={content}
+                    setTitle={setTitle}
+                    setContent={setContent}
+                    textAreaRef={textAreaRef}
+                    uploadPath={uploadPath}
+                    multiImageUploadRef={multiImageUploadRef}
+                />
+            </div>
+            <div className="col-span-6">
+                <MarkdownPreview content={content} />
             </div>
 
             {/* 모달 팝업 */}
@@ -208,7 +210,7 @@ const StudyRecruitmentRegisterBoard: React.FC = () => {
                     isEndDateValid={isEndDateValid}
                 />
             )}
-        </div>
+        </>
     );
 };
 

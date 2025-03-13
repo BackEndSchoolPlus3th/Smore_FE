@@ -31,16 +31,22 @@ const StudyArticleRegisterBoard: React.FC = () => {
 
         let finalImageUrl: string | null = null;
 
-        if (multiImageUploadRef.current && multiImageUploadRef.current.getSelectedCount() > 0) {
+        if (
+            multiImageUploadRef.current &&
+            multiImageUploadRef.current.getSelectedCount() > 0
+        ) {
             // 업로드된 이미지 URL 목록을 가져옵니다
-            const uploadedUrls = await multiImageUploadRef.current.uploadFiles();
+            const uploadedUrls =
+                await multiImageUploadRef.current.uploadFiles();
             if (uploadedUrls && uploadedUrls.length > 0) {
                 finalImageUrl = uploadedUrls[0]; // 첫 번째 이미지 URL을 사용
                 if (!thumbnail) {
                     setThumbnail(uploadedUrls[0]); // 첫 번째 이미지 URL을 썸네일로 설정
                 }
             } else {
-                alert('이미지 업로드가 완료되지 않았습니다. 다시 시도해주세요.');
+                alert(
+                    '이미지 업로드가 완료되지 않았습니다. 다시 시도해주세요.'
+                );
                 return;
             }
         }
@@ -56,11 +62,15 @@ const StudyArticleRegisterBoard: React.FC = () => {
         }
 
         try {
-            const response = await apiClient.post(`/api/v1/study/${studyId}/articles`, formDataToSend, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
+            const response = await apiClient.post(
+                `/api/v1/study/${studyId}/articles`,
+                formDataToSend,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                }
+            );
 
             if (response.status === 201) {
                 alert('글 작성이 완료되었습니다.');
@@ -68,7 +78,10 @@ const StudyArticleRegisterBoard: React.FC = () => {
             } else {
                 const errorData = response.data;
                 console.error('서버 응답 오류:', errorData);
-                alert('글 작성에 실패했습니다: ' + (errorData.message || '알 수 없는 오류'));
+                alert(
+                    '글 작성에 실패했습니다: ' +
+                        (errorData.message || '알 수 없는 오류')
+                );
             }
         } catch (error) {
             console.error('글 작성 실패:', error);
@@ -80,9 +93,9 @@ const StudyArticleRegisterBoard: React.FC = () => {
     const uploadPath = `study/${studyId}/article/images`;
 
     return (
-        <div className="flex flex-col w-full min-h-full">
+        <>
             {/* 상단 헤더 */}
-            <div className="sticky top-0 p-4 flex justify-between items-center">
+            <div className="sticky top-0 p-4 flex justify-between items-center col-span-12 bg-[#FAFBFF] shadow z-10">
                 <h1 className="text-xl font-bold">새 글 작성</h1>
                 <div className="flex space-x-4">
                     <button className="bg-gray-300 hover:bg-gray-400 text-white px-4 py-2 rounded focus:outline-none cursor-pointer">
@@ -112,7 +125,7 @@ const StudyArticleRegisterBoard: React.FC = () => {
                     <MarkdownPreview content={content} />
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 

@@ -105,7 +105,7 @@ const Editor: React.FC<EditorProps> = ({
     };
 
     return (
-        <div className="flex flex-col h-full w-full">
+        <div className="flex flex-col h-full w-full gap-1">
             {isViewTitle && (
                 <input
                     type="text"
@@ -113,7 +113,7 @@ const Editor: React.FC<EditorProps> = ({
                     value={title}
                     onChange={handleTitleChange}
                     maxLength={50}
-                    className="w-full border border-gray-300 rounded px-3 py-2 mb-4 text-2xl focus:outline-none focus:border-purple-500 bg-white"
+                    className="w-full border border-gray-300 rounded px-3 py-2 text-2xl focus:outline-none focus:border-purple-500 bg-white"
                 />
             )}
             <Toolbar
