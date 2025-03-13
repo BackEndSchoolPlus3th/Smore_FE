@@ -36,7 +36,7 @@ const StudyNavBar: React.FC = () => {
     ];
 
     return (
-        <div className="flex border-b bg-[#FAFBFF] w-full">
+        <div className="border-b bg-[#FAFBFF] col-span-12 h-fit">
             {navItems.map(({ path, label, icon }) => {
                 const isActive =
                     path === `/study/${studyId}`

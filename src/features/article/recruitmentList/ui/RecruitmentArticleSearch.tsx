@@ -1,7 +1,7 @@
+// RecruitmentArticleSearch.tsx
 import React, { useState, KeyboardEvent } from 'react';
-import Select from 'react-select';
 import { MdOutlineCancel } from 'react-icons/md';
-import { regionOptions } from '../../../../shared';
+import { regionOptions, SubmitButton, CustomSelect } from '../../../../shared';
 
 interface RecruitmentArticleSearchProps {
     onSearch: (searchParams: { [key: string]: string }) => void;
@@ -88,72 +88,57 @@ export const RecruitmentArticleSearch: React.FC<
         <div className="w-full relative group items-center">
             {/* 검색 필드 */}
             <div className="flex flex-row gap-4 justify-end items-center">
-                <div className="">
-                    <Select
-                        value={selectedType}
+                <CustomSelect
+                    value={selectedType}
+                    onChange={(selectedOption) => {
+                        setSelectedType(selectedOption as SearchType);
+                        setInputValue('');
+                        setRegionValue(null);
+                    }}
+                    options={searchTypes}
+                />
+                {selectedType?.value === 'region' ? (
+                    <CustomSelect
+                        value={regionValue}
                         onChange={(selectedOption) => {
-                            setSelectedType(selectedOption as SearchType);
-                            // 타입 변경 시 기존 입력값 초기화
-                            setInputValue('');
-                            setRegionValue(null);
+                            const selectedRegion = selectedOption as {
+                                value: string;
+                                label: string;
+                            };
+                            setRegionValue(selectedRegion);
+                            // 지역 선택 시 기존 region 검색어는 대체
+                            setSavedSearches((prev) => {
+                                const filtered = prev.filter(
+                                    (search) => search.type !== 'region'
+                                );
+                                return [
+                                    ...filtered,
+                                    {
+                                        type: 'region',
+                                        keyword: selectedRegion.value,
+                                    },
+                                ];
+                            });
                         }}
-                        options={searchTypes}
-                        className="w-full cursor-pointer"
-                        classNamePrefix="react-select"
+                        options={regionOptions}
+                        className="flex-1"
                     />
-                </div>
-                <div className="">
-                    {selectedType?.value === 'region' ? (
-                        <Select
-                            value={regionValue}
-                            onChange={(selectedOption) => {
-                                const selectedRegion = selectedOption as {
-                                    value: string;
-                                    label: string;
-                                };
-                                setRegionValue(selectedRegion);
-                                // 지역 선택 시 즉시 savedSearches 업데이트 (기존의 region 검색어는 대체)
-                                setSavedSearches((prev) => {
-                                    const filtered = prev.filter(
-                                        (search) => search.type !== 'region'
-                                    );
-                                    return [
-                                        ...filtered,
-                                        {
-                                            type: 'region',
-                                            keyword: selectedRegion.value,
-                                        },
-                                    ];
-                                });
-                            }}
-                            options={regionOptions}
-                            className="w-full"
-                            classNamePrefix="react-select"
-                        />
-                    ) : (
-                        <input
-                            type="text"
-                            value={inputValue}
-                            onChange={(e) => setInputValue(e.target.value)}
-                            onKeyPress={handleKeyPress}
-                            placeholder="검색어를 입력하세요"
-                            className="w-full p-2 border border-gray-300 rounded-md"
-                        />
-                    )}
-                </div>
-                <div className="">
-                    <button
-                        onClick={handleSearchClick}
-                        className="w-full py-2 px-4 bg-[#7743DB] text-white rounded-md hover:bg-purple-700 cursor-pointer"
-                    >
-                        검색
-                    </button>
-                </div>
+                ) : (
+                    <input
+                        type="text"
+                        value={inputValue}
+                        onChange={(e) => setInputValue(e.target.value)}
+                        onKeyPress={handleKeyPress}
+                        placeholder="검색어 입력"
+                        className="flex-1 p-2 border border-gray-300 rounded-md text-sm bg-white"
+                    />
+                )}
+                <SubmitButton onClick={handleSearchClick} label="검색" />
             </div>
             {/* 저장된 검색어 */}
             {savedSearches.length > 0 && (
-                <div className="absolute top-full right-0 w-full z-10 bg-white border border-gray-300 p-2 rounded shadow opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none group-hover:pointer-events-auto overflow-x-auto">
-                    <div className="flex flex-row gap-4 flex flex-row gap-2 ">
+                <div className="absolute top-full right-0 w-full z-10 bg-white border border-gray-300 p-2 rounded shadow transition-opacity overflow-x-auto">
+                    <div className="flex flex-row gap-2">
                         {savedSearches.map((search, index) => (
                             <div
                                 key={index}

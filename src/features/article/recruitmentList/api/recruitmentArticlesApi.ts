@@ -1,20 +1,10 @@
 import { apiClient } from '../../../../shared';
-import { pagedResponse } from '../../../../entities';
-
-interface FetchRecruitmentArticlesParams {
-    title: string;
-    content: string;
-    introduction: string;
-    hashTags: string;
-    region: string;
-    page: number;
-    size: number;
-    customRecommended: boolean;
-}
+import { PagedArticleResponse } from '../../../../entities';
+import { FetchRecruitmentArticlesParams } from '../../../../entities';
 
 export const fetchRecruitmentArticles = async (
     params: FetchRecruitmentArticlesParams
-): Promise<pagedResponse> => {
+): Promise<PagedArticleResponse> => {
     const response = await apiClient.get('/api/v1/recruitmentArticles', {
         params,
     });

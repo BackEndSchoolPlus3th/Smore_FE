@@ -14,13 +14,13 @@ const StudySideBar: React.FC = () => {
     const navigate = useNavigate();
 
     const fetchStudies = async () => {
-            try {
-                const response = await apiClient.get(`/api/v1/user/studies`);
-                setStudies(response.data);
-            } catch (error) {
-                console.error("스터디 목록 가져오기 실패:", error);
-            }
-        };
+        try {
+            const response = await apiClient.get(`/api/v1/user/studies`);
+            setStudies(response.data);
+        } catch (error) {
+            console.error('스터디 목록 가져오기 실패:', error);
+        }
+    };
 
     const handleStudySelect = (id: number): void => {
         setSelectedStudyId(id);

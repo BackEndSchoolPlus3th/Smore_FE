@@ -26,7 +26,7 @@ const SettingBoard: React.FC = () => {
     }
 
     return (
-        <div className="">
+        <>
             {/* 내 프로필 */}
             <SettingProfileCard
                 profileImageUrl={userSetting.profileImageUrl}
@@ -44,7 +44,7 @@ const SettingBoard: React.FC = () => {
                 region={userSetting.region}
                 hashTags={userSetting.hashTags}
             />
-        </div>
+        </>
     );
 };
 

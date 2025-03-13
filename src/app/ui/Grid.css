@@ -1,0 +1,8 @@
+.Main-Grid {
+    max-width: 1200px;
+    margin: 0 40px;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 24px; /* 열과 행의 간격 모두 24px */
+}

@@ -68,16 +68,14 @@ const SignupPage: React.FC = () => {
     };
 
     return (
-        <div className="max-w-md mx-auto my-60">
-            <SignupForm
-                form={form}
-                error={error}
-                isSubmitting={isSubmitting}
-                isSuccess={isSuccess}
-                onChange={handleChange}
-                onSubmit={handleSubmit}
-            />
-        </div>
+        <SignupForm
+            form={form}
+            error={error}
+            isSubmitting={isSubmitting}
+            isSuccess={isSuccess}
+            onChange={handleChange}
+            onSubmit={handleSubmit}
+        />
     );
 };
 
