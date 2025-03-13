@@ -118,6 +118,7 @@ const Calender: React.FC = () => {
                   }
                 },
                 events: events,
+                eventColor: '#a294f9',
             });
 
             newCalendar.render();
