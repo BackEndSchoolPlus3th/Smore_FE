@@ -88,7 +88,7 @@ const Header = () => {
     }, [events]);
 
     return (
-        <div className="flex flex-col w-screen bg-white shadow-md items-center">
+        <div className="flex flex-col w-screen bg-white shadow-md items-center z-49">
             <div className="w-[75rem] mx-10 grid grid-cols-12 gap-6">
                 {/* 로고: 왼쪽 2컬럼 사용 */}
                 <div className="col-span-2 flex items-center">

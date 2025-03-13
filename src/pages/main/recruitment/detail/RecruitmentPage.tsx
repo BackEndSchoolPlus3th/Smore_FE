@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { MarkdownRenderer } from '../../../../shared';
-import { FaSpinner } from 'react-icons/fa';
 import { apiClient, SubmitButton, CancleButton } from '../../../../shared';
 import { RecruitmentArticleClip } from '../../../../features';
 import { CommentForm } from '../../../../components';
@@ -41,7 +40,6 @@ const RecuitmentContentPage: React.FC = () => {
     const { recruitmentId } = useParams<{ recruitmentId: string }>();
     const [recruitmentContent, setRecruitmentContent] =
         useState<RecruitmentContentsProps>({} as RecruitmentContentsProps);
-    const [isLoading, setIsLoading] = useState(true);
 
     const fetchApply = async () => {
         try {
@@ -57,7 +55,6 @@ const RecuitmentContentPage: React.FC = () => {
     // 모집글 상세조회
     const fetchRecruitmentContent = async () => {
         try {
-            setIsLoading(true);
             const response = await apiClient.get(
                 `/api/v1/recruitmentArticles/detail`,
                 {
@@ -67,8 +64,6 @@ const RecuitmentContentPage: React.FC = () => {
             setRecruitmentContent(response.data);
         } catch (error) {
             console.error('모집글 조회 에러:', error);
-        } finally {
-            setIsLoading(false);
         }
     };
 

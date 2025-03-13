@@ -1,7 +1,58 @@
 import React, { useState, KeyboardEvent } from 'react';
 import Select from 'react-select';
 import { MdOutlineCancel } from 'react-icons/md';
-import { regionOptions } from '../../../../shared';
+import { regionOptions, SubmitButton } from '../../../../shared';
+
+import {
+    StylesConfig,
+    ControlProps,
+    CSSObjectWithLabel,
+    GroupBase,
+    OptionProps,
+} from 'react-select';
+
+const customStyles: StylesConfig<
+    { value: string; label: string },
+    false,
+    GroupBase<{ value: string; label: string }>
+> = {
+    control: (
+        base: CSSObjectWithLabel,
+        props: ControlProps<
+            { value: string; label: string },
+            false,
+            GroupBase<{ value: string; label: string }>
+        >
+    ) => ({
+        ...base,
+        borderRadius: '0.375rem', // Tailwind rounded-md
+        padding: '0.5rem',
+        borderColor: props.isFocused ? 'rgb(59, 130, 246)' : base.borderColor,
+        boxShadow: props.isFocused
+            ? '0 0 0 2px rgba(59, 130, 246, 0.5)'
+            : base.boxShadow,
+        cursor: 'pointer', // 포인터 효과
+        transition: 'all 0.2s ease',
+    }),
+    option: (
+        base: CSSObjectWithLabel,
+        props: OptionProps<
+            { value: string; label: string },
+            false,
+            GroupBase<{ value: string; label: string }>
+        >
+    ) => ({
+        ...base,
+        cursor: 'pointer', // 옵션에도 포인터 효과 적용
+        backgroundColor: props.isFocused ? 'rgba(59, 130, 246, 0.1)' : 'white',
+        color: props.isFocused ? 'rgb(59, 130, 246)' : 'black',
+    }),
+    menu: (base: CSSObjectWithLabel) => ({
+        ...base,
+        borderRadius: '0.375rem',
+        overflow: 'hidden',
+    }),
+};
 
 interface RecruitmentArticleSearchProps {
     onSearch: (searchParams: { [key: string]: string }) => void;
@@ -127,8 +178,9 @@ export const RecruitmentArticleSearch: React.FC<
                                 });
                             }}
                             options={regionOptions}
-                            className="w-full"
+                            className="w-full cursor-pointer"
                             classNamePrefix="react-select"
+                            styles={customStyles}
                         />
                     ) : (
                         <input
@@ -142,12 +194,7 @@ export const RecruitmentArticleSearch: React.FC<
                     )}
                 </div>
                 <div className="">
-                    <button
-                        onClick={handleSearchClick}
-                        className="w-full py-2 px-4 bg-[#7743DB] text-white rounded-md hover:bg-purple-700 cursor-pointer"
-                    >
-                        검색
-                    </button>
+                    <SubmitButton onClick={handleSearchClick} label="검색" />
                 </div>
             </div>
             {/* 저장된 검색어 */}

@@ -1,12 +1,3 @@
-import type { RecruitmentCardProps } from '../card/RecruitmentCardProps';
-
-export interface pagedResponse {
-    currentPage: number;
-    pageSize: number;
-    totalCount: number;
-    data: RecruitmentCardProps[];
-}
-
 export interface RecruitmentArticleProps {
     id: number;
     title: string;

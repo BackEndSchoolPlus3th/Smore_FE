@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useSearchParams, Link } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import type { RootState } from '../../../../shared';
 import {
-    RecruitmentArticle,
-    RecruitmentArticleProps,
-    pagedResponse,
-    RecruitmentCardProps,
+    PagedArticleResponse,
+    SimpleRecruitmentResponse,
 } from '../../../../entities';
 import '../../../../shared/style/ArticleListPageStyle.css';
 import { PagingButton, RecruitmentCard } from '../../../../widgets';
@@ -38,16 +36,15 @@ const RecruitmentArticlesPage: React.FC = () => {
 
     // 기존 상태들
     const [articlesCache, setArticlesCache] = useState<{
-        [key: number]: RecruitmentCardProps[];
+        [key: number]: SimpleRecruitmentResponse[];
     }>({});
     const [displayedArticles, setDisplayedArticles] = useState<
-        RecruitmentCardProps[]
+        SimpleRecruitmentResponse[]
     >([]);
     const [page, setPage] = useState(initialPage);
     const [pageSize, setPageSize] = useState(initialPageSize);
     const [totalCount, setTotalCount] = useState<number>(0);
     const [searchFilters, setSearchFilters] = useState(initialFilters);
-    const [isLoading, setIsLoading] = useState(true);
 
     // 맞춤 추천 체크박스 상태 (로그인 상태가 아닐 경우 false로 유지)
     const [isCustomRecommended, setIsCustomRecommended] = useState(false);
@@ -84,14 +81,15 @@ const RecruitmentArticlesPage: React.FC = () => {
     ) => {
         const block = Math.floor((currentPage - 1) / pagesPerBlock);
         try {
-            const response: pagedResponse = await fetchRecruitmentArticles({
-                ...searchFilters,
-                page: currentPage,
-                size: effectivePageSize,
-                // 로그인되지 않은 경우 무조건 false 전달
-                customRecommended: isLoggedIn ? isCustomRecommended : false,
-            });
-            const blockData: RecruitmentCardProps[] = response.data;
+            const response: PagedArticleResponse =
+                await fetchRecruitmentArticles({
+                    ...searchFilters,
+                    page: currentPage,
+                    size: effectivePageSize,
+                    // 로그인되지 않은 경우 무조건 false 전달
+                    customRecommended: isLoggedIn ? isCustomRecommended : false,
+                });
+            const blockData: SimpleRecruitmentResponse[] = response.data;
             setArticlesCache((prevCache) => ({
                 ...prevCache,
                 [block]: blockData,
@@ -104,10 +102,8 @@ const RecruitmentArticlesPage: React.FC = () => {
                 startIndex + effectivePageSize
             );
             setDisplayedArticles(slicedData);
-            setIsLoading(false);
         } catch (error) {
             console.error('모집글 조회 에러:', error);
-            setIsLoading(false);
         }
     };
 
@@ -124,9 +120,7 @@ const RecruitmentArticlesPage: React.FC = () => {
                 startIndex + usedPageSize
             );
             setDisplayedArticles(slicedData);
-            setIsLoading(false);
         } else {
-            setIsLoading(true);
             fetchBlockArticles(newPage, usedPageSize);
         }
         updateUrlParams(newPage, usedPageSize, searchFilters);
@@ -177,10 +171,139 @@ const RecruitmentArticlesPage: React.FC = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [page, searchFilters, isCustomRecommended]);
 
+    const sampleArticles: SimpleRecruitmentResponse[] = [
+        {
+            id: 1,
+            title: '제목1',
+            introduction: '소개1',
+            thumbnailUrl: 'https://picsum.photos/200/300?random=1',
+            writerName: '작성자1',
+            writerProfile: 'https://picsum.photos/200/300?random=2',
+            clipCount: 1,
+            hashTags: '태그1,태그2',
+            isRecruiting: true,
+        },
+        {
+            id: 2,
+            title: '제목2',
+            introduction: '소개2',
+            thumbnailUrl: 'https://picsum.photos/200/300?random=3',
+            writerName: '작성자2',
+            writerProfile: 'https://picsum.photos/200/300?random=4',
+            clipCount: 2,
+            hashTags: '태그3,태그4',
+            isRecruiting: true,
+        },
+        {
+            id: 3,
+            title: '제목3',
+            introduction: '소개3',
+            thumbnailUrl: 'https://picsum.photos/200/300?random=5',
+            writerName: '작성자3',
+            writerProfile: 'https://picsum.photos/200/300?random=6',
+            clipCount: 3,
+            hashTags: '태그5,태그6',
+            isRecruiting: false,
+        },
+        {
+            id: 4,
+            title: '제목4',
+            introduction: '소개4',
+            thumbnailUrl: 'https://picsum.photos/200/300?random=7',
+            writerName: '작성자4',
+            writerProfile: 'https://picsum.photos/200/300?random=8',
+            clipCount: 4,
+            hashTags: '태그7,태그8',
+            isRecruiting: true,
+        },
+        {
+            id: 5,
+            title: '제목5',
+            introduction: '소개5',
+            thumbnailUrl: 'https://picsum.photos/200/300?random=9',
+            writerName: '작성자5',
+            writerProfile: 'https://picsum.photos/200/300?random=10',
+            clipCount: 5,
+            hashTags: '태그9,태그10',
+            isRecruiting: true,
+        },
+        {
+            id: 6,
+            title: '제목6',
+            introduction: '소개6',
+            thumbnailUrl: 'https://picsum.photos/200/300?random=11',
+            writerName: '작성자6',
+            writerProfile: 'https://picsum.photos/200/300?random=12',
+            clipCount: 6,
+            hashTags: '태그11,태그12',
+            isRecruiting: false,
+        },
+        {
+            id: 7,
+            title: '제목7',
+            introduction: '소개7',
+            thumbnailUrl: null,
+            writerName: '작성자7',
+            writerProfile: 'https://picsum.photos/200/300?random=14',
+            clipCount: 7,
+            hashTags: '태그13,태그14',
+            isRecruiting: true,
+        },
+        {
+            id: 8,
+            title: '제목8',
+            introduction: '소개8',
+            thumbnailUrl: 'https://picsum.photos/200/300?random=15',
+            writerName: '작성자8',
+            writerProfile: 'https://picsum.photos/200/300?random=16',
+            clipCount: 8,
+            hashTags: '태그15,태그16',
+            isRecruiting: true,
+        },
+        {
+            id: 9,
+            title: '제목9',
+            introduction: '소개9',
+            thumbnailUrl: 'https://picsum.photos/200/300?random=17',
+            writerName: '작성자9',
+            writerProfile: 'https://picsum.photos/200/300?random=18',
+            clipCount: 9,
+            hashTags: '태그17,태그18',
+            isRecruiting: false,
+        },
+        {
+            id: 10,
+            title: '제목10',
+            introduction: '소개10',
+            thumbnailUrl: 'https://picsum.photos/200/300?random=19',
+            writerName: '작성자10',
+            writerProfile: 'https://picsum.photos/200/300?random=20',
+            clipCount: 10,
+            hashTags: '태그19,태그20',
+            isRecruiting: true,
+        },
+        {
+            id: 11,
+            title: '제목11',
+            introduction: '소개11',
+            thumbnailUrl: 'https://picsum.photos/200/300?random=21',
+            writerName: '작성자11',
+            writerProfile: 'https://picsum.photos/200/300?random=22',
+            clipCount: 11,
+            hashTags: '태그21,태그22',
+            isRecruiting: true,
+        },
+    ];
+
+    useEffect(() => {
+        setTotalCount(sampleArticles.length);
+        setDisplayedArticles(sampleArticles.slice(0, pageSize));
+    }, [pageSize]);
+
     return (
         <>
             {/* 상단 고정 헤더 */}
-            <div className="sticky top-0 flex justify-between items-center w-full bg-[#FAFBFF] shadow p-2 col-span-12">
+            <div className="sticky top-0 flex justify-between items-center w-full bg-[#FAFBFF] shadow p-2 col-span-12 rounded-b-md z-30">
                 <p className="font-bold text-dark-purple">모집글 목록</p>
 
                 <div className="flex gap-4 items-center">
@@ -215,18 +338,28 @@ const RecruitmentArticlesPage: React.FC = () => {
             {/* 게시글 목록 */}
             <div className="col-span-12 gap-4">
                 <div className="w-[75rem] grid grid-cols-12 gap-6">
-                    {displayedArticles.map((article) => (
+                    {sampleArticles.map((article) => (
                         <RecruitmentCard
                             key={article.id}
+                            title={article.title}
+                            introduction={article.introduction}
+                            hashtagList={
+                                article.hashTags
+                                    ? article.hashTags.split(',')
+                                    : null
+                            }
+                            clipCount={article.clipCount}
+                            writerName={article.writerName}
+                            writerProfile={article.writerProfile}
+                            thumbnailUrl={article.thumbnailUrl}
                             link={`/recruitment/${article.id}`}
-                            {...article}
                         />
                     ))}
                 </div>
             </div>
 
             {/* 페이징 버튼 */}
-            <div className="flex justify-center items-center w-full">
+            <div className="col-span-12 flex justify-center items-center gap-4">
                 <PagingButton
                     setPage={handlePageChange}
                     page={page}
