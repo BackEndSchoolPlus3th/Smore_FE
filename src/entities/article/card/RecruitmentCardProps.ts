@@ -5,3 +5,10 @@ export interface RecruitmentCardProps extends ArticleCardProps {
     hashtagList: string[] | null;
     clipCount: number;
 }
+
+export interface pagedResponse {
+    currentPage: number;
+    pageSize: number;
+    totalCount: number;
+    data: RecruitmentCardProps[];
+}

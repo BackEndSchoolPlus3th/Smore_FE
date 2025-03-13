@@ -6,9 +6,10 @@ import {
     RecruitmentArticle,
     RecruitmentArticleProps,
     pagedResponse,
+    RecruitmentCardProps,
 } from '../../../../entities';
 import '../../../../shared/style/ArticleListPageStyle.css';
-import { PagingButton } from '../../../../widgets';
+import { PagingButton, RecruitmentCard } from '../../../../widgets';
 import {
     RecruitmentArticleSearch,
     fetchRecruitmentArticles,
@@ -37,10 +38,10 @@ const RecruitmentArticlesPage: React.FC = () => {
 
     // 기존 상태들
     const [articlesCache, setArticlesCache] = useState<{
-        [key: number]: RecruitmentArticleProps[];
+        [key: number]: RecruitmentCardProps[];
     }>({});
     const [displayedArticles, setDisplayedArticles] = useState<
-        RecruitmentArticleProps[]
+        RecruitmentCardProps[]
     >([]);
     const [page, setPage] = useState(initialPage);
     const [pageSize, setPageSize] = useState(initialPageSize);
@@ -90,7 +91,7 @@ const RecruitmentArticlesPage: React.FC = () => {
                 // 로그인되지 않은 경우 무조건 false 전달
                 customRecommended: isLoggedIn ? isCustomRecommended : false,
             });
-            const blockData: RecruitmentArticleProps[] = response.data;
+            const blockData: RecruitmentCardProps[] = response.data;
             setArticlesCache((prevCache) => ({
                 ...prevCache,
                 [block]: blockData,
@@ -177,12 +178,10 @@ const RecruitmentArticlesPage: React.FC = () => {
     }, [page, searchFilters, isCustomRecommended]);
 
     return (
-        <div className="flex flex-col gap-4 w-full pb-4">
+        <>
             {/* 상단 고정 헤더 */}
-            <div className="sticky top-0 flex justify-between items-center w-full bg-[#FAFBFF] shadow p-2">
-                <p className="font-bold text-dark-purple">
-                    모집글 목록
-                </p>
+            <div className="sticky top-0 flex justify-between items-center w-full bg-[#FAFBFF] shadow p-2 col-span-12">
+                <p className="font-bold text-dark-purple">모집글 목록</p>
 
                 <div className="flex gap-4 items-center">
                     {/* 로그인 된 경우에만 맞춤 추천 체크박스 표시 */}
@@ -214,26 +213,15 @@ const RecruitmentArticlesPage: React.FC = () => {
             </div>
 
             {/* 게시글 목록 */}
-            <div className="items-center w-full">
-                <div className="flex flex-wrap gap-4 w-full justify-center">
-                    {isLoading
-                        ? Array.from({ length: pageSize }).map((_, index) => (
-                              <div
-                                  className="recruitment-article-card card bg-light-lavender p-4 bg-white shadow-lg rounded-lg w-80 min-w-80 h-96"
-                                  key={index}
-                              >
-                                  <div className="animate-pulse bg-light-lavender h-full w-full rounded"></div>
-                              </div>
-                          ))
-                        : displayedArticles.map((article) => (
-                              <Link
-                                  to={`/recruitment/${article.id}`}
-                                  className="recruitment-article-card card bg-light-lavender p-4 bg-white shadow-lg rounded-lg w-80 min-w-80 h-110"
-                                  key={article.id}
-                              >
-                                  <RecruitmentArticle {...article} />
-                              </Link>
-                          ))}
+            <div className="col-span-12 gap-4">
+                <div className="w-[75rem] grid grid-cols-12 gap-6">
+                    {displayedArticles.map((article) => (
+                        <RecruitmentCard
+                            key={article.id}
+                            link={`/recruitment/${article.id}`}
+                            {...article}
+                        />
+                    ))}
                 </div>
             </div>
 
@@ -246,7 +234,7 @@ const RecruitmentArticlesPage: React.FC = () => {
                     pageSize={pageSize}
                 />
             </div>
-        </div>
+        </>
     );
 };
 
