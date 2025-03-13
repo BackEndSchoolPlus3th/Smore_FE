@@ -1,7 +1,7 @@
 export interface CommentProps {
     id: number;
     comment: string;
-    isPublisher: boolean;
+    publisher: boolean;
     writerName: string;
     createdDate: string;
     editable: boolean;

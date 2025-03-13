@@ -8,7 +8,55 @@ interface CommentFormProps {
 }
 
 const CommentForm: React.FC<CommentFormProps> = (props: CommentFormProps) => {
-    const [comments, setComments] = useState<CommentProps[]>([]);
+    const [comments, setComments] = useState<CommentProps[]>([
+        {
+            id: 1,
+            comment:
+                '댓글1댓글1댓글1댓글1댓글1댓글1댓글1댓글1댓글1댓글1댓글1댓글1댓글1댓글1',
+            publisher: false,
+            writerName: '사용자1',
+            createdDate: '2021-09-01',
+            editable: false,
+            writerProfileImageUrl: null,
+        },
+        {
+            id: 2,
+            comment:
+                '댓글2댓글2댓글2댓글2댓글2댓글2댓글2댓글2댓글2댓글2댓글2댓글2댓글2댓글2댓글2댓글2댓글2댓글2댓글2댓글2댓글2댓글2',
+            publisher: true,
+            writerName: '게시자',
+            createdDate: '2021-09-01',
+            editable: false,
+            writerProfileImageUrl: 'https://picsum.photos/200/300?random=2',
+        },
+        {
+            id: 3,
+            comment: '댓글3',
+            publisher: false,
+            writerName: '사용자2',
+            createdDate: '2021-09-03',
+            editable: true,
+            writerProfileImageUrl: 'https://picsum.photos/200/300?random=3',
+        },
+        {
+            id: 4,
+            comment: '댓글4',
+            publisher: true,
+            writerName: '게시자',
+            createdDate: '2021-09-04',
+            editable: false,
+            writerProfileImageUrl: 'https://picsum.photos/200/300?random=4',
+        },
+        {
+            id: 5,
+            comment: '댓글5',
+            publisher: true,
+            writerName: '스터디장',
+            createdDate: '2021-09-04',
+            editable: true,
+            writerProfileImageUrl: 'https://picsum.photos/200/300?random=5',
+        },
+    ]);
     const [newComment, setNewComment] = useState('');
 
     // 댓글 목록 조회
@@ -76,55 +124,6 @@ const CommentForm: React.FC<CommentFormProps> = (props: CommentFormProps) => {
 
     useEffect(() => {
         fetchComments();
-        setComments([
-            {
-                id: 1,
-                comment:
-                    '댓글1댓글1댓글1댓글1댓글1댓글1댓글1댓글1댓글1댓글1댓글1댓글1댓글1댓글1',
-                isPublisher: false,
-                writerName: '사용자1',
-                createdDate: '2021-09-01',
-                editable: false,
-                writerProfileImageUrl: 'https://picsum.photos/200/300?random=1',
-            },
-            {
-                id: 2,
-                comment:
-                    '댓글2댓글2댓글2댓글2댓글2댓글2댓글2댓글2댓글2댓글2댓글2댓글2댓글2댓글2댓글2댓글2댓글2댓글2댓글2댓글2댓글2댓글2',
-                isPublisher: true,
-                writerName: '게시자',
-                createdDate: '2021-09-01',
-                editable: false,
-                writerProfileImageUrl: 'https://picsum.photos/200/300?random=2',
-            },
-            {
-                id: 3,
-                comment: '댓글3',
-                isPublisher: false,
-                writerName: '사용자2',
-                createdDate: '2021-09-03',
-                editable: true,
-                writerProfileImageUrl: 'https://picsum.photos/200/300?random=3',
-            },
-            {
-                id: 4,
-                comment: '댓글4',
-                isPublisher: true,
-                writerName: '게시자',
-                createdDate: '2021-09-04',
-                editable: false,
-                writerProfileImageUrl: 'https://picsum.photos/200/300?random=4',
-            },
-            {
-                id: 5,
-                comment: '댓글5',
-                isPublisher: true,
-                writerName: '스터디장',
-                createdDate: '2021-09-04',
-                editable: true,
-                writerProfileImageUrl: 'https://picsum.photos/200/300?random=5',
-            },
-        ]);
     }, []);
 
     return (

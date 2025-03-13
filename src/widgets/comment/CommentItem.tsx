@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { CommentProps } from '../../entities';
+import { User } from 'lucide-react';
 
 interface CommentItemProps {
     comment: CommentProps;
@@ -41,15 +42,25 @@ const CommentItem: React.FC<CommentItemProps> = ({
         setInputValue(comment.comment);
     };
 
+    const formattedDate = new Intl.DateTimeFormat('ko-KR', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+    }).format(new Date(comment.createdDate));
+
     return (
         <div className="flex flex-col gap-2 w-full">
-            {comment.isPublisher ? (
+            {comment.publisher ? (
                 <div className="flex flex-row justify-start items-start">
-                    <img
-                        src={comment.writerProfileImageUrl ?? undefined}
-                        alt="profile"
-                        className="w-8 h-8 rounded-full"
-                    />
+                    {comment.writerProfileImageUrl ? (
+                        <img
+                            src={comment.writerProfileImageUrl}
+                            alt="profile"
+                            className="w-8 h-8 rounded-full"
+                        />
+                    ) : (
+                        <User className="w-8 h-8 rounded-full" />
+                    )}
                     <div className="ml-2">
                         <div className="font-bold">{comment.writerName}</div>
                         <div className="relative bg-blue-100 border border-gray-300 rounded-r-lg rounded-bl-lg p-2 max-w-xs break-words">
@@ -66,7 +77,7 @@ const CommentItem: React.FC<CommentItemProps> = ({
                             )}
                         </div>
                         <div className="flex flex-row text-xs text-gray-500 mt-1">
-                            <div>{comment.createdDate}</div>
+                            <div>{formattedDate}</div>
                             {isEditing ? (
                                 <>
                                     <button
@@ -123,7 +134,7 @@ const CommentItem: React.FC<CommentItemProps> = ({
                             )}
                         </div>
                         <div className="flex flex-row justify-end text-xs text-gray-500 mt-1">
-                            <div>{comment.createdDate}</div>
+                            <div>{formattedDate}</div>
                             {isEditing ? (
                                 <>
                                     <button
@@ -159,11 +170,15 @@ const CommentItem: React.FC<CommentItemProps> = ({
                             )}
                         </div>
                     </div>
-                    <img
-                        src={comment.writerProfileImageUrl ?? undefined}
-                        alt="profile"
-                        className="w-8 h-8 rounded-full"
-                    />
+                    {comment.writerProfileImageUrl ? (
+                        <img
+                            src={comment.writerProfileImageUrl}
+                            alt="profile"
+                            className="w-8 h-8 rounded-full"
+                        />
+                    ) : (
+                        <User className="w-8 h-8 rounded-full" />
+                    )}
                 </div>
             )}
         </div>
