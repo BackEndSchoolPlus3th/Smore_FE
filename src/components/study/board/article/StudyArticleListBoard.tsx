@@ -74,6 +74,7 @@ const StudyArticleListBoard: React.FC = () => {
 
     return (
         <>
+        <div className="p-4 w-full">
             <div className="mb-4 flex justify-end space-x-2 items-center p-10">
                 {/* 검색창 */}
                 <div className="flex items-center space-x-2 w-full max-w-xs">
@@ -136,6 +137,7 @@ const StudyArticleListBoard: React.FC = () => {
                 >
                     다음
                 </button>
+            </div>
             </div>
         </>
     );

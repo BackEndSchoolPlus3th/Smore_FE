@@ -47,7 +47,7 @@ const StudyMainBoard: React.FC = () => {
         if (userConfirmed) {
             try {
                 const response = await apiClient.delete(`/api/v1/study/${studyId}/delete`);
-    
+
                 if (response.status === 200) {
                     alert("탈퇴가 완료되었습니다.");
                     navigate("/");  // 탈퇴 후 메인 페이지로 이동
@@ -85,47 +85,47 @@ const StudyMainBoard: React.FC = () => {
     }
 
     return (
-    <div className='p-10'>
-        <div className="flex items-center space-x-4 justify-center pb-8 border-b-2 border-gray-300">
-            <div className="w-50 h-50 bg-gray-300 rounded-full flex justify-center items-center" ><BookOpen color={"white"} size={130} /></div>
-            <div className="pl-10">
-                <div className="text-xl font-bold pb-5">{study.title}</div>
-                <div className="text-sm text-gray-700 pb-5">
-                    {study.introduction}
-                </div>
-                <div className="text-sm text-gray-700">
-                    {study.hashTags && study.hashTags.join(', ')}
+        <div className='p-10 w-full'>
+            <div className="flex items-center space-x-4 justify-center pb-8 border-b-2 border-gray-300">
+                <div className="w-50 h-50 bg-gray-300 rounded-full flex justify-center items-center" ><BookOpen color={"white"} size={130} /></div>
+                <div className="pl-10">
+                    <div className="text-xl font-bold pb-5">{study.title}</div>
+                    <div className="text-sm text-gray-700 pb-5">
+                        {study.introduction}
+                    </div>
+                    <div className="text-sm text-gray-700">
+                        {study.hashTags && study.hashTags.join(', ')}
+                    </div>
                 </div>
             </div>
-        </div>
-        <div className="grid grid-cols-4 gap-4 py-10">
-            {articles.slice(0, 8).length > 0 ? (
-                articles.slice(0, 8).map((article, index) => (
-                    <div key={article.id} onClick={() => handleArticleClick(article.id)} className="cursor-pointer p-4 bg-white shadow rounded">
-                        <div
-                            className="w-full h-32 bg-gray-300"></div>
-                        <div className="flex items-center space-x-2 mt-2">
-                            <div className="bg-gray-600 w-8 h-8 rounded-full"></div>
-                            <button
-                                className="text-black text-xl mt-1"
-                            >
-                                {article.title}
-                            </button>
+            <div className="grid grid-cols-4 gap-4 py-10">
+                {articles.slice(0, 8).length > 0 ? (
+                    articles.slice(0, 8).map((article, index) => (
+                        <div key={article.id} onClick={() => handleArticleClick(article.id)} className="cursor-pointer p-4 bg-white shadow rounded">
+                            <div
+                                className="w-full h-32 bg-gray-300"></div>
+                            <div className="flex items-center space-x-2 mt-2">
+                                <div className="bg-gray-600 w-8 h-8 rounded-full"></div>
+                                <button
+                                    className="text-black text-xl mt-1"
+                                >
+                                    {article.title}
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                ))
-            ) : (
-                <div className="text-center text-gray-500">게시글이 없습니다.</div>
-            )}
-        </div>
+                    ))
+                ) : (
+                    <div className="text-center text-gray-500">게시글이 없습니다.</div>
+                )}
+            </div>
 
-        <div className="flex justify-end">
-            <CancleButton
-            label="탈퇴" 
-            onClick={handleExitClick} 
-            />
+            <div className="flex justify-end">
+                <CancleButton
+                    label="탈퇴"
+                    onClick={handleExitClick}
+                />
+            </div>
         </div>
-    </div>
     );
 };
 
