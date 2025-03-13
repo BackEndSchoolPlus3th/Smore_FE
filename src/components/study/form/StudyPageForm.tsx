@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import StudySideBar from '../sidebar/StudySideBar';
 import StudyNavBar from '../nav/StudyNavBar';
+import { AlignJustify } from 'lucide-react';
 
 const StudyPageForm: React.FC = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -20,10 +21,10 @@ const StudyPageForm: React.FC = () => {
             )}
             <div className="">
                 <button
-                    className="bg-blue-500 text-white p-2 cursor-pointer"
+                    className="text-white p-2 cursor-pointer"
                     onClick={handleToggleSidebar}
                 >
-                    =
+                    <AlignJustify className="w-6 h-6 text-gray-700" />
                 </button>
             </div>
             <div className="flex flex-col w-full">
