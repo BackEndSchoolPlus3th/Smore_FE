@@ -116,13 +116,13 @@ const Header = () => {
                         </div>
                         <div className="flex items-center text-center w-full">
                             <button
-                                className="p-2 rounded hover:bg-gray-100 cursor-pointer"
+                                className="p-2 rounded hover:bg-gray-100 cursor-pointer relative"
                                 onClick={openAlarmPage}
                             >
                                 <Bell size={20} />
-                                {hasNewAlarm && !isAlarm && (
-                                  <span className="absolute top-5 right-30 w-2 h-2 bg-red-500 rounded-full"></span>
-                                )} 
+                                {/* {hasNewAlarm && !isAlarm && ( */}
+                                  <span className="absolute top-1 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+                                 {/* )}  */}
                              
                             </button>
                         </div>
