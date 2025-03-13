@@ -32,15 +32,10 @@ const StudyDocumentBoard: React.FC = () => {
             console.error("파일 목록 가져오기 실패:", error);
         }
     };
-
     useEffect(() => {
         fetchStudies();
         fetchFiles(studyId);
       }, [studyId]);
-
-    const handleDownload = (fileName: string): void => {
-        alert(`${fileName}을 다운로드합니다.`);
-    };
 
     return (<>
                     {/* 문서함 */}<div className="p-4 w-full">
@@ -55,18 +50,14 @@ const StudyDocumentBoard: React.FC = () => {
                                         key={index}
                                         className="bg-white shadow-lg p-6 rounded-lg flex flex-col items-center"
                                     >
-                                        <div className="w-full h-32 bg-gray-300 mb-4"></div>
-                                        <div className="text-lg font-semibold mb-2">
-                                            {file.name}
-                                        </div>
-                                        <button
-                                            onClick={() =>
-                                                handleDownload(file.name)
-                                            }
-                                            className="px-4 py-2 bg-[#7743DB] text-white rounded cursor-pointer"
-                                        >
-                                            다운로드
-                                        </button>
+                                        <div className="w-full h-32 mb-4 flex justify-center items-center">
+                                    {/* 이미지 미리보기 */}
+                                    <img 
+                                        src={file} 
+                                        alt={`File preview ${index}`} 
+                                        className="max-h-32 object-cover"
+                                    />
+                                </div>
                                     </div>
                                 ))}
                             </div>
