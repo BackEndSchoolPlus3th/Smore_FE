@@ -163,7 +163,7 @@ const StudyRecruitmentRegisterBoard: React.FC = () => {
         <>
             {/* 상단 헤더 */}
             <h1 className="text-xl font-bold col-span-10 border-b-2">
-                모집글 작성
+                모집글 수정
             </h1>
             <CancleButton onClick={handleCancelClick} className="col-span-1" />
             <SubmitButton

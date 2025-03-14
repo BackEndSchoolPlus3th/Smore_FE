@@ -37,5 +37,4 @@ export { default as Sidebar } from './chat/Sidebar';
 // Recruitment
 export { default as RecruitmentForm } from './recruitment/form/RecruitmentForm';
 export { default as RecruitmentDetailBoard } from './recruitment/boards/RecruitmentDetailBoard';
-export { default as RecruitmentEditBoard } from './recruitment/boards/RecruitmentEditBoard';
 export { default as RecruitmentListBoard } from './recruitment/boards/RecruitmentListBoard';

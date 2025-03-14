@@ -7,6 +7,7 @@ import { CommentForm } from '../../../components';
 
 interface RecruitmentContentsProps {
     id: number;
+    studyId: number;
     title: string;
     content: string;
     introduction: string;
@@ -75,7 +76,7 @@ const RecruitmentDetailBoard = () => {
             );
             if (response.status === 200) {
                 alert('삭제가 완료되었습니다.');
-                navigate('/');
+                navigate(`/study/${recruitmentContent.studyId}/recruitment`);
             }
         } catch (error) {
             console.error('삭제 에러:', error);
@@ -84,7 +85,9 @@ const RecruitmentDetailBoard = () => {
 
     // 모집글 수정
     const handleEditRecruitment = () => {
-        alert('모집글 수정');
+        navigate(
+            `/study/${recruitmentContent.studyId}/recruitment/edit/${recruitmentId}`
+        );
     };
 
     // 모집글 삭제

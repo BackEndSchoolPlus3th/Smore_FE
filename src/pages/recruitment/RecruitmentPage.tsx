@@ -2,7 +2,6 @@ import {
     RecruitmentForm,
     RecruitmentDetailBoard,
     RecruitmentListBoard,
-    RecruitmentEditBoard,
 } from '../../components';
 import { Route, Routes } from 'react-router-dom';
 
