@@ -151,11 +151,13 @@ const RecruitmentDetailBoard = () => {
             <div className="col-span-3 gap-4">
                 <div className="sticky top-10 flex flex-col gap-4 border-2 border-gray-300 rounded-lg p-6 w-full shadow-lg bg-white mt-50">
                     <div className="flex flex-row w-full justify-center">
-                        <RecruitmentArticleClip
-                            articleId={recruitmentContent.id}
-                            initialClipCount={recruitmentContent.clipCount}
-                            initialIsClipped={recruitmentContent.clipped}
-                        />
+                        {recruitmentContent.clipCount && (
+                            <RecruitmentArticleClip
+                                articleId={recruitmentContent.id}
+                                initialClipCount={recruitmentContent.clipCount}
+                                initialIsClipped={recruitmentContent.clipped}
+                            />
+                        )}
                     </div>
                     <div className="flex flex-wrap gap-2">
                         {recruitmentContent?.hashTags &&
