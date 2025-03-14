@@ -62,7 +62,7 @@ const StudyRecruitmentListBoard: React.FC = () => {
                         writerName={recruitment.writerName}
                         writerProfile={recruitment.writerProfile}
                         thumbnailUrl={recruitment.thumbnailUrl}
-                        link={`/recruitment/${recruitment.id}`}
+                        link={`/${recruitment.id}`}
                     />
                 ))}
             </>

@@ -37,7 +37,7 @@ const MyClipCard: React.FC<MyClipCardProps> = (props: MyClipCardProps) => {
         <Link
             className={`flex flex-row items-center justify-between p-4 border-b border-gray-200 bg-white hover:bg-gray-100
                     ${props.isRecruiting ? 'text-black ' : 'text-gray-400'}`}
-            to={`/recruitment/${props.recruitmentArticleId}`}
+            to={`/${props.recruitmentArticleId}`}
         >
             <div className="flex flex-col">
                 <div className="flex flex-row items-center gap-2">
