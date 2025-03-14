@@ -40,13 +40,13 @@ const Participants: React.FC<ParticipantsProps> = ({ chatType, studyId }) => {
     }, [chatType, studyId]);
 
     return (
-        <div className="bg-light-lavender p-4 h-full">
+        <div className="p-4 h-full">
             <h2 className="text-xl font-bold mb-4">참여자</h2>
             <ul className="mt-2 ml-4">
                 {participants.map((user) => (
                     <li
                         key={user.memberId}
-                        className="p-2 cursor-pointer hover:bg-yellow-300 rounded mb-2"
+                        className="p-2 cursor-pointer hover:bg-gray-100 rounded mb-2 text-gray-600"
                     >
                         {user.memberName}
                     </li>
