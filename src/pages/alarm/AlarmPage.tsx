@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { apiClient, SubmitButton } from "../../shared";
 import { FaTimes } from "react-icons/fa"; // X 아이콘 추가
+import { Link, useNavigate } from 'react-router-dom';
 
 interface Alarm {
   id: number;
@@ -20,7 +21,7 @@ interface AlarmPageProps {
 
 const AlarmPage: React.FC<AlarmPageProps> = ({ isOpen, onClose, events }) => {
   const [alarms, setAlarms] = useState<Alarm[]>([]);
-
+  const navigate = useNavigate(); 
   const fetchAlarms = useCallback(async () => {
     try {
       const response = await apiClient.get(`/api/v1/alarm`);
@@ -43,11 +44,13 @@ const AlarmPage: React.FC<AlarmPageProps> = ({ isOpen, onClose, events }) => {
   }, [events, fetchAlarms]);
 
   const startChat = async (alarm: Alarm) => {
+    navigate("/chat");
     try {
       await apiClient.post(`/api/chatrooms/dm`, {
         member1Id: alarm.receiverId,
         member2Id: alarm.senderId,
       });
+      
       console.log("채팅방 생성 성공");
     } catch (error) {
       console.error("채팅 시작 실패:", error);
@@ -100,7 +103,7 @@ const AlarmPage: React.FC<AlarmPageProps> = ({ isOpen, onClose, events }) => {
 
   const renderNotification = (alarm: Alarm) => {
     return (
-      <div className="p-3 rounded-lg w-58 shadow-md relative hover:scale-105 transition-transform">
+      <div className="p-3 rounded-lg w-58 shadow-md relative">
         {/* X 버튼 - 오른쪽 위에 배치 */}
         <button
           className="absolute top-2 right-0 text-gray-300 text-xs p-1 hover:text-gray-500 transition"
