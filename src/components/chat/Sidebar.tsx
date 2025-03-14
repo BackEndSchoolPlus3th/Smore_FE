@@ -136,12 +136,14 @@ const Sidebar: React.FC<{
                             {dmRooms.map((room) => (
                                 <li
                                     key={room.roomId}
-                                    className={`p-2 cursor-pointer hover:bg-gray-100 rounded mb-2 ${
-                                        selectedRoom?.roomId === room.roomId &&
-                                        chatType === 'dm'
-                                            ? 'font-bold'
-                                            : 'text-gray-600'
-                                    }`}
+                                    className={`p-2 cursor-pointer hover:font-bold hover:text-black transition-colors
+                                         ${
+                                             selectedRoom?.roomId ===
+                                                 room.roomId &&
+                                             chatType === 'dm'
+                                                 ? 'text-black font-bold'
+                                                 : 'text-gray-500'
+                                         }`}
                                     onClick={() =>
                                         handleChatRoomClick(room, 'dm')
                                     }
@@ -175,11 +177,12 @@ const Sidebar: React.FC<{
                             {groupRooms.map((room) => (
                                 <li
                                     key={room.roomId}
-                                    className={`p-2 cursor-pointer hover:bg-gray-100 rounded mb-2 ${
+                                    className={`p-2 cursor-pointer hover:font-bold hover:text-black transition-colors
+                                    ${
                                         selectedRoom?.roomId === room.roomId &&
                                         chatType === 'group'
-                                            ? 'font-bold'
-                                            : 'text-gray-600'
+                                            ? 'text-black font-bold'
+                                            : 'text-gray-500'
                                     }`}
                                     onClick={() =>
                                         handleChatRoomClick(room, 'group')
