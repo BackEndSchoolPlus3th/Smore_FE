@@ -109,7 +109,7 @@ const Sidebar: React.FC<{
     );
 
     return (
-        <div className="col-span-3 h-200 border border-gray-200 shadow-md rounded-xl">
+        <div className="col-span-3 h-235 border border-gray-200 shadow-md rounded-xl">
             {/* 왼쪽 사이드바: DM / 그룹 채팅방 목록 */}
             <div className="p-4 h-full max-h-full">
                 <h2 className="text-xl font-bold mb-4">채팅방 목록</h2>

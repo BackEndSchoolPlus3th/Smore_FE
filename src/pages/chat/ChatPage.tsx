@@ -1,11 +1,6 @@
 import React, { useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import {
-    InitialChatBoard,
-    ChatBoard,
-    VideoChatBoard,
-    ChatPageForm,
-} from '../../components';
+import { ChatBoard, VideoChatBoard, ChatPageForm } from '../../components';
 
 type ChatRoom = {
     roomId: string;
@@ -27,7 +22,10 @@ const ChatPage: React.FC = () => {
                     />
                 }
             >
-                <Route index element={<InitialChatBoard />} />
+                <Route
+                    index
+                    element={<ChatBoard selectedRoom={selectedRoom} />}
+                />
                 <Route
                     path=":chat_type/:study_id"
                     element={<ChatBoard selectedRoom={selectedRoom} />}
