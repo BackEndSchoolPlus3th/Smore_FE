@@ -20,13 +20,9 @@ const ChatBoard: React.FC<ChatBoardProps> = ({ selectedRoom }) => {
 
     // 비디오 채팅 버튼 클릭 시
     const handleVideoChat = () => {
-        console.log('현재 선택된 채팅방:', selectedRoom);
-        navigate(`/chat/${selectedRoom?.studyId}/video`);
+        console.log('현재 선택된 채팅방:', studyId);
+        navigate(`/chat/${studyId}/video`);
     };
-
-    useEffect(() => {
-        console.log('현재 선택된 채팅방:', selectedRoom);
-    }, [selectedRoom]);
 
     if (!(chatType === 'dm' || chatType === 'group')) {
         return <div>잘못된 접근입니다.</div>;
@@ -46,7 +42,7 @@ const ChatBoard: React.FC<ChatBoardProps> = ({ selectedRoom }) => {
                     <Video className="w-6 h-6 text-gray-700" />
                 </button>
             </div>
-            {selectedRoom && chatType ? (
+            {studyId && chatType ? (
                 <Chat roomId={studyId} chatType={chatType} />
             ) : (
                 <div className="p-4">채팅할 방을 선택해주세요.</div>
