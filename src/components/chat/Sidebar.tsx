@@ -109,13 +109,13 @@ const Sidebar: React.FC<{
     );
 
     return (
-        <div className="col-span-3 h-full border border-gray-200 shadow-md rounded-xl">
+        <div className="col-span-3 h-200 border border-gray-200 shadow-md rounded-xl">
             {/* 왼쪽 사이드바: DM / 그룹 채팅방 목록 */}
-            <div className="p-4 h-full">
+            <div className="p-4 h-full max-h-full">
                 <h2 className="text-xl font-bold mb-4">채팅방 목록</h2>
 
                 {/* DM 카테고리 */}
-                <div>
+                <div className="mt-4 max-h-170 overflow-y-auto">
                     <div
                         className="cursor-pointer font-bold flex items-center gap-2"
                         onClick={() => toggleCategory('dm')}
@@ -154,7 +154,7 @@ const Sidebar: React.FC<{
                 </div>
 
                 {/* 그룹 카테고리 */}
-                <div className="mt-4">
+                <div className="mt-4 max-h-170 overflow-y-auto">
                     <div
                         className="cursor-pointer font-bold flex items-center gap-2"
                         onClick={() => toggleCategory('group')}

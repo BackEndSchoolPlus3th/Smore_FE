@@ -24,6 +24,7 @@ const ChatBoard: React.FC<ChatBoardProps> = ({ selectedRoom }) => {
         navigate(`/chat/${studyId}/video`);
     };
 
+    console.log(studyId, chatType);
     if (!(chatType === 'dm' || chatType === 'group')) {
         return <div>잘못된 접근입니다.</div>;
     }

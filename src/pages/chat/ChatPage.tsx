@@ -29,7 +29,7 @@ const ChatPage: React.FC = () => {
             >
                 <Route index element={<InitialChatBoard />} />
                 <Route
-                    path=":study_id/:chat_type"
+                    path=":chat_type/:study_id"
                     element={<ChatBoard selectedRoom={selectedRoom} />}
                 />
                 <Route path=":study_id/video" element={<VideoChatBoard />} />
