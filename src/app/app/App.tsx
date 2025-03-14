@@ -23,10 +23,10 @@ function App() {
     return (
         <EventProvider>
             <Router>
-                <div className="App w-screen h-screen flex flex-col items-center justify-start bg-white">
+                <div className="App h-screen bg-white">
                     <Header />
                     {/* Tailwind CSS 클래스로 Main-Grid 역할 수행 */}
-                    <div className="mx-10 w-[75rem] grid grid-cols-12 gap-6">
+                    <div className="mx-auto w-[75rem] grid grid-cols-12 gap-6">
                         <Routes>
                             <Route
                                 path="/mystudy"

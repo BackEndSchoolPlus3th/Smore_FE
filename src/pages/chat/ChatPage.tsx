@@ -26,9 +26,9 @@ const ChatPage: React.FC = () => {
     };
 
     return (
-        <div className="flex h-screen">
+        <div className="h-screen grid grid-cols-12 col-span-12 w-[75rem] gap-4">
             {/* 왼쪽 사이드바 */}
-            <div className="w-1/4 min-w-[250px] max-w-[300px] h-full border-r border-gray-200 overflow-y-auto">
+            <div className="col-span-3 h-full overflow-y-auto">
                 <Sidebar
                     selectedRoom={selectedRoom}
                     selectedChatType={selectedChatType}
@@ -36,7 +36,6 @@ const ChatPage: React.FC = () => {
                     onChatTypeSelect={setSelectedChatType}
                 />
             </div>
-
             {/* 중앙 채팅 화면 */}
             {/* <div className="flex-1 min-w-0 h-full border-r border-gray-200 overflow-y-auto"> */}
             {/* ChatBoard 내에서 Route를 구성하는 구조 */}
@@ -51,7 +50,7 @@ const ChatPage: React.FC = () => {
     </div> */}
 
             {/* 중앙 채팅 화면 */}
-            <div className="flex-1 min-w-0 h-full border-r border-gray-200 overflow-y-auto">
+            <div className="col-span-6 h-full overflow-y-auto">
                 {/* ChatBoard 내에서 Route를 구성하는 구조 */}
                 <ChatBoard
                     selectedRoom={selectedRoom}
@@ -77,7 +76,7 @@ const ChatPage: React.FC = () => {
             </div>
 
             {/* 오른쪽 참여자 목록 */}
-            <div className="w-1/4 min-w-[250px] max-w-[300px] h-full border-r border-gray-200 overflow-y-auto bg-light-lavender p-4">
+            <div className="col-span-3 h-full overflow-y-auto bg-light-lavender p-4">
                 <Participants
                     chatType={selectedChatType}
                     studyId={selectedRoom?.studyId}
