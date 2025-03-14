@@ -1,11 +1,12 @@
+// SettingProfileCard.tsx
 import React, { useState } from 'react';
-import Select from 'react-select';
 import {
     SubmitButton,
     CancleButton,
     apiClient,
     regionOptions,
     HashtagInput,
+    CustomSelect,
 } from '../../../shared';
 import { UserInfoProps } from '../../../entities';
 import { useDispatch } from 'react-redux';
@@ -290,16 +291,18 @@ const SettingProfileCard: React.FC<UserInfoProps> = (props: UserInfoProps) => {
                 <div className="mr-auto">
                     <p className="text-sm text-gray-500">지역</p>
                     {isRegionEdit ? (
-                        <Select
-                            value={regionOptions.find(
-                                (option) => option.value === editRegion
-                            )}
+                        <CustomSelect
+                            value={
+                                regionOptions.find(
+                                    (option) => option.value === editRegion
+                                ) || null
+                            }
                             onChange={(selectedOption) =>
-                                setEditRegion(selectedOption?.value || '')
+                                setEditRegion(selectedOption.value)
                             }
                             options={regionOptions}
+                            placeholder="지역 선택"
                             className="w-45 cursor-pointer"
-                            classNamePrefix="react-select"
                         />
                     ) : region ? (
                         <p className="font-medium">{region}</p>

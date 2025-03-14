@@ -35,13 +35,19 @@ const StudyRecruitmentListBoard: React.FC = () => {
     }, []);
 
     return (
-        <div className="flex flex-col items-center p-4 h-full w-full">
-            {isPermission && (
-                <div className="flex justify-end w-full mb-2">
-                    <SubmitButton label="생성" onClick={handleRegisterClick} />
-                </div>
+        <>
+            {!isPermission && (
+                <>
+                    <div className="h-fit col-start-[-2] col-span-1 row-span-1">
+                        <SubmitButton
+                            label="생성"
+                            onClick={handleRegisterClick}
+                            isFit={false}
+                        />
+                    </div>
+                </>
             )}
-            <div className="block flex flex-wrap gap-4 w-full justify-center h-full">
+            <>
                 {recruitmentList.map((recruitment) => (
                     <RecruitmentCard
                         key={recruitment.id}
@@ -59,8 +65,8 @@ const StudyRecruitmentListBoard: React.FC = () => {
                         link={`/recruitment/${recruitment.id}`}
                     />
                 ))}
-            </div>
-        </div>
+            </>
+        </>
     );
 };
 

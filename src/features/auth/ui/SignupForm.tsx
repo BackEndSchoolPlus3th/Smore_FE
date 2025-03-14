@@ -1,5 +1,11 @@
 import React from 'react';
-import { SignupFormValues, SignupError, Input, Button } from '../../../shared';
+import {
+    SignupFormValues,
+    SignupError,
+    Input,
+    Button,
+    SubmitButton,
+} from '../../../shared';
 
 interface SignupFormProps {
     form: SignupFormValues;
@@ -19,8 +25,8 @@ const SignupForm: React.FC<SignupFormProps> = ({
     onSubmit,
 }) => {
     return (
-        <div className="flex items-center justify-center bg-gray-100">
-            <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
+        <div className="space-y-6 col-start-5 col-end-9 h-full flex flex-col justify-center">
+            <div className="p-6 space-y-6 bg-white rounded-xl shadow-md border border-gray-200">
                 <h1 className="text-2xl font-bold text-center text-gray-900">
                     회원가입
                 </h1>
@@ -61,13 +67,14 @@ const SignupForm: React.FC<SignupFormProps> = ({
                         error={error.nickname}
                         className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                     />
-                    <Button
-                        type="submit"
+                    .
+                    <SubmitButton
+                        isSubmit={true}
+                        label={isSubmitting ? '가입 중...' : '가입하기'}
                         disabled={isSubmitting}
-                        className="w-full px-4 py-2 text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                    >
-                        {isSubmitting ? '가입 중...' : '가입하기'}
-                    </Button>
+                        clickColor="hover:bg-blue-50 active:bg-blue-100"
+                        isFit={false}
+                    />
                     {isSuccess && (
                         <p className="text-center text-green-500">
                             회원가입이 완료되었습니다!

@@ -52,10 +52,10 @@ const ChatPage: React.FC = () => {
             {/* 중앙 채팅 화면 */}
             <div className="col-span-6 h-full overflow-y-auto">
                 {/* ChatBoard 내에서 Route를 구성하는 구조 */}
-                <ChatBoard
+                {/* <ChatBoard
                     selectedRoom={selectedRoom}
                     selectedChatType={selectedChatType}
-                >
+                > */}
                     <Routes>
                         <Route path="/" element={<InitialChatBoard />} />
                         <Route
@@ -72,7 +72,7 @@ const ChatPage: React.FC = () => {
                             element={<VideoChatBoard />}
                         />
                     </Routes>
-                </ChatBoard>
+                {/* </ChatBoard> */}
             </div>
 
             {/* 오른쪽 참여자 목록 */}

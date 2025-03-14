@@ -1,4 +1,4 @@
-export interface MyStudyListArticleProps {
+export interface MyStudyListResponse {
     id: number;
     title: string;
     introduction: string;

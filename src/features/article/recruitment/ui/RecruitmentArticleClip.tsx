@@ -7,7 +7,6 @@ interface RecruitmentArticleClipProps {
     articleId: number;
     initialClipCount: number;
     initialIsClipped: boolean;
-    // 부모 컴포넌트에 변경사항을 알리고 싶을 경우 사용
     onClipChange?: (newClipCount: number, isClipped: boolean) => void;
 }
 
@@ -22,39 +21,41 @@ export const RecruitmentArticleClip: React.FC<RecruitmentArticleClipProps> = ({
     const [isProcessing, setIsProcessing] = useState(false);
 
     const sendClipRequest = useCallback(() => {
-        setIsProcessing(true); // 로딩 시작
+        setIsProcessing(true);
         if (isClipped) {
             unclipArticle(articleId)
                 .then(() => {
                     setIsClipped(false);
-                    setClipCount((prev) => prev - 1);
-                    if (onClipChange) {
-                        onClipChange(clipCount - 1, false);
-                    }
+                    setClipCount((prev) => {
+                        const newCount = prev - 1;
+                        if (onClipChange) onClipChange(newCount, false);
+                        return newCount;
+                    });
                 })
                 .catch((error) => {
                     console.error('클립 삭제 에러:', error);
                 })
                 .finally(() => {
-                    setIsProcessing(false); // 로딩 종료
+                    setIsProcessing(false);
                 });
         } else {
             clipArticle(articleId)
                 .then(() => {
                     setIsClipped(true);
-                    setClipCount((prev) => prev + 1);
-                    if (onClipChange) {
-                        onClipChange(clipCount + 1, true);
-                    }
+                    setClipCount((prev) => {
+                        const newCount = prev + 1;
+                        if (onClipChange) onClipChange(newCount, true);
+                        return newCount;
+                    });
                 })
                 .catch((error) => {
                     console.error('클립 추가 에러:', error);
                 })
                 .finally(() => {
-                    setIsProcessing(false); // 로딩 종료
+                    setIsProcessing(false);
                 });
         }
-    }, [articleId, isClipped, clipCount, onClipChange]);
+    }, [articleId, isClipped, onClipChange]);
 
     // 500ms debounce: 빠른 연속 클릭 무시
     const debouncedClip = useCallback(
@@ -75,7 +76,8 @@ export const RecruitmentArticleClip: React.FC<RecruitmentArticleClipProps> = ({
                 isProcessing
                     ? 'cursor-not-allowed'
                     : 'cursor-pointer hover:scale-110'
-            }`}
+            }
+            `}
             onClick={handleClip}
         >
             {isProcessing ? (

@@ -63,27 +63,25 @@ const PagingButton: React.FC<PagingButtonProps> = ({
     };
 
     return (
-        <div className="flex gap-2 items-center">
+        <div className="flex gap-2 items-center mb-4">
             <div className="flex justify-center">
                 {canBeforeBlock ? (
                     <FaAngleDoubleLeft
                         onClick={handleBeforeBlock}
-                        className="cursor-pointer w-7 h-7 p-1"
+                        className="cursor-pointer w-8 h-8 p-0.5 hover:bg-gray-200 rounded"
                     />
                 ) : (
-                    <div className="w-7 h-7 p-1" />
+                    <div className="w-8 h-8 p-0.5" />
                 )}
             </div>
-            <div className="flex justify-center">
-                {canBeforePage ? (
-                    <FaAngleLeft
-                        onClick={handleBeforePage}
-                        className="cursor-pointer w-7 h-7 p-1"
-                    />
-                ) : (
-                    <div className="w-7 h-7 p-1" />
-                )}
-            </div>
+            {canBeforePage ? (
+                <FaAngleLeft
+                    onClick={handleBeforePage}
+                    className="cursor-pointer w-8 h-8 p-1 hover:bg-gray-200 rounded"
+                />
+            ) : (
+                <div className="w-8 h-8 p-0.5" />
+            )}
             {Array.from(
                 { length: endPage - startPage + 1 },
                 (_, i) => i + startPage
@@ -91,10 +89,10 @@ const PagingButton: React.FC<PagingButtonProps> = ({
                 <button
                     key={'paging' + pageButton}
                     onClick={() => handleSwitchPage(pageButton)}
-                    className={`w-8 p-1 rounded justify-center text-align-center aspect-square ${
+                    className={`w-8 p-0.5 rounded justify-center text-align-center aspect-square cursor-pointer  ${
                         page === pageButton
-                            ? 'font-bold bg-[#7743DB] text-white'
-                            : 'cursor-pointer'
+                            ? 'bg-purple-400 hover:bg-purple-500 text-white'
+                            : 'hover:bg-gray-200'
                     }`}
                     style={{ aspectRatio: '1 / 1' }}
                 >
@@ -105,7 +103,7 @@ const PagingButton: React.FC<PagingButtonProps> = ({
                 {canNextPage ? (
                     <FaAngleRight
                         onClick={handleNextPage}
-                        className="cursor-pointer w-7 h-7 p-1"
+                        className="cursor-pointer w-8 h-8 p-0.5 hover:bg-gray-200 rounded"
                     />
                 ) : (
                     <div className="w-8 h-8" />
@@ -115,7 +113,7 @@ const PagingButton: React.FC<PagingButtonProps> = ({
                 {canNextBlock ? (
                     <FaAngleDoubleRight
                         onClick={handleNextBlock}
-                        className="cursor-pointer w-7 h-7 p-1"
+                        className="cursor-pointer w-8 h-8 p-0.5 hover:bg-gray-200 rounded"
                     />
                 ) : (
                     <div className="w-8 h-8" />
