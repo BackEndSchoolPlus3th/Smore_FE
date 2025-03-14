@@ -42,7 +42,7 @@ const LoginForm = () => {
     };
 
     return (
-        <div className="space-y-6 col-start-5 col-end-9 h-full flex flex-col justify-center">
+        <div className="space-y-6 col-start-5 col-end-9 h-230 flex flex-col justify-center">
             <div className="p-6 space-y-6 bg-white rounded-xl shadow-md border border-gray-200">
                 <h1 className="text-2xl font-bold text-center text-gray-900">
                     로그인

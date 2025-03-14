@@ -24,7 +24,7 @@ function App() {
             <Router>
                 <div className="App h-screen flex flex-col items-center justify-start bg-white">
                     <Header />
-                    <div className="mx-10 w-[75rem] grid grid-cols-12 gap-6">
+                    <div className="mx-10 w-[75rem] grid grid-cols-12 gap-6 max-h-full">
                         <Routes>
                             <Route
                                 path="/mystudy"
