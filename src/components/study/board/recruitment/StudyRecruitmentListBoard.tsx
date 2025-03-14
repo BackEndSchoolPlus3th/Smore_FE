@@ -36,7 +36,7 @@ const StudyRecruitmentListBoard: React.FC = () => {
 
     return (
         <>
-            {!isPermission && (
+            {isPermission && (
                 <>
                     <div className="h-fit col-start-[-2] col-span-1 row-span-1">
                         <SubmitButton

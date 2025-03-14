@@ -173,9 +173,8 @@ const RecruitmentListBoard = () => {
         <>
             {/* 상단 고정 헤더 */}
             <div
-                className="sticky top-0 w-full bg-[#FAFBFF] shadow p-2 col-span-12 rounded-b-md z-30
-                            grid grid-cols-12 gap-6 h-fit
-            "
+                className="sticky top-0 w-full shadow-md p-2 col-span-12 rounded-md z-30
+                grid grid-cols-12 gap-6 h-fit bg-white border border-gray-200 mt-6"
             >
                 <p className="font-bold text-dark-purple col-span-5 flex items-center">
                     모집글 목록
