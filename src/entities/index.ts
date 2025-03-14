@@ -1,9 +1,9 @@
 // component
-export { default as RecruitmentArticle } from './article/recruitmentArticle/RecruitmentArticle';
+export { default as RecruitmentArticle } from './recruitmentArticle/RecruitmentArticle';
 
-export type { RecruitmentArticleProps } from './article/recruitmentArticle/RecruitmentArticleProb';
+export type { RecruitmentArticleProps } from './recruitmentArticle/RecruitmentArticleProb';
 
-export type { MyStudyListArticleProps } from './article/myStudyList/MyStudyListArticleProps';
+export type { MyStudyLisProps } from './myStudyList/MyStudyLisProps';
 
 export type { CommentProps } from './comment/CommentProps';
 
@@ -16,11 +16,18 @@ export type { ClipCardProps } from './mypage/heart/ClipCardProps';
 export type { ClipListResponse } from './mypage/heart/ClipListResponse';
 
 // article
-export type { ArticleCardProps } from './article/card/ArticleCardProps';
-export type { RecruitmentCardProps } from './article/card/RecruitmentCardProps';
-export type { SimpleArticleResponse } from './article/response/SimpleArticleResponse';
-export type { SimpleRecruitmentResponse } from './article/response/SimpleRecruitmentResponse';
-export type { PagedArticleResponse } from './article/response/PagedArticleResponse';
+export type { ArticleCardResponse } from './response/ArticleCardResponse';
+export type { ArticleCardProps } from './card/ArticleCardProps';
+
+export type { RecruitmentCardProps } from './card/RecruitmentCardProps';
+export type { SimpleArticleResponse } from './response/SimpleArticleResponse';
+export type { SimpleRecruitmentResponse } from './response/SimpleRecruitmentResponse';
+export type { PagedArticleResponse } from './response/PagedArticleResponse';
+export type { MyStudyListResponse } from './response/MyStudyListResponse';
+
+export type { DocumentCardProps } from './card/DocumentCardProps';
 
 // fetch
-export type { FetchRecruitmentArticlesParams } from './article/fetch/FetchRecruitmentArticlesParams';
+export type { FetchRecruitmentArticlesParams } from './fetch/FetchRecruitmentArticlesParams';
+
+export type { StudyResponse } from './response/StudyResponse';

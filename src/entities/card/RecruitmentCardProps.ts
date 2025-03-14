@@ -1,6 +1,9 @@
-import type { ArticleCardProps } from './ArticleCardProps';
-
-export interface RecruitmentCardProps extends ArticleCardProps {
+export interface RecruitmentCardProps {
+    title: string;
+    thumbnailUrl: string | null;
+    writerProfile: string | null;
+    writerName: string;
+    link: string;
     introduction: string;
     hashtagList: string[] | null;
     clipCount: number;

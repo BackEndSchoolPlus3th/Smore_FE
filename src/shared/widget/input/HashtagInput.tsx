@@ -30,11 +30,12 @@ const HashtagInput: React.FC<HashtagInputProps> = ({
                 {hashtags.map((hashtag, index) => (
                     <div
                         key={index}
-                        className="px-3 py-1 rounded-full text-sm font-semibold bg-muted-purple flex items-center"
+                        className="px-3 py-1 rounded-full text-sm bg-white flex 
+                        items-center border border-purple-300 whitespace-nowrap"
                     >
                         {hashtag}
                         <MdOutlineCancel
-                            className="ml-2 cursor-pointer"
+                            className="ml-2 cursor-pointer text-gray-400 hover:text-red-500"
                             onClick={() => onRemoveHashtag(index)}
                         />
                     </div>

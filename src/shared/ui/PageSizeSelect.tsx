@@ -1,5 +1,6 @@
 import React from 'react';
-import Select, { SingleValue } from 'react-select';
+import CustomSelect from '../widget/select/CustomSelect';
+import type { Option } from '../widget/select/CustomSelect';
 
 export interface PageSizeOption {
     value: number;
@@ -23,18 +24,27 @@ const PageSizeSelect: React.FC<PageSizeSelectProps> = ({
     onChange,
     options = defaultOptions,
 }) => {
-    const handleChange = (selectedOption: SingleValue<PageSizeOption>) => {
-        onChange(selectedOption ? selectedOption.value : value);
+    const transformedOptions: Option[] = options.map((option) => ({
+        value: option.value.toString(),
+        label: option.label,
+    }));
+
+    const selectedOption =
+        transformedOptions.find(
+            (option) => option.value === value.toString()
+        ) || null;
+
+    const handleChange = (option: Option) => {
+        onChange(Number(option.value));
     };
 
-    const defaultValue = options.find((option) => option.value === value);
-
     return (
-        <Select
-            options={options}
-            defaultValue={defaultValue}
+        <CustomSelect
+            options={transformedOptions}
+            value={selectedOption}
             onChange={handleChange}
-            className=" max-w-xs"
+            placeholder="페이지 크기"
+            className="max-w-xs"
         />
     );
 };
