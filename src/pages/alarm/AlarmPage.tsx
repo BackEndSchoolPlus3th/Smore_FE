@@ -18,7 +18,35 @@ interface AlarmPageProps {
   events: Event[];
   onClose: () => void;
 }
-
+const dummyAlarms: Alarm[] = [
+  {
+    id: 1,
+    message: "홍길동님이 알고리즘 스터디에 지원하였습니다.",
+    eventName: "application__reached",
+    isRead: false,
+    senderId: "user123",
+    receiverId: "admin456",
+    events: ["ex"]
+  },
+  {
+    id: 2,
+    message: "김영희님이 웹 개발 스터디에 지원하였습니다.",
+    eventName: "application__reached",
+    isRead: false,
+    senderId: "user789",
+    receiverId: "admin456",
+    events: ["ex"]
+  },
+  {
+    id: 3,
+    message: "스터디 일정이 변경되었습니다.",
+    eventName: "schedule__updated",
+    isRead: false,
+    senderId: "system",
+    receiverId: "admin456",
+    events: ["ex"]
+  },
+];
 const AlarmPage: React.FC<AlarmPageProps> = ({ isOpen, onClose, events }) => {
   const [alarms, setAlarms] = useState<Alarm[]>([]);
   const navigate = useNavigate(); 
@@ -161,6 +189,11 @@ const AlarmPage: React.FC<AlarmPageProps> = ({ isOpen, onClose, events }) => {
         </h3>
         <div className="grid gap-2 max-h-80 overflow-y-auto pr-1">
           {alarms.map((alarm) => (
+            <div key={alarm.id}>{renderNotification(alarm)}</div>
+          ))}
+        </div>
+        <div className="grid gap-2 max-h-80 overflow-y-auto pr-1">
+          {dummyAlarms.map((alarm) => (
             <div key={alarm.id}>{renderNotification(alarm)}</div>
           ))}
         </div>
