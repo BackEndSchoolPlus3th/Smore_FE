@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 const InitialChatBoard: React.FC = () => {
     return (
-        <div className="flex h-screen">
+        <div className="flex h-screen col-span-6">
             {/* 중앙 영역 */}
             <div className="flex-1 flex flex-col bg-muted-purple">
                 <div className="flex items-center justify-between p-4">

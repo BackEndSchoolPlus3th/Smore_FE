@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { apiClient } from '../../shared';
 import { SquareArrowRight, SquareArrowDown } from 'lucide-react';
 import { gt, transform } from 'lodash';
@@ -12,10 +12,9 @@ type ChatRoom = {
 
 const Sidebar: React.FC<{
     selectedRoom: ChatRoom | null;
-    selectedChatType: 'dm' | 'group' | null;
     onRoomSelect: (room: ChatRoom) => void;
-    onChatTypeSelect: (type: 'dm' | 'group') => void;
-}> = ({ selectedRoom, selectedChatType, onRoomSelect, onChatTypeSelect }) => {
+}> = ({ selectedRoom, onRoomSelect }) => {
+    const { study_id: studyId, chat_type: chatType } = useParams();
     const navigate = useNavigate();
 
     // 사이드바에서 펼쳐진 카테고리 (기본 "dm")
@@ -57,19 +56,7 @@ const Sidebar: React.FC<{
                     console.error('그룹 채팅방 목록 가져오기 실패:', error);
                 });
         }
-    }, [expandedCategory, selectedRoom, selectedChatType]);
-
-    /**
-     * 채팅방 선택 시:
-     * - 선택된 방 정보(객체)를 state에 저장
-     * - DM인지 group인지 타입도 별도로 저장
-     * - 채팅방 엔드포인트로 이동
-     */
-    const handleChatRoomSelect = (room: ChatRoom, chatType: 'dm' | 'group') => {
-        onRoomSelect(room);
-        onChatTypeSelect(chatType);
-        console.log('채팅방 선택:', selectedRoom, chatType);
-    };
+    }, [expandedCategory, selectedRoom]);
 
     /**
      * DM/그룹 카테고리 토글 시:
@@ -78,12 +65,14 @@ const Sidebar: React.FC<{
      */
     const toggleCategory = (category: 'dm' | 'group') => {
         setExpandedCategory(category);
-        onRoomSelect(null);
-        onChatTypeSelect(null);
     };
 
     // 스터디 채팅방으로 이동
-    const handleChatRoomClick = async (room) => {
+    const handleChatRoomClick = async (room: ChatRoom, chatType: string) => {
+        if (!(chatType === 'dm' || chatType === 'group')) {
+            console.error('잘못된 채팅 타입:', chatType);
+            return;
+        }
         try {
             const response = await apiClient.post(
                 `/api/v1/chatrooms/group/${room.studyId}`,
@@ -93,8 +82,7 @@ const Sidebar: React.FC<{
             );
 
             if (response.status === 200) {
-                handleChatRoomSelect(room, 'group'); // 채팅방 선택 로직 실행
-                navigate(`/chat/${room.studyId}`); // 채팅방 페이지로 이동
+                navigate(`/chat/${chatType}/${room.studyId}`); // 채팅방 페이지로 이동
             } else {
                 console.error('채팅방 입장 실패:', response);
             }
@@ -121,91 +109,87 @@ const Sidebar: React.FC<{
     );
 
     return (
-        <div className="">
-            <div className="mt-4 min-h-[500px] border border-gray-200 shadow-md rounded-xl">
-                {/* 왼쪽 사이드바: DM / 그룹 채팅방 목록 */}
-                <div className="p-4 h-full">
-                    <h2 className="text-xl font-bold mb-4">채팅방 목록</h2>
+        <div className="col-span-3 h-full border border-gray-200 shadow-md rounded-xl">
+            {/* 왼쪽 사이드바: DM / 그룹 채팅방 목록 */}
+            <div className="p-4 h-full">
+                <h2 className="text-xl font-bold mb-4">채팅방 목록</h2>
 
-                    {/* DM 카테고리 */}
-                    <div>
+                {/* DM 카테고리 */}
+                <div>
+                    <div
+                        className="cursor-pointer font-bold flex items-center gap-2"
+                        onClick={() => toggleCategory('dm')}
+                    >
+                        <div>DM</div>
                         <div
-                            className="cursor-pointer font-bold flex items-center gap-2"
-                            onClick={() => toggleCategory('dm')}
+                            className={
+                                expandedCategory === 'dm'
+                                    ? 'transition transform-[rotate(90deg)]'
+                                    : 'transition'
+                            }
                         >
-                            <div>DM</div>
-                            <div
-                                className={
-                                    expandedCategory === 'dm'
-                                        ? 'transition transform-[rotate(90deg)]'
-                                        : 'transition'
-                                }
-                            >
-                                {arrowRight}
-                            </div>
+                            {arrowRight}
                         </div>
-                        {expandedCategory === 'dm' && (
-                            <ul className="mt-2 ml-4">
-                                {dmRooms.map((room) => (
-                                    <li
-                                        key={room.roomId}
-                                        className={`p-2 cursor-pointer hover:bg-gray-100 rounded mb-2 ${
-                                            selectedRoom?.roomId ===
-                                                room.roomId &&
-                                            selectedChatType === 'dm'
-                                                ? 'font-bold'
-                                                : 'text-gray-600'
-                                        }`}
-                                        onClick={() =>
-                                            handleChatRoomSelect(room, 'dm')
-                                        }
-                                    >
-                                        {room.roomName}
-                                    </li>
-                                ))}
-                            </ul>
-                        )}
                     </div>
+                    {expandedCategory === 'dm' && (
+                        <ul className="mt-2 ml-4">
+                            {dmRooms.map((room) => (
+                                <li
+                                    key={room.roomId}
+                                    className={`p-2 cursor-pointer hover:bg-gray-100 rounded mb-2 ${
+                                        selectedRoom?.roomId === room.roomId &&
+                                        chatType === 'dm'
+                                            ? 'font-bold'
+                                            : 'text-gray-600'
+                                    }`}
+                                    onClick={() =>
+                                        handleChatRoomClick(room, 'dm')
+                                    }
+                                >
+                                    {room.roomName}
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </div>
 
-                    {/* 그룹 카테고리 */}
-                    <div className="mt-4">
+                {/* 그룹 카테고리 */}
+                <div className="mt-4">
+                    <div
+                        className="cursor-pointer font-bold flex items-center gap-2"
+                        onClick={() => toggleCategory('group')}
+                    >
+                        <div>그룹</div>
                         <div
-                            className="cursor-pointer font-bold flex items-center gap-2"
-                            onClick={() => toggleCategory('group')}
+                            className={
+                                expandedCategory === 'group'
+                                    ? 'transition transform-[rotate(90deg)]'
+                                    : 'transition'
+                            }
                         >
-                            <div>그룹</div>
-                            <div
-                                className={
-                                    expandedCategory === 'group'
-                                        ? 'transition transform-[rotate(90deg)]'
-                                        : 'transition'
-                                }
-                            >
-                                {arrowRight}
-                            </div>
+                            {arrowRight}
                         </div>
-                        {expandedCategory === 'group' && (
-                            <ul className="mt-2 ml-4">
-                                {groupRooms.map((room) => (
-                                    <li
-                                        key={room.roomId}
-                                        className={`p-2 cursor-pointer hover:bg-gray-100 rounded mb-2 ${
-                                            selectedRoom?.roomId ===
-                                                room.roomId &&
-                                            selectedChatType === 'group'
-                                                ? 'font-bold'
-                                                : 'text-gray-600'
-                                        }`}
-                                        onClick={() =>
-                                            handleChatRoomClick(room)
-                                        }
-                                    >
-                                        {room.roomName}
-                                    </li>
-                                ))}
-                            </ul>
-                        )}
                     </div>
+                    {expandedCategory === 'group' && (
+                        <ul className="mt-2 ml-4">
+                            {groupRooms.map((room) => (
+                                <li
+                                    key={room.roomId}
+                                    className={`p-2 cursor-pointer hover:bg-gray-100 rounded mb-2 ${
+                                        selectedRoom?.roomId === room.roomId &&
+                                        chatType === 'group'
+                                            ? 'font-bold'
+                                            : 'text-gray-600'
+                                    }`}
+                                    onClick={() =>
+                                        handleChatRoomClick(room, 'group')
+                                    }
+                                >
+                                    {room.roomName}
+                                </li>
+                            ))}
+                        </ul>
+                    )}
                 </div>
             </div>
         </div>

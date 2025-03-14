@@ -1,6 +1,7 @@
 // Participants.tsx
 import React, { useEffect, useState } from 'react';
 import { apiClient } from '../../shared';
+import { useParams } from 'react-router-dom';
 
 interface Participant {
     memberId: number;
@@ -8,12 +9,12 @@ interface Participant {
 }
 
 interface ParticipantsProps {
-    // ChatPage에서 넘기는 chatType, studyId 타입과 동일하게 설정
-    chatType: 'dm' | 'group' | null;
     studyId?: number; // group 채팅 시 studyId가 있을 수 있음
 }
 
-const Participants: React.FC<ParticipantsProps> = ({ chatType, studyId }) => {
+const Participants: React.FC = () => {
+    const { study_id: studyId, chat_type: chatType } = useParams();
+
     const [participants, setParticipants] = useState<any[]>([]);
 
     useEffect(() => {
@@ -40,7 +41,7 @@ const Participants: React.FC<ParticipantsProps> = ({ chatType, studyId }) => {
     }, [chatType, studyId]);
 
     return (
-        <div className="p-4 h-full">
+        <div className="h-full col-span-3 p-4 border border-gray-200 rounded-xl shadow-md">
             <h2 className="text-xl font-bold mb-4">참여자</h2>
             <ul className="mt-2 ml-4">
                 {participants.map((user) => (
