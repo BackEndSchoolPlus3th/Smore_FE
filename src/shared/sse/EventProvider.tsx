@@ -41,6 +41,8 @@ export const EventProvider = ({ children }: EventProviderProps) => {
       eventSource.addEventListener("application__reached", handleEvent);
       eventSource.addEventListener("application__permitted", handleEvent);
       eventSource.addEventListener("application__rejected", handleEvent);
+      eventSource.addEventListener("permission__granted", handleEvent);
+      eventSource.addEventListener("permission__removed", handleEvent);
       eventSource.addEventListener("dm__created", handleEvent);
 
 

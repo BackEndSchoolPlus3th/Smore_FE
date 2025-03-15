@@ -10,6 +10,7 @@ interface Alarm {
     isRead: boolean;
     senderId: string;
     receiverId: string;
+    studyId: string;
     events: string[];
 }
 
@@ -18,62 +19,6 @@ interface AlarmPageProps {
     events: Event[];
     onClose: () => void;
 }
-const dummyAlarms: Alarm[] = [
-    {
-        id: 1,
-        message: '홍길동님이 알고리즘 스터디에 지원하였습니다.',
-        eventName: 'application__reached',
-        isRead: false,
-        senderId: 'user123',
-        receiverId: 'admin456',
-        events: ['ex'],
-    },
-    {
-        id: 2,
-        message: '김영희님이 웹 개발 스터디에 지원하였습니다.',
-        eventName: 'application__reached',
-        isRead: false,
-        senderId: 'user789',
-        receiverId: 'admin456',
-        events: ['ex'],
-    },
-    {
-        id: 3,
-        message: '스터디 일정이 변경되었습니다.',
-        eventName: 'schedule__updated',
-        isRead: false,
-        senderId: 'system',
-        receiverId: 'admin456',
-        events: ['ex'],
-    },
-    {
-        id: 1,
-        message: '홍길동님이 알고리즘 스터디에 지원하였습니다.',
-        eventName: 'application__reached',
-        isRead: false,
-        senderId: 'user123',
-        receiverId: 'admin456',
-        events: ['ex'],
-    },
-    {
-        id: 2,
-        message: '김영희님이 웹 개발 스터디에 지원하였습니다.',
-        eventName: 'application__reached',
-        isRead: false,
-        senderId: 'user789',
-        receiverId: 'admin456',
-        events: ['ex'],
-    },
-    {
-        id: 3,
-        message: '스터디 일정이 변경되었습니다.',
-        eventName: 'schedule__updated',
-        isRead: false,
-        senderId: 'system',
-        receiverId: 'admin456',
-        events: ['ex'],
-    },
-];
 const AlarmPage: React.FC<AlarmPageProps> = ({ isOpen, onClose, events }) => {
     const [alarms, setAlarms] = useState<Alarm[]>([]);
     const navigate = useNavigate();
@@ -118,10 +63,10 @@ const AlarmPage: React.FC<AlarmPageProps> = ({ isOpen, onClose, events }) => {
                 /(.+?)님이 (.+?)에 지원하였습니다\./
             );
             if (match) {
-                await apiClient.post(`/api/v1/studyMember`, {
-                    studyTitle: match[2],
-                    nickname: match[1],
-                    position: 'MEMBER',
+                await apiClient.post(`/api/v1/study/${alarm.studyId}/addMember`, {
+                    studyTitle: alarm.studyId,
+                    memberId: alarm.senderId,
+                    role: "MEMBER",
                     permissionRecruitManage: 0,
                     permissionArticleManage: 0,
                     permissionCalendarManage: 0,
@@ -139,9 +84,8 @@ const AlarmPage: React.FC<AlarmPageProps> = ({ isOpen, onClose, events }) => {
                 /(.+?)님이 (.+?)에 지원하였습니다\./
             );
             if (match) {
-                await apiClient.post(`/api/v1/studyMember/reject`, {
-                    studyTitle: match[2],
-                    nickname: match[1],
+                await apiClient.post(`/api/v1/study/${alarm.studyId}/reject`, {
+                    memberId: alarm.senderId
                 });
             }
         } catch (error) {
@@ -218,20 +162,13 @@ const AlarmPage: React.FC<AlarmPageProps> = ({ isOpen, onClose, events }) => {
                     <h3 className="text-lg font-bold text-center text-gray-800">
                         알림 ({alarms.length})
                     </h3>
-                    <div className="grid gap-2 max-h-80 overflow-y-auto pr-1">
+                    <div className="grid gap-2 max-h-108 overflow-y-auto pr-1">
                         {alarms.map((alarm) => (
                             <div key={alarm.id}>
                                 {renderNotification(alarm)}
                             </div>
                         ))}
                     </div>
-                    {/* <div className="flex flex-col h-full overflow-y-auto gap-2">
-                        {dummyAlarms.map((alarm) => (
-                            <div key={alarm.id}>
-                                {renderNotification(alarm)}
-                            </div>
-                        ))}
-                    </div> */}
                 </div>
             </div>
         </div>
