@@ -7,4 +7,5 @@ export interface ButtonProps {
     color?: string;
     clickColor?: string;
     isSubmit?: boolean;
+    size?: string;
 }

@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import SockJS from 'sockjs-client';
 import { Client } from '@stomp/stompjs';
 import { jwtDecode } from 'jwt-decode';
-import { apiClient } from '../../shared';
+import { apiClient, SubmitButton } from '../../shared';
+// import { CalenderDays } from 'lucide-react';
 
 type Message = {
     type: 'message';
@@ -543,8 +544,8 @@ const Chat: React.FC<ChatProps> = ({ roomId, chatType }) => {
     };
 
     return (
-        <div className="h-full py-4">
-            <div className="flex flex-col p-4 overflow-y-auto h-full bg-purple-50 rounded-xl">
+        <div className="h-full m-4 flex flex-col gap-4">
+            <div className="flex flex-col p-4 overflow-y-auto h-full bg-purple-50 rounded-xl border border-gray-500">
                 <div className="overflow-y-auto p-4">
                     {messages.map((msg, index) =>
                         msg.type === 'divider' ? (
@@ -552,7 +553,8 @@ const Chat: React.FC<ChatProps> = ({ roomId, chatType }) => {
                                 className="text-center text-gray-500 my-2"
                                 key={index}
                             >
-                                📅 {msg.text}
+                                {/* <CalenderDays />  */}
+                                {msg.text}
                             </div>
                         ) : (
                             <div
@@ -579,21 +581,21 @@ const Chat: React.FC<ChatProps> = ({ roomId, chatType }) => {
                     )}
                     <div ref={chatEndRef} />
                 </div>
-                <div className="flex p-4 bg-white shadow-md rounded-xl">
-                    <textarea
-                        value={input}
-                        onChange={(e) => setInput(e.target.value)}
-                        onKeyDown={handleKeyDown}
-                        placeholder="메시지를 입력하세요."
-                        className="flex-1 p-2 resize-none border-none outline-none text-sm h-10 rounded-md"
-                    />
-                    <button
-                        onClick={sendMessage}
-                        className="ml-3 px-4 py-2 bg-purple-500 text-white rounded-md hover:bg-purple-600"
-                    >
-                        전송
-                    </button>
-                </div>
+            </div>
+            <div className="flex p-2 bg-white shadow-md rounded-xl border border-gray-200">
+                <textarea
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    placeholder="메시지를 입력하세요."
+                    className="flex-1 p-2 resize-none border-none outline-none text-sm h-10 rounded-md"
+                />
+                <SubmitButton
+                    onClick={sendMessage}
+                    color="bg-purple-200"
+                    clickColor="hover:bg-purple-300 active:bg-purple-380"
+                    label="전송"
+                />
             </div>
         </div>
     );

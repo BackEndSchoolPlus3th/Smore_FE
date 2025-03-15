@@ -25,15 +25,16 @@ const ChatBoard: React.FC<ChatBoardProps> = ({ selectedRoom }) => {
     };
 
     console.log(studyId, chatType);
-    if (!(chatType === 'dm' || chatType === 'group')) {
-        return <div>잘못된 접근입니다.</div>;
-    }
 
     return (
         <div className="h-full col-span-6 h-full border border-gray-200 rounded-xl shadow-md flex flex-col ">
             {/* 중앙 영역: 채팅창 및 비디오 채팅 */}
             <div className="flex flex-row m-4 justify-between items-center">
                 <h1 className="col-span-5 text-xl font-bold">
+                    {studyId && chatType
+                        ? selectedRoom?.roomName
+                        : '채팅방을 선택해주세요.'}
+
                     {selectedRoom?.roomName}
                 </h1>
                 <button
@@ -43,10 +44,8 @@ const ChatBoard: React.FC<ChatBoardProps> = ({ selectedRoom }) => {
                     <Video className="w-6 h-6 text-gray-700" />
                 </button>
             </div>
-            {studyId && chatType ? (
+            {studyId && chatType && (
                 <Chat roomId={studyId} chatType={chatType} />
-            ) : (
-                <div className="p-4">채팅할 방을 선택해주세요.</div>
             )}
         </div>
     );

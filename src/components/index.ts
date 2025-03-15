@@ -26,7 +26,6 @@ export { default as StudyRecruitmentEditBoard } from './study/board/recruitment/
 
 // Chat
 export { default as ChatPageForm } from './chat/form/ChatPageForm';
-export { default as InitialChatBoard } from './chat/board/InitialChatBoard';
 export { default as ChatBoard } from './chat/board/ChatBoard';
 
 // article
@@ -38,5 +37,4 @@ export { default as Sidebar } from './chat/Sidebar';
 // Recruitment
 export { default as RecruitmentForm } from './recruitment/form/RecruitmentForm';
 export { default as RecruitmentDetailBoard } from './recruitment/boards/RecruitmentDetailBoard';
-export { default as RecruitmentEditBoard } from './recruitment/boards/RecruitmentEditBoard';
 export { default as RecruitmentListBoard } from './recruitment/boards/RecruitmentListBoard';

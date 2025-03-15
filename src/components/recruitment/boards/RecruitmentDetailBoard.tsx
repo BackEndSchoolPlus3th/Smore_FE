@@ -7,6 +7,7 @@ import { CommentForm } from '../../../components';
 
 interface RecruitmentContentsProps {
     id: number;
+    studyId: number;
     title: string;
     content: string;
     introduction: string;
@@ -75,7 +76,7 @@ const RecruitmentDetailBoard = () => {
             );
             if (response.status === 200) {
                 alert('삭제가 완료되었습니다.');
-                navigate('/');
+                navigate(`/study/${recruitmentContent.studyId}/recruitment`);
             }
         } catch (error) {
             console.error('삭제 에러:', error);
@@ -84,7 +85,9 @@ const RecruitmentDetailBoard = () => {
 
     // 모집글 수정
     const handleEditRecruitment = () => {
-        alert('모집글 수정');
+        navigate(
+            `/study/${recruitmentContent.studyId}/recruitment/edit/${recruitmentId}`
+        );
     };
 
     // 모집글 삭제
@@ -148,11 +151,13 @@ const RecruitmentDetailBoard = () => {
             <div className="col-span-3 gap-4">
                 <div className="sticky top-10 flex flex-col gap-4 border-2 border-gray-300 rounded-lg p-6 w-full shadow-lg bg-white mt-50">
                     <div className="flex flex-row w-full justify-center">
-                        <RecruitmentArticleClip
-                            articleId={recruitmentContent.id}
-                            initialClipCount={recruitmentContent.clipCount}
-                            initialIsClipped={recruitmentContent.clipped}
-                        />
+                        {recruitmentContent.clipCount && (
+                            <RecruitmentArticleClip
+                                articleId={recruitmentContent.id}
+                                initialClipCount={recruitmentContent.clipCount}
+                                initialIsClipped={recruitmentContent.clipped}
+                            />
+                        )}
                     </div>
                     <div className="flex flex-wrap gap-2">
                         {recruitmentContent?.hashTags &&
