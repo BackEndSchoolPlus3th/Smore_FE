@@ -217,8 +217,8 @@ const RecruitmentListBoard = () => {
                             title={article.title}
                             introduction={article.introduction}
                             hashtagList={
-                                article.hashTags
-                                    ? article.hashTags.split(',')
+                                article.hashtagList
+                                    ? article.hashtagList.split(',')
                                     : null
                             }
                             clipCount={article.clipCount}

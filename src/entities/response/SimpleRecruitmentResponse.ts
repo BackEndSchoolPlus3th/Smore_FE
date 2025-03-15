@@ -7,5 +7,5 @@ export interface SimpleRecruitmentResponse {
     writerName: string;
     writerProfile: string;
     clipCount: number;
-    hashTags: string | null;
+    hashtagList: string | null;
 }
