@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useParams } from "react-router-dom";
+import { useParams } from 'react-router-dom';
 
 import { Calendar, EventApi } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -18,39 +18,41 @@ const Calender: React.FC = () => {
     const [showAddEventPopup, setShowAddEventPopup] = useState(false);
     const [showUpdateEventPopup, setShowUpdateEventPopup] = useState(false);
     const [showEventDetailPopup, setShowEventDetailPopup] = useState(false);
-    const [showEventDetailManagePopup, setShowEventDetailManagePopup] = useState(false);
+    const [showEventDetailManagePopup, setShowEventDetailManagePopup] =
+        useState(false);
     const [selectedEvent, setSelectedEvent] = useState<EventApi | null>(null); // EventApi 타입으로 변경
-    
+
     const [calendar, setCalendar] = useState<Calendar | null>(null);
-    const [events, setEvents] = useState([]);    
+    const [events, setEvents] = useState([]);
     const [manager, setManager] = useState<boolean>(false);
-    const { studyId } = useParams<{ studyId: string}>();
+    const { studyId } = useParams<{ studyId: string }>();
 
     const fetchData = async () => {
         try {
+            const accessToken = localStorage.getItem('accessToken');
 
-          const accessToken = localStorage.getItem('accessToken');
-          
-          if (!accessToken) {
-            throw new Error('Access token not found');
-          }
+            if (!accessToken) {
+                throw new Error('Access token not found');
+            }
 
-          const response = await apiClient.get(
-            `/api/v1/study/${studyId}/schedules`,
-        );
+            const response = await apiClient.get(
+                `/api/v1/study/${studyId}/schedules`
+            );
             console.log('response', response);
 
             // FullCalendar에서 사용할 형식으로 변환
-            const formattedEvents = response.data.studyScheduleList.map((event: any) => ({
-                id: event.id,
-                title: event.title,
-                start: event.startDate,
-                end: event.endDate,
-                allDay: event.allDay,
-                extendedProps: {
-                    content: event.content,
-                },
-            }));
+            const formattedEvents = response.data.studyScheduleList.map(
+                (event: any) => ({
+                    id: event.id,
+                    title: event.title,
+                    start: event.startDate,
+                    end: event.endDate,
+                    allDay: event.allDay,
+                    extendedProps: {
+                        content: event.content,
+                    },
+                })
+            );
 
             // const manager = response.data.userPermission;
             setEvents(formattedEvents);
@@ -65,8 +67,8 @@ const Calender: React.FC = () => {
     // # useEffect(1): 데이터 가져오기기
     useEffect(() => {
         fetchData();
-    }, [studyId,manager]);
-    
+    }, [studyId, manager]);
+
     // # useEffect(2): FullCalendar 초기화
     useEffect(() => {
         // FullCalendar 초기화
@@ -90,7 +92,6 @@ const Calender: React.FC = () => {
                     addEventButton: {
                         text: 'Add Event',
                         click: function () {
-
                             // 관리자 여부 확인
                             if (manager) {
                                 setShowAddEventPopup(true); // 모달 열기
@@ -106,16 +107,16 @@ const Calender: React.FC = () => {
                         dayMaxEventRows: 6, // adjust to 6 only for timeGridWeek/timeGridDay
                     },
                 },
-                eventClick: function (info) {            
+                eventClick: function (info) {
                     console.log('manager ', manager);
                     setSelectedEvent(info.event); // EventApi 객체 저장
 
                     // 관리자 여부 확인
-                    if (manager) {  
-                    setShowEventDetailManagePopup(true);
-                  } else {
-                  setShowEventDetailPopup(true)
-                  }
+                    if (manager) {
+                        setShowEventDetailManagePopup(true);
+                    } else {
+                        setShowEventDetailPopup(true);
+                    }
                 },
                 events: events,
                 eventColor: '#a294f9',
@@ -124,7 +125,6 @@ const Calender: React.FC = () => {
             newCalendar.render();
             setCalendar(newCalendar);
         }
-    
     }, [calendarRef, events, manager]);
 
     // useEffect(3): 일정 목록 업데이트
@@ -166,30 +166,37 @@ const Calender: React.FC = () => {
 
         // 서버로 저장 요청
         try {
-            const response = await apiClient.post(`/api/v1/study/${studyId}/schedules`, {
-                title: event.title,
-                startDate: event.startdate,
-                endDate: event.endDate || event.startdate, // endDate가 없을 경우 startdate로 설정
-                content: event.content || '', // content가 없을 경우 빈 문자열 처리
-                allDay: event.allDay || false, // allDay가 없을 경우 false로 설정
-            });
+            const response = await apiClient.post(
+                `/api/v1/study/${studyId}/schedules`,
+                {
+                    title: event.title,
+                    startDate: event.startdate,
+                    endDate: event.endDate || event.startdate, // endDate가 없을 경우 startdate로 설정
+                    content: event.content || '', // content가 없을 경우 빈 문자열 처리
+                    allDay: event.allDay || false, // allDay가 없을 경우 false로 설정
+                }
+            );
 
             console.log('서버 응답:', response);
 
             // 서버에서 일정 목록 다시 조회
-            const newEvent = await apiClient.get(`/api/v1/study/${studyId}/schedules`);
+            const newEvent = await apiClient.get(
+                `/api/v1/study/${studyId}/schedules`
+            );
             console.log('newEvent', newEvent);
 
-            const formattedEvents = newEvent.data.studyScheduleList.map((event: any) => ({
-                id: event.id,
-                title: event.title,
-                start: event.startDate,
-                end: event.endDate,
-                allDay: event.allDay,
-                extendedProps: {
-                    content: event.content,
-                },
-            }));
+            const formattedEvents = newEvent.data.studyScheduleList.map(
+                (event: any) => ({
+                    id: event.id,
+                    title: event.title,
+                    start: event.startDate,
+                    end: event.endDate,
+                    allDay: event.allDay,
+                    extendedProps: {
+                        content: event.content,
+                    },
+                })
+            );
 
             setEvents(formattedEvents);
         } catch (error) {
@@ -215,11 +222,11 @@ const Calender: React.FC = () => {
                 setShowEventDetailPopup(false);
                 setSelectedEvent(null);
             } catch (error) {
-                if (error?.response) {
-                    console.error('스케줄 삭제 실패:', error.response.data);
+                if (error) {
+                    console.error('스케줄 삭제 실패:', error);
                     alert('스케줄 삭제에 실패했습니다.');
                 } else {
-                    console.error('서버 요청 실패:', error.message);
+                    console.error('서버 요청 실패:', error);
                     alert('서버 요청에 실패했습니다.');
                 }
             }
@@ -245,19 +252,19 @@ const Calender: React.FC = () => {
 
             let startDateTime = updatedEvent.startDate;
             let endDateTime = updatedEvent.endDate ?? null;
-            console.log("startDateTime: " + updatedEvent.startDate);
+            console.log('startDateTime: ' + updatedEvent.startDate);
 
             if (selectedEvent.allDay) {
                 startDateTime = moment(startDateTime).format('YYYY-MM-DD');
-                console.log("startDateTime: " + startDateTime);
+                console.log('startDateTime: ' + startDateTime);
                 endDateTime = endDateTime
                     ? moment(endDateTime).format('YYYY-MM-DD')
                     : null;
             } else {
                 startDateTime = moment(startDateTime).format(
                     'YYYY-MM-DDTHH:mm:ss'
-                )
-                console.log("startDateTime: " + startDateTime);
+                );
+                console.log('startDateTime: ' + startDateTime);
                 endDateTime = endDateTime
                     ? moment(endDateTime).format('YYYY-MM-DDTHH:mm:ss')
                     : null;
@@ -266,11 +273,9 @@ const Calender: React.FC = () => {
             selectedEvent.setStart(startDateTime);
             selectedEvent.setEnd(endDateTime);
 
-           
             // 서버에 put 요청
 
             await apiClient.put(`/api/v1/study/${studyId}/schedules`, {
-
                 id: selectedEvent.id,
                 title: updatedEvent.title || selectedEvent.title,
                 startDate: startDateTime,
@@ -292,7 +297,6 @@ const Calender: React.FC = () => {
         <>
             <div ref={calendarRef}></div>
 
-            
             {showAddEventPopup && (
                 <AddEventPopup
                     isOpen={showAddEventPopup}
@@ -301,7 +305,6 @@ const Calender: React.FC = () => {
                 />
             )}
 
-            
             {showEventDetailManagePopup && selectedEvent && (
                 <EventDetailManagePopup
                     isOpen={showEventDetailManagePopup}
@@ -319,7 +322,7 @@ const Calender: React.FC = () => {
                     onClose={() => setShowEventDetailPopup(false)}
                 />
             )}
-            
+
             {showUpdateEventPopup && selectedEvent && (
                 <UpdateEventPopup
                     isOpen={showUpdateEventPopup}

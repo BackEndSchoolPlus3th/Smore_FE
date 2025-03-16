@@ -54,8 +54,8 @@ const StudyRecruitmentListBoard: React.FC = () => {
                         title={recruitment.title}
                         introduction={recruitment.introduction}
                         hashtagList={
-                            recruitment.hashTags
-                                ? recruitment.hashTags.split(',')
+                            recruitment.hashtagList
+                                ? recruitment.hashtagList.split(',')
                                 : null
                         }
                         clipCount={recruitment.clipCount}

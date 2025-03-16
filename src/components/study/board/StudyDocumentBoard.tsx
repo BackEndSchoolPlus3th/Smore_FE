@@ -7,7 +7,16 @@ const StudyDocumentBoard: React.FC = () => {
     const { studyId } = useParams();
     const [files, setFiles] = useState([]);
 
-    const fetchFiles = async (studyId) => {
+    const fetchFiles = async (studyId: string | undefined) => {
+        if (!studyId) {
+            console.error('Invalid studyId');
+            return;
+        }
+        const id = parseInt(studyId, 10);
+        if (isNaN(id)) {
+            console.error('Invalid studyId');
+            return;
+        }
         try {
             const response = await apiClient.get(
                 `/api/v1/study/document/${studyId}`

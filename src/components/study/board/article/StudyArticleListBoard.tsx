@@ -42,7 +42,11 @@ const StudyArticleListBoard: React.FC = () => {
         navigate(`/study/${studyId}/article/new`);
     };
 
-    const handlePageClick = (page) => {
+    interface HandlePageClickProps {
+        page: number;
+    }
+
+    const handlePageClick = ({ page }: HandlePageClickProps) => {
         if (page >= 1 && page <= totalPages) {
             setCurrentPage(page);
         }
@@ -93,7 +97,7 @@ const StudyArticleListBoard: React.FC = () => {
             ))}
             <div className="flex justify-center col-span-12">
                 <PagingButton
-                    setPage={(newPage) => handlePageClick(newPage)}
+                    setPage={(newPage) => handlePageClick({ page: newPage })}
                     page={currentPage}
                     totalCount={articles.length}
                     pageSize={postsPerPage}

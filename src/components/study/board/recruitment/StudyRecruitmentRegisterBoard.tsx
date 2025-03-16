@@ -213,7 +213,6 @@ const StudyRecruitmentRegisterBoard: React.FC = () => {
                     setRecruitmentPeriod={setRecruitmentPeriod}
                     maxMember={maxMember}
                     setMaxMember={setMaxMember}
-                    thumbnail={thumbnail}
                     setThumbnail={setThumbnail}
                     isClosing={isClosing}
                     closeModal={closeModal}

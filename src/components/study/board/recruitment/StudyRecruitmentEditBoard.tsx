@@ -12,7 +12,7 @@ import {
 import { SubmitButton, CancleButton } from '../../../../shared';
 
 const StudyRecruitmentRegisterBoard: React.FC = () => {
-    const { studyId, recruitmentId } = useParams<{
+    const { studyId } = useParams<{
         studyId: string;
         recruitmentId: string;
     }>();
@@ -205,7 +205,6 @@ const StudyRecruitmentRegisterBoard: React.FC = () => {
                     setRecruitmentPeriod={setRecruitmentPeriod}
                     maxMember={maxMember}
                     setMaxMember={setMaxMember}
-                    thumbnail={thumbnail}
                     setThumbnail={setThumbnail}
                     isClosing={isClosing}
                     closeModal={closeModal}
