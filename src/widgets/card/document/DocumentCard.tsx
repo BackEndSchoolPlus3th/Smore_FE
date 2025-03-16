@@ -15,13 +15,13 @@ const DocumentCard: React.FC<DocumentCardProps> = ({
                 <img
                     src={file}
                     alt={`File preview ${index}`}
-                    className="max-h-32 object-cover"
+                    className="max-h object-cover"
                 />
             </div>
             <div className="flex-1 flex flex-col justify-between p-2">
                 <div>
-                    <div className="text-md font-bold mb-1">{file}</div>
-                    <div className="text-sm ">파일 설명</div>
+                    <div className="text-md font-bold mb-1"></div>
+                    <div className="text-sm "></div>
                 </div>
             </div>
         </div>
