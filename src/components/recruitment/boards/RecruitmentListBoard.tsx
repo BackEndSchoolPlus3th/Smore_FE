@@ -166,10 +166,13 @@ const RecruitmentListBoard = () => {
 
     // 페이지, 검색 필터 또는 추천 상태가 변경될 때 데이터 로드
     useEffect(() => {
-        handlePageChange(page);
         if (isLoggedIn) {
             setIsCustomRecommended(true);
         }
+    }, [isLoggedIn]);
+
+    useEffect(() => {
+        handlePageChange(page);
     }, [page, searchFilters, isCustomRecommended]);
 
     return (
