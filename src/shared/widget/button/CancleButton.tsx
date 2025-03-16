@@ -11,7 +11,7 @@ const CancleButton: React.FC<ButtonProps> = ({
         <button
             type="button"
             onClick={props.onClick}
-            className={`bg-white hover:bg-gray-200 active:scale-95 transition-transform transform
+            className={`hover:bg-gray-200 active:scale-95 transition-transform transform
             cursor-pointer text-red-500 font-bold rounded-lg
             ${isFit ? '' : 'w-full'}
             ${props.className}  ${size}

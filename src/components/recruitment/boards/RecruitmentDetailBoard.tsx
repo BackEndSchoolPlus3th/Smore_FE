@@ -105,9 +105,9 @@ const RecruitmentDetailBoard = () => {
         <>
             {/* 중앙 모집글 상세 페이지 */}
             <div className="col-span-9 flex flex-col gap-6 mt-6">
-                <div className="w-full flex flex-col gap-4 items-center border-2 border-gray-300 rounded-lg p-6 shadow-lg bg-white min-h-screen">
-                    <div className="text-center mb-8 w-full border-b border-gray-200 pb-4">
-                        <h1 className="text-4xl font-extrabold text-gray-900 mb-4">
+                <div className="w-full flex flex-col gap-6 items-center border-2 border-gray-300 rounded-lg p-6 shadow-lg bg-white min-h-screen">
+                    <div className="text-center w-full gap-2 flex flex-col">
+                        <h1 className="text-4xl font-extrabold text-gray-900">
                             {recruitmentContent.title}
                         </h1>
                         <p className="text-lg text-gray-700 mb-2">
@@ -120,7 +120,8 @@ const RecruitmentDetailBoard = () => {
                                 ).toLocaleDateString()}
                         </p>
                     </div>
-                    <div className="flex flex-wrap justify-center w-full border-b border-gray-200 pb-4">
+                    <div className="border-b border-gray-200 w-full"></div>
+                    <div className="flex flex-wrap justify-center w-full">
                         {recruitmentContent.imageUrls
                             ?.split(',')
                             .map((url, index) => (
@@ -132,7 +133,7 @@ const RecruitmentDetailBoard = () => {
                                 />
                             ))}
                     </div>
-                    <div className="prose max-w-none w-full pb-4">
+                    <div className=" w-full">
                         {recruitmentContent?.content && (
                             <MarkdownRenderer
                                 content={recruitmentContent.content}
