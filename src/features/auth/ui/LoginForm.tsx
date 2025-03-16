@@ -38,7 +38,7 @@ const LoginForm = () => {
 
     return (
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-screen w-[75rem] flex justify-center items-center grid grid-cols-12 gap-6 ">
-            <div className="space-y-6 col-start-5 col-end-9 h-230 flex flex-col justify-center">
+            <div className="space-y-6 col-start-5 col-end-9 h-full flex flex-col justify-center">
                 {/* 폼 요소에 onKeyDown 이벤트 핸들러를 부착 */}
                 <form
                     onKeyDown={handleKeyDown}
