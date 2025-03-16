@@ -168,6 +168,8 @@ const RecruitmentListBoard = () => {
     useEffect(() => {
         if (isLoggedIn) {
             setIsCustomRecommended(true);
+        } else {
+            setIsCustomRecommended(false);
         }
     }, [isLoggedIn]);
 
