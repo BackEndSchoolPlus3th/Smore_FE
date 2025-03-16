@@ -3,7 +3,7 @@ import SockJS from 'sockjs-client';
 import { Client } from '@stomp/stompjs';
 import { jwtDecode } from 'jwt-decode';
 import { apiClient, SubmitButton } from '../../shared';
-import { useParams } from 'react-router-dom';
+// import { useParams } from 'react-router-dom';
 
 interface Participant {
     memberId: number;
