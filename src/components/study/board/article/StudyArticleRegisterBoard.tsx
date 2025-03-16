@@ -121,7 +121,7 @@ const StudyArticleRegisterBoard: React.FC = () => {
                 />
             </div>
 
-            {/* 본문 영역: 에디터 및 미리보기 */}
+
             <div className="col-span-6 min-h-[49rem]">
                 <Editor
                     title={title}
@@ -135,6 +135,7 @@ const StudyArticleRegisterBoard: React.FC = () => {
             </div>
             <div className="col-span-6">
                 <MarkdownPreview content={content} />
+
             </div>
         </>
     );
