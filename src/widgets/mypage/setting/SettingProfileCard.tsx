@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { SubmitButton, CancleButton, apiClient } from '../../../shared';
+import { SubmitButton, CancleButton, apiClient, Input } from '../../../shared';
 import { UserProfileProps } from '../../../entities';
 import { FileUploadButton, updateUser } from '../../../features';
 import { useDispatch } from 'react-redux';
@@ -129,86 +129,100 @@ const SettingInfoCard: React.FC<UserProfileProps> = (
     };
 
     return (
-        <section className="p-6 bg-white rounded-lg shadow-sm">
-            {/* 섹션 타이틀 */}
-            <h2 className="text-xl font-semibold mb-6">내 프로필</h2>
+        <section className="p-6 bg-[#fafbff] rounded-lg shadow-sm">
+            <div className="grid grid-cols-9 gap-6">
+                {/* 섹션 타이틀 */}
+                <h2 className="text-xl font-semibold col-span-9">내 프로필</h2>
 
-            {/* 구분선 */}
-            <div className="w-full border-b border-gray-200 mb-6"></div>
+                {/* 구분선 */}
+                <div className="w-full border-b border-gray-200 col-span-9"></div>
 
-            <div className="flex items-center mb-6">
-                {isImageEdit ? (
-                    <div className="flex items-center mr-auto">
-                        <FileUploadButton
-                            uploadPath="profile"
-                            onUploadComplete={(url) => setEditImageUrl(url)}
+                {/* 프로필 이미지 */}
+                <div className="col-span-5 flex items-center justify-center">
+                    {isImageEdit ? (
+                        <div className="flex items-center mr-auto">
+                            <FileUploadButton
+                                uploadPath="profile"
+                                onUploadComplete={(url) => setEditImageUrl(url)}
+                            />
+                        </div>
+                    ) : imageUrl ? (
+                        <img
+                            src={imageUrl}
+                            alt="프로필 이미지"
+                            className="w-16 h-16 rounded-full bg-gray-200 flex items-center 
+                    justify-center overflow-hidden mr-auto"
                         />
-                    </div>
-                ) : imageUrl ? (
-                    <img
-                        src={imageUrl}
-                        alt="프로필 이미지"
-                        className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden mr-auto"
-                    />
-                ) : (
-                    <User className="w-16 h-16 rounded-full bg-white flex items-center justify-center overflow-hidden mr-auto p-2 border border-gray-300" />
-                )}
+                    ) : (
+                        <User className="w-16 h-16 rounded-full bg-white flex items-center justify-center overflow-hidden mr-auto p-2 border border-gray-300" />
+                    )}
+                </div>
                 {isImageEdit ? (
-                    <div className="flex space-x-2">
+                    <>
                         <CancleButton
                             label="취소"
                             onClick={handleCancelImage}
+                            className="col-start-8 col-span-1"
                         />
                         <SubmitButton
                             onClick={handleSubmitImage}
                             label="확인"
+                            className="col-span-1"
                         />
-                    </div>
+                    </>
                 ) : (
-                    <SubmitButton onClick={handleEditImage} label="수정" />
+                    <SubmitButton
+                        onClick={handleEditImage}
+                        label="수정"
+                        className="col-start-9 col-span-1"
+                    />
                 )}
-            </div>
 
-            {/* 닉네임 */}
-            <div className="flex items-center mb-6">
-                <div className="mr-auto">
+                {/* 닉네임 */}
+                <div className="col-span-4 flex flex-col items-start justify-center">
                     <p className="text-sm text-gray-500">닉네임</p>
                     {isNicknameEdit ? (
-                        <input
+                        <Input
                             type="text"
-                            className="w-full border border-gray-300 rounded-md p-1.5"
                             value={editNickname}
                             onChange={(e) => setEditNickname(e.target.value)}
                             maxLength={10}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
                         />
                     ) : (
                         <p className="font-medium">{nickname}</p>
                     )}
                 </div>
                 {isNicknameEdit ? (
-                    <div className="flex space-x-2">
-                        <CancleButton onClick={handleCancelNickname} />
+                    <>
+                        <CancleButton
+                            onClick={handleCancelNickname}
+                            className="col-start-8 col-span-1"
+                        />
                         <SubmitButton
                             onClick={handleSubmitNickname}
                             label="확인"
+                            className="col-span-1"
                         />
-                    </div>
+                    </>
                 ) : (
-                    <SubmitButton onClick={handleEditNickname} label="수정" />
+                    <SubmitButton
+                        onClick={handleEditNickname}
+                        label="수정"
+                        className="col-start-9 col-span-1"
+                    />
                 )}
-            </div>
 
-            {/* 자기소개 */}
-            <div className="flex items-center mb-6">
-                <div className="mr-auto">
+                {/* 자기소개 */}
+                <div className="col-span-4 flex flex-col items-start justify-center">
                     <p className="text-sm text-gray-500 mb-1">자기소개</p>
                     {isDescriptionEdit ? (
-                        <input
+                        <Input
                             type="text"
-                            className="w-130 border border-gray-300 rounded-md p-1.5"
                             value={editDescription || ''}
                             onChange={(e) => setEditDescription(e.target.value)}
                             maxLength={30}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
                         />
                     ) : description ? (
                         <p className="font-medium">{description}</p>
@@ -219,17 +233,22 @@ const SettingInfoCard: React.FC<UserProfileProps> = (
                     )}
                 </div>
                 {isDescriptionEdit ? (
-                    <div className="flex space-x-2">
-                        <CancleButton onClick={handleCancelDescription} />
+                    <>
+                        <CancleButton
+                            onClick={handleCancelDescription}
+                            className="col-start-8 col-span-1"
+                        />
                         <SubmitButton
                             onClick={handleSubmitDescription}
                             label="확인"
+                            className="col-span-1"
                         />
-                    </div>
+                    </>
                 ) : (
                     <SubmitButton
                         onClick={handleEditDescription}
                         label="수정"
+                        className="col-start-9 col-span-1"
                     />
                 )}
             </div>

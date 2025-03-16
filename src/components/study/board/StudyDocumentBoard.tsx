@@ -30,7 +30,17 @@ const StudyDocumentBoard: React.FC = () => {
     return (
         <>
             {/* 문서함 */}
-            <h2 className="col-span-12 text-xl font-bold mb-4 pt-10">문서함</h2>
+            <div
+                className="sticky top-0 w-full shadow-md p-2 col-span-12 rounded-md z-30
+                grid grid-cols-12 gap-6 h-fit bg-[#fafbff] border border-gray-200"
+            >
+                <h1
+                    className="text-xl font-bold col-span-2
+                    flex items-center justify-start ml-4"
+                >
+                    문서함
+                </h1>
+            </div>
 
             {files.length === 0 ? (
                 <p>현재 첨부된 파일이 없습니다.</p>

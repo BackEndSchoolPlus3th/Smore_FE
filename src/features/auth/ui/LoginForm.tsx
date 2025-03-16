@@ -1,10 +1,4 @@
-import {
-    useState,
-    ChangeEvent,
-    FormEvent,
-    useEffect,
-    KeyboardEvent,
-} from 'react';
+import { useState, ChangeEvent, useEffect, KeyboardEvent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../model/authSlice';
 import type { AppDispatch, RootState } from '../../../shared';
@@ -33,17 +27,22 @@ const LoginForm = () => {
         }
     }, [auth.user, navigate]);
 
-    // 엔터 키 이벤트 핸들러 추가
     const handleKeyDown = (e: KeyboardEvent<HTMLFormElement>) => {
         if (e.key === 'Enter') {
-            e.preventDefault(); // 기본 폼 제출 방지
-            handleLogin(); // 로그인 실행
+            e.preventDefault(); // 기본 폼 제출 동작 방지
+            if (email.trim() !== '' && password.trim() !== '') {
+                handleLogin();
+            }
         }
     };
 
     return (
         <div className="space-y-6 col-start-5 col-end-9 h-230 flex flex-col justify-center">
-            <div className="p-6 space-y-6 bg-white rounded-xl shadow-md border border-gray-200">
+            {/* 폼 요소에 onKeyDown 이벤트 핸들러를 부착 */}
+            <form
+                onKeyDown={handleKeyDown}
+                className="p-6 space-y-6 bg-white rounded-xl shadow-md border border-gray-200"
+            >
                 <h1 className="text-2xl font-bold text-center text-gray-900">
                     로그인
                 </h1>
@@ -91,7 +90,7 @@ const LoginForm = () => {
                             <SubmitButton
                                 onClick={handleLogin}
                                 label="로그인"
-                                clickColor="hover:bg-blue-50 active:bg-blue-100"
+                                isFit={false}
                             />
                         )}
                         {auth.error && (
@@ -102,11 +101,13 @@ const LoginForm = () => {
                         <SubmitButton
                             onClick={handleSignup}
                             label="회원가입"
-                            clickColor="hover:bg-green-50 active:bg-green-100"
+                            color="bg-green-400 text-white"
+                            clickColor="hover:bg-green-500 active:bg-green-600"
+                            isFit={false}
                         />
                     </div>
                 </div>
-            </div>
+            </form>
         </div>
     );
 };

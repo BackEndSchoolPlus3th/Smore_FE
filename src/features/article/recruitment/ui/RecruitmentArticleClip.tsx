@@ -77,6 +77,7 @@ export const RecruitmentArticleClip: React.FC<RecruitmentArticleClipProps> = ({
                     ? 'cursor-not-allowed'
                     : 'cursor-pointer hover:scale-110'
             }
+                ${isClipped ? 'border-red-200' : 'border-gray-300'}
             `}
             onClick={handleClip}
         >

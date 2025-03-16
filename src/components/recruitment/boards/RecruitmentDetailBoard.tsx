@@ -105,9 +105,12 @@ const RecruitmentDetailBoard = () => {
         <>
             {/* 중앙 모집글 상세 페이지 */}
             <div className="col-span-9 flex flex-col gap-6 mt-6">
-                <div className="w-full flex flex-col gap-4 items-center border-2 border-gray-300 rounded-lg p-6 shadow-lg bg-white min-h-screen">
-                    <div className="text-center mb-8 w-full border-b border-gray-200 pb-4">
-                        <h1 className="text-4xl font-extrabold text-gray-900 mb-4">
+                <div
+                    className="w-full flex flex-col gap-6 items-center border-2 border-gray-300 rounded-lg 
+                p-6 shadow-lg min-h-screen bg-[#fafbff]"
+                >
+                    <div className="text-center w-full gap-2 flex flex-col">
+                        <h1 className="text-4xl font-extrabold text-gray-900">
                             {recruitmentContent.title}
                         </h1>
                         <p className="text-lg text-gray-700 mb-2">
@@ -120,7 +123,8 @@ const RecruitmentDetailBoard = () => {
                                 ).toLocaleDateString()}
                         </p>
                     </div>
-                    <div className="flex flex-wrap justify-center w-full border-b border-gray-200 pb-4">
+                    <div className="border-b border-gray-200 w-full"></div>
+                    <div className="flex flex-wrap justify-center w-full">
                         {recruitmentContent.imageUrls
                             ?.split(',')
                             .map((url, index) => (
@@ -132,7 +136,7 @@ const RecruitmentDetailBoard = () => {
                                 />
                             ))}
                     </div>
-                    <div className="prose max-w-none w-full pb-4">
+                    <div className=" w-full">
                         {recruitmentContent?.content && (
                             <MarkdownRenderer
                                 content={recruitmentContent.content}
@@ -141,7 +145,7 @@ const RecruitmentDetailBoard = () => {
                     </div>
                 </div>
                 {/* 댓글 섹션 */}
-                <div className="flex flex-col w-full">
+                <div className="flex flex-col w-full mb-6">
                     {recruitmentId && (
                         <CommentForm recruitmentId={recruitmentId} />
                     )}
@@ -149,7 +153,7 @@ const RecruitmentDetailBoard = () => {
             </div>
             {/* 우측 해시태그, 모집 정보, 지원 버튼 */}
             <div className="col-span-3 gap-4">
-                <div className="sticky top-10 flex flex-col gap-4 border-2 border-gray-300 rounded-lg p-6 w-full shadow-lg bg-white mt-50">
+                <div className="sticky top-10 flex flex-col gap-4 border-2 border-gray-300 rounded-lg p-6 w-full shadow-lg bg-[#fafbff] mt-50">
                     <div className="flex flex-row w-full justify-center">
                         {recruitmentContent.clipCount && (
                             <RecruitmentArticleClip
@@ -166,7 +170,7 @@ const RecruitmentDetailBoard = () => {
                                 .map((hashtag, index) => (
                                     <span
                                         key={index}
-                                        className="bg-white text-black border border-purple-500 px-2 py-1 rounded-full"
+                                        className="bg-white text-black border border-purple-300 px-2 py-1 rounded-full text-sm"
                                     >
                                         #{hashtag}
                                     </span>

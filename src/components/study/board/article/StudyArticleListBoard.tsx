@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { apiClient, SubmitButton } from '../../../../shared';
+import { apiClient, SubmitButton, Input } from '../../../../shared';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArticleCard, PagingButton } from '../../../../widgets';
 import { ArticleCardResponse } from '../../../../entities';
@@ -39,7 +39,7 @@ const StudyArticleListBoard: React.FC = () => {
     };
 
     const goToStudyEditPage = () => {
-        navigate(`/study/${studyId}/article/edit`);
+        navigate(`/study/${studyId}/article/new`);
     };
 
     const handlePageClick = (page) => {
@@ -58,12 +58,12 @@ const StudyArticleListBoard: React.FC = () => {
         <>
             {/* 검색창 */}
             <div className="flex items-center col-start-10 col-span-2">
-                <input
+                <Input
                     type="text"
                     value={searchQuery}
                     onChange={handleSearchChange}
                     placeholder="검색"
-                    className="p-1 border rounded-md"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
                 />
             </div>
 

@@ -202,7 +202,7 @@ const StudySettingBoard: React.FC = () => {
 
     return (
         <>
-            <div className="col-span-12 md:col-span-4 lg:col-span-3 bg-white shadow-lg rounded p-6 border border-gray-200 ">
+            <div className="col-span-12 md:col-span-4 lg:col-span-3 bg-[#fafbff] shadow-lg rounded p-6 border border-gray-200 ">
                 <div className="flex flex-col items-center">
                     <div className="w-32 h-32 bg-gray-300 rounded-full flex justify-center items-center mb-4">
                         <BookOpen color={'white'} size={64} />
@@ -249,7 +249,6 @@ const StudySettingBoard: React.FC = () => {
                                 <SubmitButton
                                     label="저장"
                                     onClick={handleSaveProfile}
-                                    clickColor="hover:bg-cyan-100 active:bg-cyan-200"
                                 />
                             </div>
                         </>
@@ -268,14 +267,13 @@ const StudySettingBoard: React.FC = () => {
                                 <SubmitButton
                                     label="프로필 수정"
                                     onClick={() => setIsEditingProfile(true)}
-                                    clickColor="hover:bg-cyan-100 active:bg-cyan-200"
                                 />
                             )}
                         </>
                     )}
                 </div>
             </div>
-            <div className="col-span-12 md:col-span-8 lg:col-span-9 bg-white shadow-lg rounded p-6 border border-gray-200">
+            <div className="col-span-12 md:col-span-8 lg:col-span-9 bg-[#fafbff] shadow-lg rounded p-6 border border-gray-200">
                 <h2 className="text-2xl font-bold mb-4">권한 설정</h2>
                 <div className="space-y-4">
                     {[
@@ -305,7 +303,7 @@ const StudySettingBoard: React.FC = () => {
                                         onClick={() =>
                                             setSelectedPermissionKey(key)
                                         }
-                                        className="p-0.1"
+                                        size="text-xs px-2 py-1"
                                     />
                                 )}
                             </div>
@@ -373,7 +371,6 @@ const StudySettingBoard: React.FC = () => {
                                                     selectedPermissionKey
                                                 )
                                             }
-                                            clickColor="hover:bg-cyan-100 active:bg-cyan-200"
                                         />
                                     </div>
                                 )}
@@ -384,7 +381,6 @@ const StudySettingBoard: React.FC = () => {
                             <SubmitButton
                                 label={isEditingPermissions ? '취소' : '수정'}
                                 onClick={handlePermissionsEditToggle}
-                                clickColor="hover:bg-red-100 active:bg-red-200"
                             />
                         )}
                     </div>

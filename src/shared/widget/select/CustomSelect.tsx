@@ -31,7 +31,7 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
 
     return (
         <div
-            className={`relative min-w-25 ${className} text-sm`}
+            className={`relative min-w-25 ${className} text-sm `}
             ref={selectRef}
             onMouseEnter={() => {
                 setIsOpen(true);

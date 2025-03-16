@@ -75,16 +75,16 @@ const StudyMainBoard: React.FC = () => {
                     <BookOpen color={'black'} className="w-full h-full" />
                 </div>
             </div>
-            <div className="col-span-4 flex flex-col border border-gray-200 rounded-md p-5 shadow-md">
+            <div className="col-span-5 flex flex-col border border-gray-200 rounded-md p-5 shadow-md">
                 <div className="text-xl font-bold pb-5">{study.title}</div>
                 <div className="h-30 text-sm text-gray-700 pb-5">
                     {study.introduction}
                 </div>
                 <div className="text-sm text-gray-700">
-                    {study.hashTags && study.hashTags.join(', ')}
+                    {study.hashTags && study.hashTags.split(', ')}
                 </div>
             </div>
-            <div className="col-span-3 flex justify-end items-start h-fit">
+            <div className="col-start-12 col-span-1 flex justify-end items-start h-fit">
                 <CancleButton label="탈퇴" onClick={handleExitClick} />
             </div>
 

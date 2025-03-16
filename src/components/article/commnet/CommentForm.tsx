@@ -127,7 +127,7 @@ const CommentForm: React.FC<CommentFormProps> = (props: CommentFormProps) => {
     }, []);
 
     return (
-        <div className="flex flex-col gap-4 border-2 border-gray-300 rounded-lg p-6 w-full shadow-lg bg-white h-md">
+        <div className="flex flex-col gap-4 border-2 border-gray-300 rounded-lg p-6 w-full shadow-lg bg-[#fafbff] h-md">
             <h2 className="text-lg font-bold text-gray-900 mb-1 border-b border-gray-200 pb-1">
                 댓글 목록
             </h2>

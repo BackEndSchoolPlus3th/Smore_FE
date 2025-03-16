@@ -7,7 +7,6 @@ import '../ui/text.css';
 import {
     ChatPage,
     LoginPage,
-    NewRecruitmentPage,
     ErrorPage,
     SignupPage,
     MyStudyListPage,
@@ -35,10 +34,7 @@ function App() {
                                 element={<StudyPage />}
                             />
                             <Route path="/chat/*" element={<ChatPage />} />
-                            <Route
-                                path="/study/:studyId/article/recruitment/new"
-                                element={<NewRecruitmentPage />}
-                            />
+
                             <Route path="/login" element={<LoginPage />} />
                             <Route path="/signup" element={<SignupPage />} />
                             <Route path="/mypage/*" element={<MyPage />} />

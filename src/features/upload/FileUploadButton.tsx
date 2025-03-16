@@ -5,7 +5,7 @@ import React, {
     ChangeEvent,
 } from 'react';
 import axios from 'axios';
-import { fileUploadApiClient } from '../../shared';
+import { fileUploadApiClient, SubmitButton } from '../../shared';
 import { MdOutlineCancel } from 'react-icons/md';
 
 export interface FileUploadButtonRef {
@@ -146,14 +146,13 @@ const FileUploadButton = forwardRef<FileUploadButtonRef, FileUploadButtonProps>(
                         type="file"
                         accept="image/*"
                         onChange={handleFileChange}
-                        className="border border-gray-300 p-1.5 rounded text-xs w-full focus:outline-none focus:ring-1 focus:ring-purple-400 cursor-pointer"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500 text-xs"
                     />
-                    <button
+                    <SubmitButton
+                        label="파일 업로드"
                         onClick={handleUpload}
-                        className="p-1.5 text-xs bg-purple-500 text-white rounded hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-400 cursor-pointer min-w-15"
-                    >
-                        업로드
-                    </button>
+                        isFit={true}
+                    />
                 </div>
                 {uploadStatus && (
                     <p className="mb-2 text-xs text-gray-700">{uploadStatus}</p>

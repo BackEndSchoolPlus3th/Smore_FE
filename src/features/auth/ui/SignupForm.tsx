@@ -38,7 +38,7 @@ const SignupForm: React.FC<SignupFormProps> = ({
                         placeholder="이메일"
                         onChange={onChange}
                         error={error.email}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none  focus:ring-purple-500 focus:border-purple-500"
                     />
                     <Input
                         type="password"
@@ -47,7 +47,7 @@ const SignupForm: React.FC<SignupFormProps> = ({
                         placeholder="비밀번호"
                         onChange={onChange}
                         error={error.password}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none  focus:ring-purple-500 focus:border-purple-500"
                     />
                     <Input
                         type="password"
@@ -56,7 +56,7 @@ const SignupForm: React.FC<SignupFormProps> = ({
                         placeholder="비밀번호 확인"
                         onChange={onChange}
                         error={error.passwordConfirm}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none  focus:ring-purple-500 focus:border-purple-500"
                     />
                     <Input
                         type="text"
@@ -65,14 +65,15 @@ const SignupForm: React.FC<SignupFormProps> = ({
                         placeholder="닉네임"
                         onChange={onChange}
                         error={error.nickname}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none  focus:ring-purple-500 focus:border-purple-500"
                     />
-                    .
+
                     <SubmitButton
                         isSubmit={true}
                         label={isSubmitting ? '가입 중...' : '가입하기'}
                         disabled={isSubmitting}
-                        clickColor="hover:bg-blue-50 active:bg-blue-100"
+                        color="bg-green-400 text-white"
+                        clickColor="hover:bg-green-500 active:bg-green-600"
                         isFit={false}
                     />
                     {isSuccess && (

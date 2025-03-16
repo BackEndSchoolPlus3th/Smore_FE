@@ -1,7 +1,12 @@
 // RecruitmentArticleSearch.tsx
 import React, { useState, KeyboardEvent } from 'react';
 import { MdOutlineCancel } from 'react-icons/md';
-import { regionOptions, SubmitButton, CustomSelect } from '../../../../shared';
+import {
+    regionOptions,
+    SubmitButton,
+    CustomSelect,
+    Input,
+} from '../../../../shared';
 
 interface RecruitmentArticleSearchProps {
     onSearch: (searchParams: { [key: string]: string }) => void;
@@ -124,13 +129,13 @@ export const RecruitmentArticleSearch: React.FC<
                         className="flex-1"
                     />
                 ) : (
-                    <input
+                    <Input
                         type="text"
                         value={inputValue}
                         onChange={(e) => setInputValue(e.target.value)}
                         onKeyPress={handleKeyPress}
                         placeholder="검색어 입력"
-                        className="flex-1 p-2 border border-gray-300 rounded-md text-sm bg-white"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
                     />
                 )}
                 <SubmitButton onClick={handleSearchClick} label="검색" />

@@ -56,7 +56,7 @@ const MyStudyListPage: React.FC = () => {
     return (
         <>
             <div
-                className="sticky top-0 flex justify-between items-center border border-gray-200 bg-white
+                className="sticky top-0 flex justify-between items-center border border-gray-200 bg-[#fafbff]
              shadow-md p-2 z-10 col-span-12 h-fit mt-6 rounded-md"
             >
                 <p className="font-bold text-dark-purple">내 스터디 목록</p>
