@@ -16,7 +16,7 @@ const ArticleCard: React.FC<ArticleCardProps> = (props: ArticleCardProps) => {
                     <img
                         src={props.imageUrl}
                         alt="thumbnail"
-                        className="w-full h-full object-cover rounded-t-md"
+                        className="w-full h-full object-cover rounded-t-md object-center"
                     />
                 ) : (
                     <div className="bg-white rounded-bl-md w-full h-full flex items-center justify-center">

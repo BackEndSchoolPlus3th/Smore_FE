@@ -63,15 +63,18 @@ const AlarmPage: React.FC<AlarmPageProps> = ({ isOpen, onClose, events }) => {
                 /(.+?)님이 (.+?)에 지원하였습니다\./
             );
             if (match) {
-                await apiClient.post(`/api/v1/study/${alarm.studyId}/addMember`, {
-                    studyTitle: alarm.studyId,
-                    memberId: alarm.senderId,
-                    role: "MEMBER",
-                    permissionRecruitManage: 0,
-                    permissionArticleManage: 0,
-                    permissionCalendarManage: 0,
-                    permissionSettingManage: 0,
-                });
+                await apiClient.post(
+                    `/api/v1/study/${alarm.studyId}/addMember`,
+                    {
+                        studyTitle: alarm.studyId,
+                        memberId: alarm.senderId,
+                        role: 'MEMBER',
+                        permissionRecruitManage: 0,
+                        permissionArticleManage: 0,
+                        permissionCalendarManage: 0,
+                        permissionSettingManage: 0,
+                    }
+                );
             }
         } catch (error) {
             console.error('지원 수락 실패:', error);
@@ -85,7 +88,7 @@ const AlarmPage: React.FC<AlarmPageProps> = ({ isOpen, onClose, events }) => {
             );
             if (match) {
                 await apiClient.post(`/api/v1/study/${alarm.studyId}/reject`, {
-                    memberId: alarm.senderId
+                    memberId: alarm.senderId,
                 });
             }
         } catch (error) {
@@ -132,13 +135,13 @@ const AlarmPage: React.FC<AlarmPageProps> = ({ isOpen, onClose, events }) => {
                                 onClick={() => apply(alarm)}
                                 label="수락"
                                 size="text-xs px-2 py-1"
-                                clickColor="hover:bg-green-200 active:bg-green-300"
+                                isFit={false}
                             />
                             <SubmitButton
                                 onClick={() => startChat(alarm)}
                                 label="채팅 시작"
                                 size="text-xs px-2 py-1"
-                                clickColor="hover:bg-purple-200 active:bg-purple-300"
+                                isFit={false}
                             />
                         </div>
                     </>

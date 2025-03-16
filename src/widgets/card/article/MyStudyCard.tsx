@@ -15,7 +15,7 @@ const MyStudyCard: React.FC<MyStudyLisProps> = (props: MyStudyLisProps) => {
                     <img
                         src={props.thumbnailUrl}
                         alt="thumbnail"
-                        className="w-full h-full object-cover rounded-t-md"
+                        className="w-full h-full object-cover rounded-t-md object-center"
                     />
                 ) : (
                     <div className="bg-white rounded-bl-md w-full h-full flex items-center justify-center">
