@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { apiClient } from '../../shared';
-import { SquareArrowRight } from 'lucide-react';
+import { SquareArrowRight, SquareArrowDown } from 'lucide-react';
+import { gt, transform } from 'lodash';
 
 type ChatRoom = {
     roomId: string; // 백엔드에서 roomId(Long)을 받아오면 문자열로 변환
@@ -92,6 +93,23 @@ const Sidebar: React.FC<SidebarProps> = ({ selectedRoom, onRoomSelect }) => {
         }
     };
 
+    const arrowRight = (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="size-4"
+        >
+            <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="m8.25 4.5 7.5 7.5-7.5 7.5"
+            />
+        </svg>
+    );
+
     return (
         <div className="col-span-3 h-235 border border-gray-200 shadow-md rounded-xl bg-[#fafbff]">
             <div className="p-4 h-full max-h-full">
@@ -111,7 +129,7 @@ const Sidebar: React.FC<SidebarProps> = ({ selectedRoom, onRoomSelect }) => {
                                     : 'transition'
                             }
                         >
-                            <SquareArrowRight className="w-4 h-4" />
+                            {arrowRight}
                         </div>
                     </div>
                     {expandedCategory === 'dm' && (
@@ -154,7 +172,7 @@ const Sidebar: React.FC<SidebarProps> = ({ selectedRoom, onRoomSelect }) => {
                                     : 'transition'
                             }
                         >
-                            <SquareArrowRight className="w-4 h-4" />
+                            {arrowRight}
                         </div>
                     </div>
                     {expandedCategory === 'group' && (
