@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Video } from 'lucide-react';
 import { useParams } from 'react-router-dom';

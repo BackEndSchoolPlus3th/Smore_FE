@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { apiClient } from '../../shared';
-import { SquareArrowRight, SquareArrowDown } from 'lucide-react';
-import { gt, transform } from 'lodash';
 
 type ChatRoom = {
     roomId: string; // 백엔드에서 roomId(Long)을 받아오면 문자열로 변환
@@ -14,7 +12,7 @@ const Sidebar: React.FC<{
     selectedRoom: ChatRoom | null;
     onRoomSelect: (room: ChatRoom) => void;
 }> = ({ selectedRoom, onRoomSelect }) => {
-    const { study_id: studyId, chat_type: chatType } = useParams();
+    const { chat_type: chatType } = useParams();
     const navigate = useNavigate();
 
     // 사이드바에서 펼쳐진 카테고리 (기본 "dm")

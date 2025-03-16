@@ -2,7 +2,6 @@ import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { materialDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import { dark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 interface MarkdownRendererProps {
     content: string;
@@ -78,8 +77,8 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
                             <SyntaxHighlighter
                                 PreTag="div"
                                 language={match[1]}
-                                style={materialDark}
-                                {...rest}
+                                style={materialDark as any}
+                                {...(rest as any)}
                             >
                                 {String(children)}
                             </SyntaxHighlighter>

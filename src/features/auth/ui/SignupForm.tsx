@@ -3,7 +3,6 @@ import {
     SignupFormValues,
     SignupError,
     Input,
-    Button,
     SubmitButton,
 } from '../../../shared';
 

@@ -1,9 +1,4 @@
-import React, {
-    useState,
-    forwardRef,
-    useImperativeHandle,
-    ChangeEvent,
-} from 'react';
+import { useState, forwardRef, useImperativeHandle, ChangeEvent } from 'react';
 import axios from 'axios';
 import { fileUploadApiClient, SubmitButton } from '../../shared';
 import { MdOutlineCancel } from 'react-icons/md';

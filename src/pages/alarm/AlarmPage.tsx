@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { apiClient, SubmitButton, CancleButton } from '../../shared';
 import { FaTimes } from 'react-icons/fa'; // X 아이콘 추가
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 interface Alarm {
     id: number;
@@ -16,7 +16,7 @@ interface Alarm {
 
 interface AlarmPageProps {
     isOpen: boolean;
-    events: Event[];
+    events: string[];
     onClose: () => void;
 }
 const AlarmPage: React.FC<AlarmPageProps> = ({ isOpen, onClose, events }) => {
