@@ -54,8 +54,8 @@ const RecruitmentCard: React.FC<RecruitmentCardProps> = (
                         <div className="ml-2 text-sm">{props.writerName}</div>
                     </div>
                     <div className="flex items-center">
-                        <Heart className="w-4 h-4 text-red-500" />
-                        <div className="ml-1 text-sm">{props.clipCount}</div>
+                        <div className=" text-sm">{props.clipCount}</div>
+                        <Heart className="w-4 h-4 text-red-500 ml-1" />
                     </div>
                 </div>
             </div>
