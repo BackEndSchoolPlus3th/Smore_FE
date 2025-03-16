@@ -32,8 +32,6 @@ const ChatBoard: React.FC<ChatBoardProps> = ({ selectedRoom }) => {
                     {studyId && chatType
                         ? selectedRoom?.roomName
                         : '채팅방을 선택해주세요.'}
-
-                    {selectedRoom?.roomName}
                 </h1>
                 <button
                     className="p-2 rounded-full hover:bg-gray-200 transition col-span-1 h-fit"

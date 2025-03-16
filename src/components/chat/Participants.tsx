@@ -1,12 +1,17 @@
-// Participants.tsx
 import React, { useEffect, useState } from 'react';
 import { apiClient } from '../../shared';
 import { useParams } from 'react-router-dom';
 
+interface Participant {
+    memberId: number;
+    memberName: string;
+    profileImageUrl?: string | null;
+}
+
 const Participants: React.FC = () => {
     const { study_id: studyId, chat_type: chatType } = useParams();
 
-    const [participants, setParticipants] = useState<any[]>([]);
+    const [participants, setParticipants] = useState<Participant[]>([]);
 
     useEffect(() => {
         // 그룹 채팅 + studyId가 있을 때만 서버에서 참여자 목록을 불러온다고 가정
@@ -38,9 +43,20 @@ const Participants: React.FC = () => {
                 {participants.map((user) => (
                     <li
                         key={user.memberId}
-                        className="p-2 cursor-pointer hover:bg-gray-100 rounded mb-2 text-gray-600"
+                        className="p-2 cursor-pointer hover:bg-gray-100 rounded mb-2 text-gray-600 flex items-center"
                     >
-                        {user.memberName}
+                        {/* 프로필 이미지 or 대체 박스 */}
+                        {user.profileImageUrl ? (
+                            <img
+                                src={user.profileImageUrl}
+                                alt="프로필"
+                                className="w-8 h-8 rounded-full object-cover mr-2"
+                            />
+                        ) : (
+                            <div className="w-8 h-8 rounded-full bg-gray-300 mr-2" />
+                        )}
+                        {/* 닉네임 */}
+                        <span>{user.memberName}</span>
                     </li>
                 ))}
             </ul>
