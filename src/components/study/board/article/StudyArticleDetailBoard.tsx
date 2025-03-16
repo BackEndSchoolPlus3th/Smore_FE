@@ -223,9 +223,9 @@ const StudyArticleDetailBoard: React.FC = () => {
     if (!articleData) return <div>Loading...</div>;
     
     return (
-        <div className="flex flex-col w-full h-screen bg-white">
+        <div className="flex bg-white col-span-12">
                     {/* 게시글 상세 정보 */}
-                    <div className="p-6">
+                    <div className="flex space-x-4 w-full flex-col">
                         <form>
                             {/* 제목 */}
                             <div className="mb-6">

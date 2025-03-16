@@ -111,7 +111,7 @@ const StudyArticleRegisterBoard: React.FC = () => {
             </div>
 
             {/* 본문 영역: 에디터 및 미리보기 */}
-            <div className="p-4">
+            <div className="p-4 flex flex-col gap-4 col-span-12">
                 <div className="flex flex-row space-x-4">
                     <Editor
                         title={title}
