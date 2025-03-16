@@ -18,8 +18,6 @@ const StudyArticleDetailBoard: React.FC = () => {
         settingManage: [],
     });
 
-    const [studies, setStudies] = useState([]);
-
     const fetchCurrentUser = async () => {
         try {
             // apiClient를 사용하여 GET 요청
@@ -33,21 +31,6 @@ const StudyArticleDetailBoard: React.FC = () => {
         } catch (error) {
             console.error('사용자 정보 가져오기 실패:', error);
             throw error; // 오류 처리
-        }
-    };
-
-    const fetchStudies = async () => {
-        try {
-            // apiClient를 사용하여 GET 요청
-            const response = await apiClient.get('/api/v1/user/studies');
-
-            if (response.status === 200) {
-                setStudies(response.data); // 스터디 목록을 상태에 저장
-            } else {
-                throw new Error(`Error: ${response.status}`);
-            }
-        } catch (error) {
-            console.error('스터디 목록 가져오기 실패:', error);
         }
     };
 
@@ -69,7 +52,6 @@ const StudyArticleDetailBoard: React.FC = () => {
     };
 
     useEffect(() => {
-        fetchStudies();
         fetchPermissions(studyId);
     }, [studyId]);
 

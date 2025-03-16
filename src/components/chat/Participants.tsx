@@ -41,7 +41,7 @@ const Participants: React.FC = () => {
     }, [chatType, studyId]);
 
     return (
-        <div className="h-full col-span-3 p-4 border border-gray-200 rounded-xl shadow-md">
+        <div className="h-full col-span-3 p-4 border border-gray-200 rounded-xl shadow-md bg-[#fafbff]">
             <h2 className="text-xl font-bold mb-4">참여자</h2>
             <ul className="mt-2 ml-4">
                 {participants.map((user) => (

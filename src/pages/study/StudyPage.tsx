@@ -25,7 +25,7 @@ const StudyPage = () => {
                 {/* article */}
                 <Route path="article" element={<StudyArticleListBoard />} />
                 <Route
-                    path="article/edit"
+                    path="article/new"
                     element={<StudyArticleRegisterBoard />}
                 />
                 <Route

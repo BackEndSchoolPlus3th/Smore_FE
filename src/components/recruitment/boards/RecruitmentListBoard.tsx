@@ -176,7 +176,7 @@ const RecruitmentListBoard = () => {
                 className="sticky top-0 w-full shadow-md p-2 col-span-12 rounded-md z-30
                 grid grid-cols-12 gap-6 h-fit bg-[#fafbff] border border-gray-200 mt-6"
             >
-                <p className="font-bold text-dark-purple col-span-5 flex items-center">
+                <p className="font-bold text-dark-purple col-span-5 flex items-center text-xl ml-4">
                     모집글 목록
                 </p>
 

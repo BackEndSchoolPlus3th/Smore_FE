@@ -27,7 +27,7 @@ const ChatBoard: React.FC<ChatBoardProps> = ({ selectedRoom }) => {
     console.log(studyId, chatType);
 
     return (
-        <div className="h-full col-span-6 h-full border border-gray-200 rounded-xl shadow-md flex flex-col ">
+        <div className="h-full col-span-6 h-full border border-gray-200 rounded-xl shadow-md flex flex-col bg-[#fafbff] ">
             {/* 중앙 영역: 채팅창 및 비디오 채팅 */}
             <div className="flex flex-row m-4 justify-between items-center">
                 <h1 className="col-span-5 text-xl font-bold">

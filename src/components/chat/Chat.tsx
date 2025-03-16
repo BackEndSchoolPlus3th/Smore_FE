@@ -545,7 +545,7 @@ const Chat: React.FC<ChatProps> = ({ roomId, chatType }) => {
 
     return (
         <div className="h-full m-4 flex flex-col gap-4">
-            <div className="flex flex-col p-4 overflow-y-auto h-full bg-purple-50 rounded-xl border border-gray-500">
+            <div className="flex flex-col p-4 overflow-y-auto h-full bg-purple-100 rounded-xl">
                 <div className="overflow-y-auto p-4">
                     {messages.map((msg, index) =>
                         msg.type === 'divider' ? (
