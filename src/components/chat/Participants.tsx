@@ -3,15 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { apiClient } from '../../shared';
 import { useParams } from 'react-router-dom';
 
-interface Participant {
-    memberId: number;
-    memberName: string;
-}
-
-interface ParticipantsProps {
-    studyId?: number; // group 채팅 시 studyId가 있을 수 있음
-}
-
 const Participants: React.FC = () => {
     const { study_id: studyId, chat_type: chatType } = useParams();
 

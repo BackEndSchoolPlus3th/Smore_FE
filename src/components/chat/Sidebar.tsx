@@ -82,6 +82,7 @@ const Sidebar: React.FC<{
             );
 
             if (response.status === 200) {
+                onRoomSelect(room); // 선택한 채팅방 정보 전달
                 navigate(`/chat/${chatType}/${room.studyId}`); // 채팅방 페이지로 이동
             } else {
                 console.error('채팅방 입장 실패:', response);

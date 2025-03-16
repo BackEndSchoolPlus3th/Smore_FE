@@ -24,8 +24,6 @@ const ChatBoard: React.FC<ChatBoardProps> = ({ selectedRoom }) => {
         navigate(`/chat/${studyId}/video`);
     };
 
-    console.log(studyId, chatType);
-
     return (
         <div className="h-full col-span-6 h-full border border-gray-200 rounded-xl shadow-md flex flex-col bg-[#fafbff] ">
             {/* 중앙 영역: 채팅창 및 비디오 채팅 */}
@@ -45,7 +43,7 @@ const ChatBoard: React.FC<ChatBoardProps> = ({ selectedRoom }) => {
                 </button>
             </div>
             {studyId && chatType && (
-                <Chat roomId={studyId} chatType={chatType} />
+                <Chat roomId={studyId} chatType={chatType as 'dm' | 'group'} />
             )}
         </div>
     );

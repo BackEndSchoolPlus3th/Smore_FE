@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { BookOpen } from 'lucide-react';
 
-const StudySettingBoard: React.FC = () => {
+const StudySettingBoard = () => {
     const { studyId } = useParams();
     const [permissions, setPermissions] = useState({
         recruitManage: [],
@@ -21,7 +21,7 @@ const StudySettingBoard: React.FC = () => {
     const [selectedPermissionKey, setSelectedPermissionKey] = useState('');
     const [selectedMembers, setSelectedMembers] = useState([]);
 
-    const handleAddPerson = async (key: string) => {
+    const handleAddPerson = async (key) => {
         if (!selectedMember) {
             alert('먼저 멤버를 선택해주세요.');
             return;
@@ -78,7 +78,7 @@ const StudySettingBoard: React.FC = () => {
         }
     };
 
-    const handleRemovePerson = async (key: string, memberId: number) => {
+    const handleRemovePerson = async (key, memberId) => {
         try {
             const response = await apiClient.delete(
                 `/api/v1/study/${studyId}/permissions`,
@@ -162,7 +162,7 @@ const StudySettingBoard: React.FC = () => {
         }
     };
 
-    const fetchPermissions = async (studyId: string) => {
+    const fetchPermissions = async (studyId) => {
         try {
             const response = await apiClient.get(
                 `/api/v1/study/${studyId}/checkPermission`

@@ -1,12 +1,31 @@
 import { apiClient, CancleButton, SubmitButton } from '../../../../shared';
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Editor, MarkdownPreview } from '../../../../components';
+import { MarkdownPreview } from '../../../../components';
+
+interface ArticleData {
+    title: string;
+    content: string;
+    member: {
+        id: string;
+        nickname: string;
+    };
+    imageUrls?: string;
+}
+
+interface EditedData {
+    title: string;
+    content: string;
+}
+
+interface InputChangeEvent
+    extends React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> {}
 
 const StudyArticleDetailBoard: React.FC = () => {
     const navigate = useNavigate();
     const { studyId, articleId } = useParams();
-    const [articleData, setArticleData] = useState(null);
+
+    const [articleData, setArticleData] = useState<ArticleData | null>(null);
     const [currentUser, setCurrentUser] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
     const [editedData, setEditedData] = useState({ title: '', content: '' });
@@ -52,15 +71,19 @@ const StudyArticleDetailBoard: React.FC = () => {
     };
 
     useEffect(() => {
-        fetchPermissions(studyId);
+        if (studyId) {
+            fetchPermissions(studyId);
+        }
     }, [studyId]);
 
     const handleEditArticle = () => {
         setIsEditing(true); // 수정 폼을 보이게 설정
-        setEditedData({
-            title: articleData.title,
-            content: articleData.content,
-        }); // 수정할 데이터 초기화
+        if (articleData) {
+            setEditedData({
+                title: articleData.title,
+                content: articleData.content,
+            }); // 수정할 데이터 초기화
+        }
     };
 
     const handleSaveEdit = async () => {
@@ -93,9 +116,9 @@ const StudyArticleDetailBoard: React.FC = () => {
         setIsEditing(false);
     };
 
-    const handleInputChange = (e) => {
+    const handleInputChange = (e: InputChangeEvent) => {
         const { name, value } = e.target;
-        setEditedData((prevState) => ({
+        setEditedData((prevState: EditedData) => ({
             ...prevState,
             [name]: value,
         }));
@@ -189,32 +212,32 @@ const StudyArticleDetailBoard: React.FC = () => {
         fetchUserData();
     }, [studyId, articleId, navigate]);
 
-    const handleDownload = async (key: string) => {
-        try {
-            // apiClient 사용하여 GET 요청 보내기
-            const response = await apiClient.get(
-                `/api/v1/study/download/${key}`,
-                {
-                    responseType: 'blob', // Blob 응답을 받을 수 있도록 설정
-                }
-            );
+    // const handleDownload = async (key: string) => {
+    //     try {
+    //         // apiClient 사용하여 GET 요청 보내기
+    //         const response = await apiClient.get(
+    //             `/api/v1/study/download/${key}`,
+    //             {
+    //                 responseType: 'blob', // Blob 응답을 받을 수 있도록 설정
+    //             }
+    //         );
 
-            if (response.status === 200) {
-                const blob = response.data; // Blob 데이터
-                const downloadUrl = window.URL.createObjectURL(blob);
-                const link = document.createElement('a');
-                link.href = downloadUrl;
-                link.download = key.split('/').pop() || 'download'; // S3 key에서 파일 이름 추출
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            } else {
-                alert('파일 다운로드 실패');
-            }
-        } catch (error) {
-            console.error('다운로드 중 오류 발생:', error);
-        }
-    };
+    //         if (response.status === 200) {
+    //             const blob = response.data; // Blob 데이터
+    //             const downloadUrl = window.URL.createObjectURL(blob);
+    //             const link = document.createElement('a');
+    //             link.href = downloadUrl;
+    //             link.download = key.split('/').pop() || 'download'; // S3 key에서 파일 이름 추출
+    //             document.body.appendChild(link);
+    //             link.click();
+    //             document.body.removeChild(link);
+    //         } else {
+    //             alert('파일 다운로드 실패');
+    //         }
+    //     } catch (error) {
+    //         console.error('다운로드 중 오류 발생:', error);
+    //     }
+    // };
 
     if (!articleData || !currentUser) {
         return <div>Loading...</div>;
@@ -287,7 +310,7 @@ const StudyArticleDetailBoard: React.FC = () => {
                             name="content"
                             value={editedData.content}
                             onChange={handleInputChange}
-                            rows="6"
+                            rows={6}
                             className="w-full p-2 border rounded bg-gray-100"
                         />
                     ) : (

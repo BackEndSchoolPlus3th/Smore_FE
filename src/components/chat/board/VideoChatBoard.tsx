@@ -89,7 +89,7 @@ function VideoChatBoard() {
         );
 
         try {
-            const data = await getToken();
+            const data = JSON.parse(await getToken());
             const token = data.token;
             const participantName = data.UserEmail;
             const roomName = data.StudyTitle;
@@ -101,10 +101,13 @@ function VideoChatBoard() {
             await room.connect(LIVEKIT_URL, token);
 
             await room.localParticipant.enableCameraAndMicrophone();
-            setLocalTrack(
-                room.localParticipant.videoTrackPublications.values().next()
-                    .value.videoTrack
-            );
+            const videoTrackPublication =
+                room.localParticipant.videoTrackPublications
+                    .values()
+                    .next().value;
+            if (videoTrackPublication) {
+                setLocalTrack(videoTrackPublication.videoTrack);
+            }
         } catch (error) {
             console.log(
                 'There was an error connecting to the room:',
