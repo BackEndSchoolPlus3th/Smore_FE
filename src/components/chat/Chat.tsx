@@ -95,7 +95,7 @@ const Chat: React.FC<ChatProps> = ({ roomId, chatType }) => {
     const [participants, setParticipants] = useState<Participant[]>([]);
 
     // URL 파라미터 (필요시 사용)
-    const { study_id } = useParams();
+    // const { study_id } = useParams();
 
     // senderId를 받아 참여자 객체 반환
     const findParticipantById = (id: string): Participant | null => {
@@ -238,9 +238,9 @@ const Chat: React.FC<ChatProps> = ({ roomId, chatType }) => {
     }, [rawMessages, participants, currentUserId]);
 
     // 실시간 메시지도 rawMessages에 추가
-    const onMessageReceived = (data: any) => {
-        setRawMessages((prev) => [...prev, data]);
-    };
+    // const onMessageReceived = (data: any) => {
+    //     setRawMessages((prev) => [...prev, data]);
+    // };
 
     // Refresh Token 갱신 후 재연결
     const refreshAccessTokenAndReconnect = async () => {
