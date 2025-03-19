@@ -7,6 +7,7 @@ import {
     Room,
     RoomEvent
 } from 'livekit-client';
+import { ControlBar } from "@livekit/components-react";
 import '../../../pages/videoChat/VideoChatPage.css';
 import VideoComponent from '../livekit/VideoComponent';
 import AudioComponent from '../livekit/AudioComponent';
@@ -123,6 +124,7 @@ function VideoChatBoard() {
                             track={remoteTrack.trackPublication.audioTrack!}
                         />
                     )
+                     
                 )}
             </div>
         </div>
