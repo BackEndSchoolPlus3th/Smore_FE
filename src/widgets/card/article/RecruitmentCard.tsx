@@ -9,7 +9,7 @@ const RecruitmentCard: React.FC<RecruitmentCardProps> = (
         <Link
             to={props.link}
             className="flex flex-col h-90 gap-2 border border-gray-200
-            rounded-md bg-white shadow-md transform transition-transform transition-shadow duration-300 
+            rounded-md bg-[#fafbff] shadow-md transform transition-transform transition-shadow duration-300 
             hover:-translate-y-1 col-span-3"
         >
             <div className="flex-1 h-40">
@@ -17,7 +17,7 @@ const RecruitmentCard: React.FC<RecruitmentCardProps> = (
                     <img
                         src={props.thumbnailUrl}
                         alt="thumbnail"
-                        className="w-full h-full object-cover rounded-t-md"
+                        className="w-full h-full object-cover rounded-t-md object-center"
                     />
                 ) : (
                     <div className="bg-white rounded-bl-md w-full h-full flex items-center justify-center">
@@ -54,8 +54,8 @@ const RecruitmentCard: React.FC<RecruitmentCardProps> = (
                         <div className="ml-2 text-sm">{props.writerName}</div>
                     </div>
                     <div className="flex items-center">
-                        <Heart className="w-4 h-4 text-red-500" />
-                        <div className="ml-1 text-sm">{props.clipCount}</div>
+                        <div className=" text-sm">{props.clipCount}</div>
+                        <Heart className="w-4 h-4 text-red-500 ml-1" />
                     </div>
                 </div>
             </div>

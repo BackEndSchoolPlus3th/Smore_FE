@@ -7,6 +7,7 @@ import {
     regionOptions,
     HashtagInput,
     CustomSelect,
+    Input,
 } from '../../../shared';
 import { UserInfoProps } from '../../../entities';
 import { useDispatch } from 'react-redux';
@@ -183,81 +184,86 @@ const SettingProfileCard: React.FC<UserInfoProps> = (props: UserInfoProps) => {
     };
 
     return (
-        <section className="p-6 bg-white rounded-lg shadow-sm">
-            {/* 섹션 타이틀 */}
-            <h2 className="text-xl font-semibold mb-6">기본 정보</h2>
+        <section className="p-6 bg-[#fafbff] rounded-lg shadow-sm">
+            <div className="grid grid-cols-9 gap-6">
+                {/* 섹션 타이틀 */}
+                <h2 className="text-xl font-semibold col-span-9">기본 정보</h2>
 
-            {/* 이메일 */}
-            <div className="flex items-center mb-6">
-                <div className="mr-auto">
+                {/* 구분선 */}
+                <div className="w-full border-b border-gray-200 col-span-9"></div>
+
+                {/* 이메일 */}
+                <div className="col-span-9 flex flex-col items-start justify-center">
                     <p className="text-sm text-gray-500">이메일</p>
                     <p className="font-medium">{props.email}</p>
                 </div>
-            </div>
 
-            {/* 비밀번호 */}
-            <div className="flex items-center mb-6">
-                <div className="mr-auto">
+                {/* 비밀번호 */}
+                <div className="col-span-4 flex flex-col items-start justify-center gap-2">
                     <p className="text-sm text-gray-500">비밀번호</p>
                     {isPasswordEdit ? (
-                        <div className="space-y-2">
-                            <input
+                        <>
+                            <Input
                                 type="password"
-                                className="w-full border border-gray-300 rounded-md p-1.5"
-                                placeholder="현재 비밀번호"
                                 value={currentPassword}
                                 onChange={(e) =>
                                     setCurrentPassword(e.target.value)
                                 }
+                                placeholder="현재 비밀번호"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
                             />
-                            <input
+                            <Input
                                 type="password"
-                                className="w-full border border-gray-300 rounded-md p-1.5"
-                                placeholder="새 비밀번호"
                                 value={newPassword}
                                 onChange={(e) => setNewPassword(e.target.value)}
+                                placeholder="새 비밀번호"
                                 maxLength={20}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
                             />
-                            <input
+                            <Input
                                 type="password"
-                                className="w-full border border-gray-300 rounded-md p-1.5"
-                                placeholder="새 비밀번호 확인"
                                 value={confirmNewPassword}
                                 onChange={(e) =>
                                     setConfirmNewPassword(e.target.value)
                                 }
+                                placeholder="새 비밀번호 확인"
                                 maxLength={20}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
                             />
-                        </div>
+                        </>
                     ) : (
                         <p className="font-medium">********</p>
                     )}
                 </div>
+
                 {isPasswordEdit ? (
-                    <div className="flex space-x-2">
+                    <>
                         <CancleButton
                             label="취소"
                             onClick={handleCancelPassword}
+                            className="col-start-8 col-span-1"
                         />
                         <SubmitButton
                             label="저장"
                             onClick={handleSavePassword}
                             disabled={newPassword !== confirmNewPassword}
+                            className="col-span-1"
                         />
-                    </div>
+                    </>
                 ) : (
-                    <SubmitButton label="수정" onClick={handleEditPassword} />
+                    <SubmitButton
+                        label="수정"
+                        onClick={handleEditPassword}
+                        className="col-start-9 col-span-1"
+                    />
                 )}
-            </div>
-
-            {/* 생일 */}
-            <div className="flex items-center mb-6">
-                <div className="mr-auto">
+                {/* 생일 */}
+                <div className="col-span-4 flex flex-col items-start justify-center">
                     <p className="text-sm text-gray-500">생일</p>
                     {isBirthdayEdit ? (
-                        <input
+                        <Input
                             type="date"
-                            className="w-full border border-gray-300 rounded-md p-1.5"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
                             value={editBirthday || ''}
                             onChange={(e) => setEditBirthday(e.target.value)}
                             max={today}
@@ -271,24 +277,28 @@ const SettingProfileCard: React.FC<UserInfoProps> = (props: UserInfoProps) => {
                     )}
                 </div>
                 {isBirthdayEdit ? (
-                    <div className="flex space-x-2">
+                    <>
                         <CancleButton
                             label="취소"
                             onClick={handleCancelBirthday}
+                            className="col-start-8 col-span-1"
                         />
                         <SubmitButton
                             label="저장"
                             onClick={handleSaveBirthday}
+                            className="col-span-1"
                         />
-                    </div>
+                    </>
                 ) : (
-                    <SubmitButton label="수정" onClick={handleEditBirthday} />
+                    <SubmitButton
+                        label="수정"
+                        onClick={handleEditBirthday}
+                        className="col-start-9 col-span-1"
+                    />
                 )}
-            </div>
 
-            {/* 지역 */}
-            <div className="flex items-center mb-6">
-                <div className="mr-auto">
+                {/* 지역 */}
+                <div className="col-span-4 flex flex-col items-start justify-center">
                     <p className="text-sm text-gray-500">지역</p>
                     {isRegionEdit ? (
                         <CustomSelect
@@ -302,7 +312,7 @@ const SettingProfileCard: React.FC<UserInfoProps> = (props: UserInfoProps) => {
                             }
                             options={regionOptions}
                             placeholder="지역 선택"
-                            className="w-45 cursor-pointer"
+                            className="w-full cursor-pointer"
                         />
                     ) : region ? (
                         <p className="font-medium">{region}</p>
@@ -313,21 +323,28 @@ const SettingProfileCard: React.FC<UserInfoProps> = (props: UserInfoProps) => {
                     )}
                 </div>
                 {isRegionEdit ? (
-                    <div className="flex space-x-2">
+                    <>
                         <CancleButton
                             label="취소"
                             onClick={handleCancelRegion}
+                            className="col-start-8 col-span-1"
                         />
-                        <SubmitButton label="저장" onClick={handleSaveRegion} />
-                    </div>
+                        <SubmitButton
+                            label="저장"
+                            onClick={handleSaveRegion}
+                            className="col-span-1"
+                        />
+                    </>
                 ) : (
-                    <SubmitButton label="수정" onClick={handleEditRegion} />
+                    <SubmitButton
+                        label="수정"
+                        onClick={handleEditRegion}
+                        className="col-start-9 col-span-1"
+                    />
                 )}
-            </div>
 
-            {/* 해시태그 */}
-            <div className="flex items-center mb-6">
-                <div className="mr-auto">
+                {/* 해시태그 */}
+                <div className="col-span-4 flex flex-col items-start justify-center">
                     <p className="text-sm text-gray-500">해시태그</p>
                     {isHashTagEdit ? (
                         <HashtagInput
@@ -346,18 +363,24 @@ const SettingProfileCard: React.FC<UserInfoProps> = (props: UserInfoProps) => {
                     )}
                 </div>
                 {isHashTagEdit ? (
-                    <div className="flex space-x-2">
+                    <>
                         <CancleButton
                             label="취소"
                             onClick={handleCancelHashTag}
+                            className="col-start-8 col-span-1"
                         />
                         <SubmitButton
                             label="저장"
                             onClick={handleSaveHashTag}
+                            className="col-span-1"
                         />
-                    </div>
+                    </>
                 ) : (
-                    <SubmitButton label="수정" onClick={handleEditHashTag} />
+                    <SubmitButton
+                        label="수정"
+                        onClick={handleEditHashTag}
+                        className="col-start-9 col-span-1"
+                    />
                 )}
             </div>
         </section>

@@ -54,15 +54,15 @@ const StudyRecruitmentListBoard: React.FC = () => {
                         title={recruitment.title}
                         introduction={recruitment.introduction}
                         hashtagList={
-                            recruitment.hashTags
-                                ? recruitment.hashTags.split(',')
+                            recruitment.hashtagList
+                                ? recruitment.hashtagList.split(',')
                                 : null
                         }
                         clipCount={recruitment.clipCount}
                         writerName={recruitment.writerName}
                         writerProfile={recruitment.writerProfile}
                         thumbnailUrl={recruitment.thumbnailUrl}
-                        link={`/recruitment/${recruitment.id}`}
+                        link={`/${recruitment.id}`}
                     />
                 ))}
             </>

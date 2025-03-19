@@ -4,19 +4,23 @@ import { ButtonProps } from './ButtonProps';
 const SubmitButton: React.FC<ButtonProps> = ({
     label = '확인',
     isFit = true,
-    color = 'bg-white',
-    clickColor = 'hover:bg-gray-200 active:bg-gray-300',
+    color = 'bg-purple-200 text-black',
+    clickColor = 'hover:bg-purple-300 active:bg-purple-400',
     isSubmit = false,
+    size = 'text-sm px-4 py-2',
+    border = 'border border-purple-100',
     ...props
 }) => {
     return (
         <button
             type={isSubmit ? 'submit' : 'button'}
             onClick={props.onClick}
-            className={`px-4 py-2 text-sm active:scale-95 transition-transform transform
-                border-gray-300 cursor-pointer text-black font-bold border rounded-lg
-                ${isFit ? '' : 'w-full'} 
+            className={`active:scale-95 transition-transform transform
+                cursor-pointer font-bold rounded-lg h-fit whitespace-nowrap
+                ${isFit ? 'w-fit' : 'w-full'} 
                 ${color} ${clickColor} ${props.className}
+                ${size} ${border} 
+                ${props.disabled ? 'opacity-50' : ''}
                 `}
             disabled={props.disabled}
         >

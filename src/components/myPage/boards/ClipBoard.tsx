@@ -44,7 +44,7 @@ const ClipBoard: React.FC = () => {
     }, []);
 
     return (
-        <div className="flex flex-col w-full rounded-lg shadow-md bg-white p-4 h-full overflow-y-auto">
+        <div className="flex flex-col w-full rounded-lg shadow-md bg-[#fafbff] p-4 h-full overflow-y-auto">
             {loading ? (
                 <div>로딩중...</div>
             ) : error ? (

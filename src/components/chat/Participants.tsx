@@ -1,20 +1,17 @@
-// Participants.tsx
 import React, { useEffect, useState } from 'react';
 import { apiClient } from '../../shared';
+import { useParams } from 'react-router-dom';
 
 interface Participant {
     memberId: number;
     memberName: string;
+    profileImageUrl?: string | null;
 }
 
-interface ParticipantsProps {
-    // ChatPage에서 넘기는 chatType, studyId 타입과 동일하게 설정
-    chatType: 'dm' | 'group' | null;
-    studyId?: number; // group 채팅 시 studyId가 있을 수 있음
-}
+const Participants: React.FC = () => {
+    const { study_id: studyId, chat_type: chatType } = useParams();
 
-const Participants: React.FC<ParticipantsProps> = ({ chatType, studyId }) => {
-    const [participants, setParticipants] = useState<any[]>([]);
+    const [participants, setParticipants] = useState<Participant[]>([]);
 
     useEffect(() => {
         // 그룹 채팅 + studyId가 있을 때만 서버에서 참여자 목록을 불러온다고 가정
@@ -40,15 +37,26 @@ const Participants: React.FC<ParticipantsProps> = ({ chatType, studyId }) => {
     }, [chatType, studyId]);
 
     return (
-        <div className="p-4 h-full">
+        <div className="h-full col-span-3 p-4 border border-gray-200 rounded-xl shadow-md bg-[#fafbff]">
             <h2 className="text-xl font-bold mb-4">참여자</h2>
             <ul className="mt-2 ml-4">
                 {participants.map((user) => (
                     <li
                         key={user.memberId}
-                        className="p-2 cursor-pointer hover:bg-gray-100 rounded mb-2 text-gray-600"
+                        className="p-2 cursor-pointer hover:bg-gray-100 rounded mb-2 text-gray-600 flex items-center"
                     >
-                        {user.memberName}
+                        {/* 프로필 이미지 or 대체 박스 */}
+                        {user.profileImageUrl ? (
+                            <img
+                                src={user.profileImageUrl}
+                                alt="프로필"
+                                className="w-8 h-8 rounded-full object-cover mr-2"
+                            />
+                        ) : (
+                            <div className="w-8 h-8 rounded-full bg-gray-300 mr-2" />
+                        )}
+                        {/* 닉네임 */}
+                        <span>{user.memberName}</span>
                     </li>
                 ))}
             </ul>

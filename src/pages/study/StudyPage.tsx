@@ -25,7 +25,7 @@ const StudyPage = () => {
                 {/* article */}
                 <Route path="article" element={<StudyArticleListBoard />} />
                 <Route
-                    path="article/edit"
+                    path="article/new"
                     element={<StudyArticleRegisterBoard />}
                 />
                 <Route
@@ -43,7 +43,7 @@ const StudyPage = () => {
                     element={<StudyRecruitmentRegisterBoard />}
                 />
                 <Route
-                    path="recruitment/:recruitmentId"
+                    path="recruitment/edit/:recruitmentId"
                     element={<StudyRecruitmentEditBoard />}
                 />
             </Route>

@@ -1,11 +1,11 @@
 import { apiClient, SubmitButton, CancleButton } from '../../../shared';
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { BookOpen } from 'lucide-react';
 
-const StudySettingBoard: React.FC = () => {
+const StudySettingBoard = () => {
     const { studyId } = useParams();
-    const [permissions, setPermissions] = useState({
+    const [permissions, setPermissions] = useState<Permissions>({
         recruitManage: [],
         articleManage: [],
         calendarManage: [],
@@ -17,11 +17,27 @@ const StudySettingBoard: React.FC = () => {
     const [studyDescription, setStudyDescription] = useState('');
     const [studyHashtags, setStudyHashtags] = useState('');
     const [selectedMember, setSelectedMember] = useState('');
-    const [members, setMembers] = useState([]);
+    const [members, setMembers] = useState<Member[]>([]);
     const [selectedPermissionKey, setSelectedPermissionKey] = useState('');
     const [selectedMembers, setSelectedMembers] = useState([]);
 
-    const handleAddPerson = async (key: string) => {
+    interface Permissions {
+        recruitManage: string[];
+        articleManage: string[];
+        calendarManage: string[];
+        settingManage: string[];
+    }
+
+    interface Member {
+        memberId: string;
+        memberName: string;
+        permissionRecruitManage?: boolean;
+        permissionArticleManage?: boolean;
+        permissionCalendarManage?: boolean;
+        permissionSettingManage?: boolean;
+    }
+
+    const handleAddPerson = async (key: keyof Permissions) => {
         if (!selectedMember) {
             alert('먼저 멤버를 선택해주세요.');
             return;
@@ -44,7 +60,7 @@ const StudySettingBoard: React.FC = () => {
                 throw new Error('권한 추가 실패');
             }
 
-            const updatedPermissionsUI = { ...permissions };
+            const updatedPermissionsUI: Permissions = { ...permissions };
             if (!updatedPermissionsUI[key]) {
                 updatedPermissionsUI[key] = [];
             }
@@ -78,9 +94,16 @@ const StudySettingBoard: React.FC = () => {
         }
     };
 
-    const handleRemovePerson = async (key: string, memberId: number) => {
+    interface RemovePersonResponse {
+        status: number;
+    }
+
+    const handleRemovePerson = async (
+        key: keyof Permissions,
+        memberId: string
+    ) => {
         try {
-            const response = await apiClient.delete(
+            const response: RemovePersonResponse = await apiClient.delete(
                 `/api/v1/study/${studyId}/permissions`,
                 {
                     data: {
@@ -93,7 +116,7 @@ const StudySettingBoard: React.FC = () => {
                 throw new Error('권한 삭제 실패');
             }
 
-            const updatedPermissions = { ...permissions };
+            const updatedPermissions: Permissions = { ...permissions };
 
             if (updatedPermissions[key]) {
                 updatedPermissions[key] = updatedPermissions[key].filter(
@@ -106,7 +129,7 @@ const StudySettingBoard: React.FC = () => {
             setPermissions(updatedPermissions);
 
             setSelectedMembers(
-                selectedMembers.filter((item) => item.memberId !== memberId)
+                selectedMembers.filter((item) => item !== memberId)
             );
 
             alert('권한이 성공적으로 삭제되었습니다.');
@@ -150,9 +173,9 @@ const StudySettingBoard: React.FC = () => {
         updateStudyInfo();
     };
 
-    const exitEditingPermissionsMode = () => {
-        setIsEditingPermissions(false);
-    };
+    // const exitEditingPermissionsMode = () => {
+    //     setIsEditingPermissions(false);
+    // };
 
     const handlePermissionsEditToggle = () => {
         if (isEditingPermissions) {
@@ -162,14 +185,19 @@ const StudySettingBoard: React.FC = () => {
         }
     };
 
-    const fetchPermissions = async (studyId: string) => {
+    interface FetchPermissionsResponse {
+        status: number;
+        data: Permissions;
+    }
+
+    const fetchPermissions = async (studyId: string): Promise<void> => {
         try {
-            const response = await apiClient.get(
+            const response: FetchPermissionsResponse = await apiClient.get(
                 `/api/v1/study/${studyId}/checkPermission`
             );
 
             if (response.status === 200) {
-                const data = response.data;
+                const data: Permissions = response.data;
                 setPermissions(data);
             } else {
                 throw new Error('권한을 조회할 수 없습니다.');
@@ -197,12 +225,14 @@ const StudySettingBoard: React.FC = () => {
 
     useEffect(() => {
         fetchMembers();
-        fetchPermissions(studyId);
+        if (studyId) {
+            fetchPermissions(studyId);
+        }
     }, [studyId]);
 
     return (
         <>
-            <div className="col-span-12 md:col-span-4 lg:col-span-3 bg-white shadow-lg rounded p-6 border border-gray-200 ">
+            <div className="col-span-12 md:col-span-4 lg:col-span-3 bg-[#fafbff] shadow-lg rounded p-6 border border-gray-200 ">
                 <div className="flex flex-col items-center">
                     <div className="w-32 h-32 bg-gray-300 rounded-full flex justify-center items-center mb-4">
                         <BookOpen color={'white'} size={64} />
@@ -249,7 +279,6 @@ const StudySettingBoard: React.FC = () => {
                                 <SubmitButton
                                     label="저장"
                                     onClick={handleSaveProfile}
-                                    clickColor="hover:bg-cyan-100 active:bg-cyan-200"
                                 />
                             </div>
                         </>
@@ -268,14 +297,13 @@ const StudySettingBoard: React.FC = () => {
                                 <SubmitButton
                                     label="프로필 수정"
                                     onClick={() => setIsEditingProfile(true)}
-                                    clickColor="hover:bg-cyan-100 active:bg-cyan-200"
                                 />
                             )}
                         </>
                     )}
                 </div>
             </div>
-            <div className="col-span-12 md:col-span-8 lg:col-span-9 bg-white shadow-lg rounded p-6 border border-gray-200">
+            <div className="col-span-12 md:col-span-8 lg:col-span-9 bg-[#fafbff] shadow-lg rounded p-6 border border-gray-200">
                 <h2 className="text-2xl font-bold mb-4">권한 설정</h2>
                 <div className="space-y-4">
                     {[
@@ -305,13 +333,16 @@ const StudySettingBoard: React.FC = () => {
                                         onClick={() =>
                                             setSelectedPermissionKey(key)
                                         }
-                                        className="p-0.1"
+                                        size="text-xs px-2 py-1"
                                     />
                                 )}
                             </div>
                             <div className="flex flex-wrap gap-2 border-2 border-gray-400 p-2 rounded">
                                 {members
-                                    .filter((member) => member[key] === true)
+                                    .filter(
+                                        (member) =>
+                                            member[key as keyof Member] === true
+                                    )
                                     .map((member) => (
                                         <div
                                             key={member.memberId}
@@ -324,7 +355,7 @@ const StudySettingBoard: React.FC = () => {
                                                 <button
                                                     onClick={() =>
                                                         handleRemovePerson(
-                                                            key,
+                                                            key as keyof Permissions,
                                                             member.memberId
                                                         )
                                                     }
@@ -355,7 +386,11 @@ const StudySettingBoard: React.FC = () => {
                                             {members
                                                 .filter(
                                                     (member) =>
-                                                        !member[key] === true
+                                                        !(
+                                                            member[
+                                                                key as keyof Member
+                                                            ] === true
+                                                        )
                                                 )
                                                 .map((member) => (
                                                     <option
@@ -370,10 +405,9 @@ const StudySettingBoard: React.FC = () => {
                                             label="추가"
                                             onClick={() =>
                                                 handleAddPerson(
-                                                    selectedPermissionKey
+                                                    selectedPermissionKey as keyof Permissions
                                                 )
                                             }
-                                            clickColor="hover:bg-cyan-100 active:bg-cyan-200"
                                         />
                                     </div>
                                 )}
@@ -384,7 +418,6 @@ const StudySettingBoard: React.FC = () => {
                             <SubmitButton
                                 label={isEditingPermissions ? '취소' : '수정'}
                                 onClick={handlePermissionsEditToggle}
-                                clickColor="hover:bg-red-100 active:bg-red-200"
                             />
                         )}
                     </div>

@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { apiClient } from '../../../../shared';
+import { apiClient, SubmitButton } from '../../../../shared';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Editor, MarkdownPreview } from '../../../../components';
 import { MultiImageUploadRef } from '../../../../features';
@@ -95,35 +95,47 @@ const StudyArticleRegisterBoard: React.FC = () => {
     return (
         <>
             {/* 상단 헤더 */}
-            <div className="sticky top-0 p-4 flex justify-between items-center col-span-12 bg-[#FAFBFF] shadow z-10">
-                <h1 className="text-xl font-bold">새 글 작성</h1>
-                <div className="flex space-x-4">
-                    <button className="bg-gray-300 hover:bg-gray-400 text-white px-4 py-2 rounded focus:outline-none cursor-pointer">
-                        임시저장
-                    </button>
-                    <button
-                        onClick={handlePublishClick}
-                        className="bg-[#7743DB] hover:bg-blue-600 text-white px-4 py-2 rounded focus:outline-none cursor-pointer"
-                    >
-                        게시
-                    </button>
-                </div>
+            <div
+                className="sticky top-0 w-full shadow-md p-2 col-span-12 rounded-md z-30
+                grid grid-cols-12 gap-6 h-fit bg-[#fafbff] border border-gray-200"
+            >
+                <h1
+                    className="text-xl font-bold col-span-2
+                    flex items-center justify-start ml-4"
+                >
+                    새 글 작성
+                </h1>
+                <SubmitButton
+                    label="임시저장"
+                    onClick={() => alert('임시저장')}
+                    className="col-span-2 col-start-10 justify-self-end"
+                    color="bg-gray-300 text-white"
+                    clickColor="hover:bg-gray-400 active:bg-gray-500"
+                    isFit={true}
+                />
+                <SubmitButton
+                    label="게시"
+                    onClick={handlePublishClick}
+                    className="col-span-1"
+                    isFit={false}
+                />
             </div>
 
-            {/* 본문 영역: 에디터 및 미리보기 */}
-            <div className="p-4">
-                <div className="flex flex-row space-x-4">
-                    <Editor
-                        title={title}
-                        content={content}
-                        setTitle={setTitle}
-                        setContent={setContent}
-                        textAreaRef={textAreaRef}
-                        uploadPath={uploadPath}
-                        multiImageUploadRef={multiImageUploadRef}
-                    />
-                    <MarkdownPreview content={content} />
-                </div>
+
+            <div className="col-span-6 min-h-[49rem]">
+                <Editor
+                    title={title}
+                    content={content}
+                    setTitle={setTitle}
+                    setContent={setContent}
+                    textAreaRef={textAreaRef}
+                    uploadPath={uploadPath}
+                    multiImageUploadRef={multiImageUploadRef}
+                />
+            </div>
+            <div className="col-span-6">
+                <MarkdownPreview content={content} />
+
             </div>
         </>
     );

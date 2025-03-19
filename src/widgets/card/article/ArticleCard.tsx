@@ -8,7 +8,7 @@ const ArticleCard: React.FC<ArticleCardProps> = (props: ArticleCardProps) => {
         <Link
             to={props.link}
             className="flex flex-col h-90 gap-2 border border-gray-200
-        rounded-md bg-white shadow-md transform transition-transform transition-shadow duration-300 
+        rounded-md bg-[#fafbff] shadow-md transform transition-transform transition-shadow duration-300 
         hover:-translate-y-1 col-span-3"
         >
             <div className="flex-1 h-40">
@@ -16,7 +16,7 @@ const ArticleCard: React.FC<ArticleCardProps> = (props: ArticleCardProps) => {
                     <img
                         src={props.imageUrl}
                         alt="thumbnail"
-                        className="w-full h-full object-cover rounded-t-md"
+                        className="w-full h-full object-cover rounded-t-md object-center"
                     />
                 ) : (
                     <div className="bg-white rounded-bl-md w-full h-full flex items-center justify-center">

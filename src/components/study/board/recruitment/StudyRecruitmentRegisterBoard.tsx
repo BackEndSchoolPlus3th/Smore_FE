@@ -159,15 +159,26 @@ const StudyRecruitmentRegisterBoard: React.FC = () => {
     return (
         <>
             {/* 상단 헤더 */}
-            <h1 className="text-xl font-bold col-span-10 border-b-2">
-                모집글 작성
-            </h1>
-            <CancleButton onClick={handleCancelClick} className="col-span-1" />
-            <SubmitButton
-                onClick={handlePublishClick}
-                label="게시"
-                className="col-span-1"
-            />
+            <div
+                className="sticky top-0 w-full shadow-md p-2 col-span-12 rounded-md z-30
+                grid grid-cols-12 gap-6 h-fit bg-[#fafbff] border border-gray-200"
+            >
+                <h1
+                    className="text-xl font-bold col-span-2
+                    flex items-center justify-start ml-4"
+                >
+                    새 글 작성
+                </h1>
+                <CancleButton
+                    onClick={handleCancelClick}
+                    className="col-span-2 col-start-10 justify-self-end"
+                />
+                <SubmitButton
+                    onClick={handlePublishClick}
+                    label="게시"
+                    className="col-span-1"
+                />
+            </div>
 
             {/* 본문 영역: 에디터 및 미리보기 */}
             <div className="col-span-6 min-h-[49rem]">
@@ -202,7 +213,6 @@ const StudyRecruitmentRegisterBoard: React.FC = () => {
                     setRecruitmentPeriod={setRecruitmentPeriod}
                     maxMember={maxMember}
                     setMaxMember={setMaxMember}
-                    thumbnail={thumbnail}
                     setThumbnail={setThumbnail}
                     isClosing={isClosing}
                     closeModal={closeModal}

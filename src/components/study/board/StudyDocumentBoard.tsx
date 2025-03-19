@@ -7,7 +7,16 @@ const StudyDocumentBoard: React.FC = () => {
     const { studyId } = useParams();
     const [files, setFiles] = useState([]);
 
-    const fetchFiles = async (studyId) => {
+    const fetchFiles = async (studyId: string | undefined) => {
+        if (!studyId) {
+            console.error('Invalid studyId');
+            return;
+        }
+        const id = parseInt(studyId, 10);
+        if (isNaN(id)) {
+            console.error('Invalid studyId');
+            return;
+        }
         try {
             const response = await apiClient.get(
                 `/api/v1/study/document/${studyId}`
@@ -30,7 +39,17 @@ const StudyDocumentBoard: React.FC = () => {
     return (
         <>
             {/* 문서함 */}
-            <h2 className="col-span-12 text-xl font-bold mb-4 pt-10">문서함</h2>
+            <div
+                className="sticky top-0 w-full shadow-md p-2 col-span-12 rounded-md z-30
+                grid grid-cols-12 gap-6 h-fit bg-[#fafbff] border border-gray-200"
+            >
+                <h1
+                    className="text-xl font-bold col-span-2
+                    flex items-center justify-start ml-4"
+                >
+                    문서함
+                </h1>
+            </div>
 
             {files.length === 0 ? (
                 <p>현재 첨부된 파일이 없습니다.</p>

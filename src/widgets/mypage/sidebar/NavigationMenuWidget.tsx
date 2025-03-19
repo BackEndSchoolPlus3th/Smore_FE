@@ -38,7 +38,7 @@ const NavigationMenuWidget: React.FC = () => {
                                 className={`flex items-center gap-2 px-4 py-2 cursor-pointer hover:text-black
                                         ${
                                             isActive
-                                                ? 'border-l-2 border-blue-500 text-black font-bold'
+                                                ? 'border-l-2 border-purple-500 text-black font-bold'
                                                 : 'text-gray-500'
                                         }`}
                                 onClick={() => navigate(path)}

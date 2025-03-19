@@ -166,6 +166,14 @@ const RecruitmentListBoard = () => {
 
     // 페이지, 검색 필터 또는 추천 상태가 변경될 때 데이터 로드
     useEffect(() => {
+        if (isLoggedIn) {
+            setIsCustomRecommended(true);
+        } else {
+            setIsCustomRecommended(false);
+        }
+    }, [isLoggedIn]);
+
+    useEffect(() => {
         handlePageChange(page);
     }, [page, searchFilters, isCustomRecommended]);
 
@@ -174,9 +182,9 @@ const RecruitmentListBoard = () => {
             {/* 상단 고정 헤더 */}
             <div
                 className="sticky top-0 w-full shadow-md p-2 col-span-12 rounded-md z-30
-                grid grid-cols-12 gap-6 h-fit bg-white border border-gray-200 mt-6"
+                grid grid-cols-12 gap-6 h-fit bg-[#fafbff] border border-gray-200 mt-6"
             >
-                <p className="font-bold text-dark-purple col-span-5 flex items-center">
+                <p className="font-bold text-dark-purple col-span-5 flex items-center text-xl ml-4">
                     모집글 목록
                 </p>
 
@@ -217,8 +225,8 @@ const RecruitmentListBoard = () => {
                             title={article.title}
                             introduction={article.introduction}
                             hashtagList={
-                                article.hashTags
-                                    ? article.hashTags.split(',')
+                                article.hashtagList
+                                    ? article.hashtagList.split(',')
                                     : null
                             }
                             clipCount={article.clipCount}

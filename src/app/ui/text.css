@@ -1,1 +1,12 @@
+/* [1] fallback: clamp() 미지원 브라우저용 고정 폰트 사이즈 */
+html {
+    font-size: 16px;
+}
 
+/* [2] clamp()를 이용한 반응형 폰트 사이즈 설정 */
+/* 최소 0.5rem, 최대 1rem 사이에서 화면 크기에 따라 동적으로 조절 */
+@supports (font-size: clamp(0.5rem, calc(0.5rem + 1vw), 1em)) {
+    html {
+        font-size: clamp(0.5rem, calc(0.5rem + 1vw), 1em);
+    }
+}

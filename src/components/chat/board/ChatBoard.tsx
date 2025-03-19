@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Video } from 'lucide-react';
+import { useParams } from 'react-router-dom';
 import Chat from '../Chat';
 
 type ChatRoom = {
@@ -11,47 +12,37 @@ type ChatRoom = {
 
 interface ChatBoardProps {
     selectedRoom: ChatRoom | null;
-    selectedChatType: 'dm' | 'group' | null;
 }
 
-const ChatBoard: React.FC<ChatBoardProps> = ({
-    selectedRoom,
-    selectedChatType,
-}) => {
+const ChatBoard: React.FC<ChatBoardProps> = ({ selectedRoom }) => {
+    const { study_id: studyId, chat_type: chatType } = useParams();
     const navigate = useNavigate();
-    // const { study_id } = useParams();
 
     // 비디오 채팅 버튼 클릭 시
     const handleVideoChat = () => {
-        console.log('현재 선택된 채팅방:', selectedRoom);
-        navigate(`/chat/${selectedRoom?.studyId}/video`);
+        console.log('현재 선택된 채팅방:', studyId);
+        navigate(`/chat/${studyId}/video`);
     };
-    useEffect(() => {
-        console.log('현재 선택된 채팅방:', selectedRoom);
-    }, [selectedRoom]);
 
     return (
-        <div className="h-[90vh]">
+        <div className="h-full col-span-6 h-full border border-gray-200 rounded-xl shadow-md flex flex-col bg-[#fafbff] ">
             {/* 중앙 영역: 채팅창 및 비디오 채팅 */}
-            <div className="relative h-full mt-4 p-4 border border-gray-200 rounded-xl shadow-md">
-                <div className="flex items-center justify-between">
-                    <h1 className="text-xl font-bold">채팅방</h1>
-                    <button
-                        className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-200 transition"
-                        onClick={handleVideoChat}
-                    >
-                        <Video className="w-6 h-6 text-gray-700" />
-                    </button>
-                </div>
-                {selectedRoom && selectedChatType ? (
-                    <Chat
-                        roomId={selectedRoom.roomId}
-                        chatType={selectedChatType}
-                    />
-                ) : (
-                    <div className="p-4">채팅할 방을 선택해주세요.</div>
-                )}
+            <div className="flex flex-row m-4 justify-between items-center">
+                <h1 className="col-span-5 text-xl font-bold">
+                    {studyId && chatType
+                        ? selectedRoom?.roomName
+                        : '채팅방을 선택해주세요.'}
+                </h1>
+                <button
+                    className="p-2 rounded-full hover:bg-gray-200 transition col-span-1 h-fit"
+                    onClick={handleVideoChat}
+                >
+                    <Video className="w-6 h-6 text-gray-700" />
+                </button>
             </div>
+            {studyId && chatType && (
+                <Chat roomId={studyId} chatType={chatType as 'dm' | 'group'} />
+            )}
         </div>
     );
 };

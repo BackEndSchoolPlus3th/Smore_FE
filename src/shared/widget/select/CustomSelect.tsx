@@ -1,5 +1,5 @@
 // CustomSelect.tsx
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { ChevronDown } from 'lucide-react';
 
 export interface Option {
@@ -31,7 +31,7 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
 
     return (
         <div
-            className={`relative min-w-25 ${className} text-sm`}
+            className={`relative min-w-25 ${className} text-sm `}
             ref={selectRef}
             onMouseEnter={() => {
                 setIsOpen(true);

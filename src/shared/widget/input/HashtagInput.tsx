@@ -24,7 +24,7 @@ const HashtagInput: React.FC<HashtagInputProps> = ({
                 onChange={(e) => setHashtagInput(e.target.value)}
                 onKeyPress={onHashtagKeyPress}
                 placeholder="해시태그를 입력하고 엔터를 누르세요"
-                className="w-full border border-gray-300 rounded p-2 focus:outline-none focus:border-purple-500"
+                className="w-full border border-gray-300 rounded p-2 focus:outline-none focus:border-purple-500 bg-white"
             />
             <div className="flex flex-wrap gap-2 mt-2">
                 {hashtags.map((hashtag, index) => (

@@ -5,15 +5,14 @@ import {
     RemoteTrack,
     RemoteTrackPublication,
     Room,
-    RoomEvent
+    RoomEvent,
 } from 'livekit-client';
-import { ControlBar } from "@livekit/components-react";
+
 import '../../../pages/videoChat/VideoChatPage.css';
 import VideoComponent from '../livekit/VideoComponent';
 import AudioComponent from '../livekit/AudioComponent';
 import { getToken } from '../../../features/videoChat/getToken';
-
-
+import { CancleButton } from '../../../shared';
 
 type TrackInfo = {
     trackPublication: RemoteTrackPublication;
@@ -29,7 +28,8 @@ function configureUrls() {
         if (window.location.hostname === 'localhost') {
             APPLICATION_SERVER_URL = 'http://localhost:8090/api/v1/';
         } else {
-            APPLICATION_SERVER_URL = 'https://' + window.location.hostname + ':6443/';
+            APPLICATION_SERVER_URL =
+                'https://' + window.location.hostname + ':6443/';
         }
     }
 
@@ -44,7 +44,9 @@ function configureUrls() {
 
 function VideoChatBoard() {
     const [room, setRoom] = useState<Room | undefined>(undefined);
-    const [localTrack, setLocalTrack] = useState<LocalVideoTrack | undefined>(undefined);
+    const [localTrack, setLocalTrack] = useState<LocalVideoTrack | undefined>(
+        undefined
+    );
     const [remoteTracks, setRemoteTracks] = useState<TrackInfo[]>([]);
 
     const [participantName, setParticipantName] = useState('participantName');
@@ -60,20 +62,36 @@ function VideoChatBoard() {
 
         room.on(
             RoomEvent.TrackSubscribed,
-            (_track: RemoteTrack, publication: RemoteTrackPublication, participant: RemoteParticipant) => {
+            (
+                _track: RemoteTrack,
+                publication: RemoteTrackPublication,
+                participant: RemoteParticipant
+            ) => {
                 setRemoteTracks((prev) => [
                     ...prev,
-                    { trackPublication: publication, participantIdentity: participant.identity }
+                    {
+                        trackPublication: publication,
+                        participantIdentity: participant.identity,
+                    },
                 ]);
             }
         );
 
-        room.on(RoomEvent.TrackUnsubscribed, (_track: RemoteTrack, publication: RemoteTrackPublication) => {
-            setRemoteTracks((prev) => prev.filter((track) => track.trackPublication.trackSid !== publication.trackSid));
-        });
+        room.on(
+            RoomEvent.TrackUnsubscribed,
+            (_track: RemoteTrack, publication: RemoteTrackPublication) => {
+                setRemoteTracks((prev) =>
+                    prev.filter(
+                        (track) =>
+                            track.trackPublication.trackSid !==
+                            publication.trackSid
+                    )
+                );
+            }
+        );
 
         try {
-            const data = await getToken();
+            const data = JSON.parse(await getToken());
             const token = data.token;
             const participantName = data.UserEmail;
             const roomName = data.StudyTitle;
@@ -85,9 +103,18 @@ function VideoChatBoard() {
             await room.connect(LIVEKIT_URL, token);
 
             await room.localParticipant.enableCameraAndMicrophone();
-            setLocalTrack(room.localParticipant.videoTrackPublications.values().next().value.videoTrack);
+            const videoTrackPublication =
+                room.localParticipant.videoTrackPublications
+                    .values()
+                    .next().value;
+            if (videoTrackPublication) {
+                setLocalTrack(videoTrackPublication.videoTrack);
+            }
         } catch (error) {
-            console.log('There was an error connecting to the room:', (error as Error).message);
+            console.log(
+                'There was an error connecting to the room:',
+                (error as Error).message
+            );
             await leaveRoom();
         }
     }
@@ -99,24 +126,28 @@ function VideoChatBoard() {
         setRemoteTracks([]);
     }
 
-    
-
     return (
-        <div id="room">
-            <div id="room-header">
-                <h2 id="room-title">{roomName}</h2>
-                <button className="btn btn-danger" id="leave-room-button" onClick={leaveRoom}>
-                    Leave Room
-                </button>
+        <div className="col-span-6 h-full border border-gray-200 rounded-xl shadow-md flex flex-col p-4">
+            <div className="flex flex-row justify-between items-center">
+                <p className="text-xl font-bold">{roomName}</p>
+                <CancleButton onClick={leaveRoom} label="Leave Room" />
             </div>
             <div id="layout-container">
-                {localTrack && <VideoComponent track={localTrack} participantIdentity={participantName} local={true} />}
+                {localTrack && (
+                    <VideoComponent
+                        track={localTrack}
+                        participantIdentity={participantName}
+                        local={true}
+                    />
+                )}
                 {remoteTracks.map((remoteTrack) =>
                     remoteTrack.trackPublication.kind === 'video' ? (
                         <VideoComponent
                             key={remoteTrack.trackPublication.trackSid}
                             track={remoteTrack.trackPublication.videoTrack!}
-                            participantIdentity={remoteTrack.participantIdentity}
+                            participantIdentity={
+                                remoteTrack.participantIdentity
+                            }
                         />
                     ) : (
                         <AudioComponent

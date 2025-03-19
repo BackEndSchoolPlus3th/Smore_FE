@@ -20,7 +20,6 @@ interface RecruitmentModalProps {
     >;
     maxMember: number;
     setMaxMember: React.Dispatch<React.SetStateAction<number>>;
-    thumbnail: string;
     setThumbnail: React.Dispatch<React.SetStateAction<string>>;
     isClosing: boolean;
     closeModal: () => void;
@@ -43,7 +42,6 @@ const RecruitmentModal: React.FC<RecruitmentModalProps> = ({
     setRecruitmentPeriod,
     maxMember,
     setMaxMember,
-    thumbnail,
     setThumbnail,
     isClosing,
     closeModal,

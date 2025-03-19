@@ -2,8 +2,6 @@ import {
     RecruitmentForm,
     RecruitmentDetailBoard,
     RecruitmentListBoard,
-    RecruitmentEditBoard,
-    StudyDocumentBoard,
 } from '../../components';
 import { Route, Routes } from 'react-router-dom';
 
@@ -16,11 +14,6 @@ const RecruitmentPage = () => {
                     path=":recruitmentId"
                     element={<RecruitmentDetailBoard />}
                 />
-                <Route
-                    path=":recruitmentId/edit"
-                    element={<RecruitmentEditBoard />}
-                />
-                <Route path="document" element={<StudyDocumentBoard />} />
             </Route>
         </Routes>
     );

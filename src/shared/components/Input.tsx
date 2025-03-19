@@ -6,8 +6,8 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 
 const Input: React.FC<InputProps> = ({ error, ...props }) => {
     return (
-        <div className="flex flex-col">
-            <input className="border p-2 rounded" {...props} />
+        <div className="flex flex-col w-full bg-white">
+            <input className="border p-1 rounded" {...props} />
             {error && <span className="text-red-500 text-sm">{error}</span>}
         </div>
     );
