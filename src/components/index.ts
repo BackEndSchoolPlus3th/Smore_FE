@@ -31,7 +31,7 @@ export { default as ChatBoard } from './chat/board/ChatBoard';
 // article
 export { default as CommentForm } from './article/commnet/CommentForm';
 
-export { default as VideoChatBoard } from './chat/board/VideoChatBoard';
+export { default as LivekitChatBoard } from './chat/livekit/LivekitChatBoard';
 export { default as Sidebar } from './chat/Sidebar';
 
 // Recruitment

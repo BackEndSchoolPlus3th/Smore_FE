@@ -9,8 +9,8 @@ import {
 } from 'livekit-client';
 
 import '../../../pages/videoChat/VideoChatPage.css';
-import VideoComponent from '../livekit/VideoComponent';
-import AudioComponent from '../livekit/AudioComponent';
+import VideoComponent from './VideoComponent';
+import AudioComponent from './AudioComponent';
 import { getToken } from '../../../features/videoChat/getToken';
 import { CancleButton } from '../../../shared';
 
@@ -42,7 +42,7 @@ function configureUrls() {
     }
 }
 
-function VideoChatBoard() {
+function LivekitChatBoard() {
     const [room, setRoom] = useState<Room | undefined>(undefined);
     const [localTrack, setLocalTrack] = useState<LocalVideoTrack | undefined>(
         undefined
@@ -161,4 +161,4 @@ function VideoChatBoard() {
         </div>
     );
 }
-export default VideoChatBoard;
+export default LivekitChatBoard;
