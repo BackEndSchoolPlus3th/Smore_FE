@@ -30,7 +30,7 @@ const ChatPage: React.FC = () => {
                     path=":chat_type/:study_id"
                     element={<ChatBoard selectedRoom={selectedRoom} />}
                 />
-                <Route path=":study_id/video" element={<LivekitChatBoard />} />
+                <Route path="video/:study_id" element={<LivekitChatBoard />} />
             </Route>
         </Routes>
     );

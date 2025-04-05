@@ -21,7 +21,7 @@ const ChatBoard: React.FC<ChatBoardProps> = ({ selectedRoom }) => {
     // 비디오 채팅 버튼 클릭 시
     const handleVideoChat = () => {
         console.log('현재 선택된 채팅방:', studyId);
-        navigate(`/chat/${studyId}/video`);
+        navigate(`/chat/video/${studyId}`);
     };
 
     return (
