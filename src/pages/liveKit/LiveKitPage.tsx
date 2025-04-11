@@ -7,12 +7,10 @@ import {
     Room,
     RoomEvent,
 } from 'livekit-client';
-
-import '../../../pages/videoChat/VideoChatPage.css';
-import VideoComponent from './VideoComponent';
-import AudioComponent from './AudioComponent';
-import { getToken } from '../../../features/videoChat/getToken';
-import { CancleButton } from '../../../shared';
+import './LiveKitPage.css';
+import VideoComponent from '../../components/chat/livekit/VideoComponent';
+import AudioComponent from '../../components/chat/livekit/AudioComponent';
+import { getToken } from '../../features/liveKit/getToken';
 
 type TrackInfo = {
     trackPublication: RemoteTrackPublication;
@@ -42,7 +40,7 @@ function configureUrls() {
     }
 }
 
-function LivekitChatBoard() {
+function VideoChatPage() {
     const [room, setRoom] = useState<Room | undefined>(undefined);
     const [localTrack, setLocalTrack] = useState<LocalVideoTrack | undefined>(
         undefined
@@ -103,12 +101,12 @@ function LivekitChatBoard() {
             await room.connect(LIVEKIT_URL, token);
 
             await room.localParticipant.enableCameraAndMicrophone();
-            const videoTrackPublication =
+            const localVideoTrackPublication =
                 room.localParticipant.videoTrackPublications
                     .values()
                     .next().value;
-            if (videoTrackPublication) {
-                setLocalTrack(videoTrackPublication.videoTrack);
+            if (localVideoTrackPublication) {
+                setLocalTrack(localVideoTrackPublication.videoTrack);
             }
         } catch (error) {
             console.log(
@@ -127,10 +125,16 @@ function LivekitChatBoard() {
     }
 
     return (
-        <div className="col-span-6 h-full border border-gray-200 rounded-xl shadow-md flex flex-col p-4">
-            <div className="flex flex-row justify-between items-center">
-                <p className="text-xl font-bold">{roomName}</p>
-                <CancleButton onClick={leaveRoom} label="Leave Room" />
+        <div id="room">
+            <div id="room-header">
+                <h2 id="room-title">{roomName}</h2>
+                <button
+                    className="btn btn-danger"
+                    id="leave-room-button"
+                    onClick={leaveRoom}
+                >
+                    Leave Room
+                </button>
             </div>
             <div id="layout-container">
                 {localTrack && (
@@ -155,10 +159,10 @@ function LivekitChatBoard() {
                             track={remoteTrack.trackPublication.audioTrack!}
                         />
                     )
-                     
                 )}
             </div>
         </div>
     );
 }
-export default LivekitChatBoard;
+
+export default VideoChatPage;

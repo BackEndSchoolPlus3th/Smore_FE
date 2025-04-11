@@ -1,0 +1,86 @@
+/* 숨겨진 call 영역 */
+#call {
+    display: none;
+}
+
+/* 비디오 박스 레이아웃 */
+.video-container {
+    display: block;
+    width: 100%;
+    max-width: 500px;
+    margin: 20px auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    background-color: #000;
+}
+
+.video-container video {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+}
+
+/* 버튼 및 셀렉트 등 컨트롤 레이아웃 */
+.controls-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+/* 버튼 기본 스타일 */
+.controls-container button,
+.controls-container select {
+    background: linear-gradient(145deg, #c5baff, #a294f9);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 16px;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* 버튼 호버 효과 */
+.controls-container button:hover {
+    background: linear-gradient(145deg, #c5baff, #a294f9);
+    transform: translateY(-2px);
+    box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* 셀렉트 박스 스타일 */
+.controls-container select {
+    background-color: #ffffff;
+    color: #333;
+    border-radius: 20px;
+    padding: 10px 15px;
+    font-size: 14px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* 셀렉트 박스 호버 */
+.controls-container select:hover {
+    border-color: #c5baff;
+}
+
+/* 비디오끼리 가로로 배치 */
+.video-layout {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    padding: 20px;
+    flex-wrap: wrap;
+}
+
+/* 룸 이름 표시 */
+.room-name {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 20px;
+}

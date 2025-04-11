@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { ChatBoard, LivekitChatBoard, ChatPageForm } from '../../components';
+import { ChatBoard, VideoChat, ChatPageForm } from '../../components';
 
 type ChatRoom = {
     roomId: string;
@@ -30,7 +30,7 @@ const ChatPage: React.FC = () => {
                     path=":chat_type/:study_id"
                     element={<ChatBoard selectedRoom={selectedRoom} />}
                 />
-                <Route path="video/:study_id" element={<LivekitChatBoard />} />
+                <Route path="video/:study_id" element={<VideoChat />} />
             </Route>
         </Routes>
     );
