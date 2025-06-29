@@ -1,215 +1,113 @@
 import React, { useEffect, useRef, useState } from "react";
-import { io } from 'socket.io-client';
 import "./VideoChat.css";
-const socket = io();
+import SockJS from 'sockjs-client';
+import { Client } from '@stomp/stompjs';
+
+/** JWT에 Bearer 접두어 추가 */
+const addBearer = (token: string) => {
+    return token.startsWith('Bearer ') ? token : `Bearer ${token}`;
+};
 
 const VideoChat: React.FC = () => {
-    // 비디오 요소, 버튼, 폼 등의 DOM에 접근하기 위해 ref 사용
-    const myFaceRef = useRef<HTMLVideoElement>(null);         // 내 비디오
-    const peerFaceRef = useRef<HTMLVideoElement>(null);       // 상대 비디오
-    const muteBtnRef = useRef<HTMLButtonElement>(null);       // 음소거 버튼
-    const cameraBtnRef = useRef<HTMLButtonElement>(null);     // 카메라 끄기 버튼
-    const cameraSelectRef = useRef<HTMLSelectElement>(null);  // 카메라 선택 드롭다운
-    const welcomeRef = useRef<HTMLDivElement>(null);          // 초기 화면
-    const callRef = useRef<HTMLDivElement>(null);             // 화상채팅 화면
-    const roomNameRef = useRef<HTMLSpanElement>(null);        // 방 이름 표시
-    const roomNameInputRef = useRef<HTMLInputElement>(null);  // 방 이름 입력
-    const formRef = useRef<HTMLFormElement>(null);            // 폼 요소
+    const stompClientRef = useRef<Client | null>(null); // STOMP 클라이언트
+    const connectedRef = useRef<boolean>(false); // STOMP 연결 상태
+    const [jwt,setJwt] = useState<string>(() => {                      // JWT 토큰 상태
+      const token = localStorage.getItem('accessToken') || '';
+      console.log("비디오채팅 JWT 토큰:", token);
+      return token;
+    }); 
+    
+    const connectWebSocket = () => {
+      console.log('웹소켓 연결 시도 중...');
 
-    const [muted, setMuted] = useState(false);                // 음소거 상태
-    const [cameraOff, setCameraOff] = useState(false);        // 카메라 꺼짐 여부
+      // 기존 연결 해제
+      if (stompClientRef.current) {
+          stompClientRef.current.deactivate();
+          stompClientRef.current = null;
+      }
 
-    const roomName = useRef<string>("");                      // 방 이름 저장
-    const myStream = useRef<MediaStream | null>(null);        // 내 영상 스트림
-    const myPeerConnection = useRef<RTCPeerConnection | null>(null); // 피어 연결
-    const myDataChannel = useRef<RTCDataChannel | null>(null);       // 데이터 채널
-  
-    const getCameras = async () => {
-      try {
-        const devices = await navigator.mediaDevices.enumerateDevices();
-        const cameras = devices.filter(device => device.kind === "videoinput");
-        const currentCamera = myStream.current?.getVideoTracks()[0];
-  
-        if (cameraSelectRef.current) {
-          cameraSelectRef.current.innerHTML = "";
-          cameras.forEach(camera => {
-            const option = document.createElement("option");
-            option.value = camera.deviceId;
-            option.innerText = camera.label;
-            if (currentCamera?.label === camera.label) {
-              option.selected = true;
-            }
-            cameraSelectRef.current?.appendChild(option);
-          });
-        }
-      } catch {
-        console.log("Failed to enumerate connected devices");
-      }
-    };
-  
-    const getMedia = async (deviceId?: string) => {
-      const initialConstraints = {
-        audio: true,
-        video: { facingMode: "user" },
-      };
-      const cameraConstraints = {
-        audio: true,
-        video: { deviceId: { exact: deviceId! } },
-      };
-      try {
-        myStream.current = await navigator.mediaDevices.getUserMedia(
-          deviceId ? cameraConstraints : initialConstraints
-        );
-        if (myFaceRef.current) {
-          myFaceRef.current.srcObject = myStream.current;
-        }
-        if (!deviceId) await getCameras();
-      } catch (e) {
-        console.error(e);
-      }
-    };
-  
-    const handleMuteClick = () => {
-      if (myStream.current) {
-        myStream.current.getAudioTracks().forEach(track => (track.enabled = !track.enabled));
-        setMuted(prev => {
-          if (muteBtnRef.current) muteBtnRef.current.innerText = prev ? "Mute" : "Unmute";
-          return !prev;
-        });
-      }
-    };
-  
-    const handleCameraClick = () => {
-      if (myStream.current) {
-        myStream.current.getVideoTracks().forEach(track => (track.enabled = !track.enabled));
-        setCameraOff(prev => {
-          if (cameraBtnRef.current) cameraBtnRef.current.innerText = prev ? "Turn camera Off" : "Turn camera On";
-          return !prev;
-        });
-      }
-    };
-  
-    const handleCameraChange = async () => {
-      await getMedia(cameraSelectRef.current?.value);
-      if (myPeerConnection.current && myStream.current) {
-        const videoTrack = myStream.current.getVideoTracks()[0];
-        const videoSender = myPeerConnection.current.getSenders().find(sender => sender.track?.kind === "video");
-        videoSender?.replaceTrack(videoTrack);
-      }
-    };
-  
-    const handleWelcomeSubmit = async (event: React.FormEvent) => {
-      event.preventDefault();
-      const room = roomNameInputRef.current?.value.trim();
-      if (!room) return;
-      roomName.current = room;
-      await initCall();
-      socket.emit("join_room", room);
-      if (roomNameInputRef.current) roomNameInputRef.current.value = "";
-    };
-  
-    const initCall = async () => {
-      if (welcomeRef.current) welcomeRef.current.hidden = true;
-      if (callRef.current) callRef.current.hidden = false;
-      await getMedia();
-      makeConnection();
-    };
-  
-    const makeConnection = () => {
-      myPeerConnection.current = new RTCPeerConnection({
-        iceServers: [
-          {
-            urls: [
-              "stun:stun.l.google.com:19302",
-              "stun:stun1.l.google.com:19302",
-              "stun:stun2.l.google.com:19302",
-              "stun:stun3.l.google.com:19302",
-              "stun:stun4.l.google.com:19302",
-            ],
-          },
-        ],
-      });
-  
-      myPeerConnection.current.addEventListener("icecandidate", handleIce);
-      myPeerConnection.current.addEventListener("addstream", handleAddStream);
-  
-      myStream.current?.getTracks().forEach(track =>
-        myPeerConnection.current?.addTrack(track, myStream.current!)
+      const roomId = 'test-room'; // 테스트용 roomId
+
+      // SockJS를 사용하여 WebSocket 연결 생성
+      const socket = new SockJS(
+        `http://localhost:8090/ws?token=${jwt}`,
+        undefined,
+        {
+          xhrWithCredentials: true, // CORS 허용
+        } as any
       );
-    };
-  
-    const handleIce = (event: RTCPeerConnectionIceEvent) => {
-      if (event.candidate) {
-        socket.emit("ice", event.candidate, roomName.current);
-      }
-    };
-  
-    const handleAddStream = (event: MediaStreamEvent) => {
-      if (peerFaceRef.current) {
-        peerFaceRef.current.srcObject = event.stream;
-      }
-    };
-  
-    useEffect(() => {
-      socket.on("welcome", async () => {
-        myDataChannel.current = myPeerConnection.current?.createDataChannel("chat") || null;
-        myDataChannel.current?.addEventListener("message", (msg) => {
-          console.log("Received message:", msg.data);
-        });
-  
-        const offer = await myPeerConnection.current?.createOffer();
-        if (offer) {
-          await myPeerConnection.current?.setLocalDescription(offer);
-          socket.emit("offer", offer, roomName.current);
-        }
-      });
-  
-      socket.on("offer", async (offer: RTCSessionDescriptionInit) => {
-        myPeerConnection.current?.addEventListener("datachannel", event => {
-          myDataChannel.current = event.channel;
-          myDataChannel.current.addEventListener("message", (msg) => {
-            console.log("Received message:", msg.data);
+
+      stompClientRef.current = new Client({
+        webSocketFactory: () => socket,
+        connectHeaders: {
+          Authorization: addBearer(jwt), // JWT 토큰을 헤더에 추가
+        },
+        debug: (str) => {
+          console.log(new Date(), str);
+        },
+        onConnect: () => {
+          console.log("✅ WebSocket 연결 성공");
+          connectedRef.current = true; // 연결 상태 업데이트
+
+          // 연결 후 초기화 작업
+
+          // ✅ 1. 구독
+          stompClientRef.current?.subscribe(`/topic/signal/${roomId}`,
+            (msg) => {
+            try {
+              const data = JSON.parse(msg.body);
+              console.log('📩 서버 응답 수신:', data);
+            } catch (e) {
+              console.error('❌ 메시지 파싱 오류:', e);
+            }
           });
-        });
-  
-        await myPeerConnection.current?.setRemoteDescription(offer);
-        const answer = await myPeerConnection.current?.createAnswer();
-        await myPeerConnection.current?.setLocalDescription(answer!);
-        socket.emit("answer", answer, roomName.current);
-      });
-  
-      socket.on("answer", (answer: RTCSessionDescriptionInit) => {
-        myPeerConnection.current?.setRemoteDescription(answer);
-      });
-  
-      socket.on("ice", (candidate: RTCIceCandidate) => {
-        myPeerConnection.current?.addIceCandidate(candidate);
-      });
-    }, []);
-  
-    return (
-      <div>
-        <div id="welcome" ref={welcomeRef}>
-          <form ref={formRef} onSubmit={handleWelcomeSubmit}>
-            <input type="text" placeholder="Room name" ref={roomNameInputRef} />
-            <button type="submit">Join</button>
-          </form>
-        </div>
-  
-        <div id="call" ref={callRef} hidden>
-          <div>
-            <video id="myFace" ref={myFaceRef} autoPlay playsInline />
-            <video id="peerFace" ref={peerFaceRef} autoPlay playsInline />
-          </div>
-          <button ref={muteBtnRef} onClick={handleMuteClick}>Mute</button>
-          <button ref={cameraBtnRef} onClick={handleCameraClick}>Turn Camera Off</button>
-          <select ref={cameraSelectRef} onChange={handleCameraChange}></select>
-          <div>
-            Room: <span ref={roomNameRef}></span>
-          </div>
-        </div>
-      </div>
-    );
-  };
-  
-  export default VideoChat;
+
+          // ✅ 2. 테스트용 ping 전송
+          stompClientRef.current?.publish({
+            destination: `/app/signal/send/${roomId}`,
+            body: JSON.stringify({
+              type: 'ping',
+              message: '프론트에서 ping 전송',
+            }),            
+          });
+
+          console.log('📤 ping 전송 완료');
+        },          
+        onStompError: (frame) => {
+          console.error('❌ STOMP 에러', frame);
+        },
+        onWebSocketClose: () => {
+          console.warn('⚠️ WebSocket 닫힘');
+        },
+        onWebSocketError: (e) => {
+          console.error('❌ WebSocket 오류', e);
+        },
+    });        
+      stompClientRef.current.activate();
+};
+
+  useEffect(() => {
+    connectWebSocket();
+
+  return () => {
+        if (stompClientRef.current) {
+          stompClientRef.current.deactivate();
+          console.log('🧹 WebSocket 연결 해제');
+        }
+      };
+    }, [jwt]);
+
+
+  return (
+    <div className="p-4">
+      <h2 className="text-lg font-bold">WebSocket Ping-Pong 테스트</h2>
+      <button
+        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
+        onClick={connectWebSocket}
+      >
+        다시 연결하기
+      </button>
+    </div>
+  );
+};
+export default VideoChat;
