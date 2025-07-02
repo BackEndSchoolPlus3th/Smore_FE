@@ -54,6 +54,7 @@ const VideoChat: React.FC = () => {
       return token;
     }); 
     const roomId = 'test-room'; // 테스트용 roomId
+    const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
     
 
     // 현재 사용자 ID 초기화
@@ -119,14 +120,36 @@ const VideoChat: React.FC = () => {
         debug: (str) => {
           console.log(new Date(), str);
         },
-        onConnect: () => {
+        onConnect: async () => {
           console.log("✅ WebSocket 연결 성공");
           connectedRef.current = true; // 연결 상태 업데이트
 
-        
-          console.log('🛠 구독 시도 중...');
+          // 1. PeerConnection 생성
+          const pc = new RTCPeerConnection({
+            iceServers: [
+              { urls: 'stun:stun.l.google.com:19302' }, // 공개 STUN 서버
+            ]
+          });
+          peerConnectionRef.current = pc;
+
+          // ice candidate 설정
+          pc.onicecandidate = (event) => {
+            if (event.candidate) {
+              sendSignal('candidate', { candidate: event.candidate });
+            }
+          };
+
+          // 2. offer 생성
+          const offer = await pc.createOffer();
+          await pc.setLocalDescription(offer);
+          console.log('📤 offer 생성 완료:', offer);
+
+          // 3. offer를 시그널링 서버에 전송
+          sendSignal('offer', { sdp: offer });
+
+
           // ✅ [1] 시그널링 메시지 구독
-          stompClientRef.current?.subscribe(`/topic/signal/${roomId}`, (msg) => {
+          stompClientRef.current?.subscribe(`/topic/signal/${roomId}`, async (msg) => {
             try {
               const data = JSON.parse(msg.body);
               console.log('📩 서버 응답 수신:', data);
@@ -134,20 +157,57 @@ const VideoChat: React.FC = () => {
               // 여기서 type: 'offer', 'answer', 'candidate' 처리할 예정
               switch (data.type) {
                 case 'offer':
-                  // handleOffer(data)
-                  break;
+                  console.log('📥 offer 수신:', data.sdp);
+                  // 1. PeerConnection 생성 (응답자)
+                  const remotePc = new RTCPeerConnection({
+                    iceServers: [
+                      { urls: 'stun:stun.l.google.com:19302' },
+                    ]
+                  });
+                  peerConnectionRef.current = remotePc;
+
+                  // ice candidate 설정
+                  remotePc.onicecandidate = (event) => {
+                    if (event.candidate) {
+                        sendSignal('candidate', { candidate: event.candidate });
+                      }
+                    };
+
+                  // 2. 받은 offer 설정
+                  await remotePc.setRemoteDescription(new RTCSessionDescription(data.sdp));
+
+                  // 3. answer 생성 및 전송
+                  const answer = await remotePc.createAnswer();
+                  await remotePc.setLocalDescription(answer);
+                  sendSignal('answer', { sdp: answer });
+                  break;            
+
                 case 'answer':
-                  // handleAnswer(data)
+                  console.log('📥 answer 수신:', data.sdp);
+                  if (peerConnectionRef.current) {
+                    await peerConnectionRef.current.setRemoteDescription(
+                      new RTCSessionDescription(data.sdp)
+                    );
+                  }              
                   break;
                 case 'candidate':
-                  // handleCandidate(data)
+                  if (peerConnectionRef.current) {
+                    try {
+                      await peerConnectionRef.current.addIceCandidate(
+                        new RTCIceCandidate(data.candidate)
+                      );
+                      console.log('🧊 ICE candidate 추가됨:', data.candidate);
+                    } catch (err) {
+                      console.error('❌ ICE candidate 추가 실패:', err);
+                    }
+                  }
                   break;
               }
             } catch (e) {
               console.error('❌ 메시지 파싱 오류:', e);
             }
           });         
-          sendSignal('offer', { sdp: 'dummy-offer-sdp' });        
+          // sendSignal('offer', { sdp: 'dummy-offer-sdp' });        
         },     
 
       
