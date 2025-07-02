@@ -55,6 +55,10 @@ const VideoChat: React.FC = () => {
     }); 
     const roomId = 'test-room'; // 테스트용 roomId
     const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
+    const localVideoRef = useRef<HTMLVideoElement>(null);
+    const remoteVideoRef = useRef<HTMLVideoElement>(null);
+
+
     
 
     // 현재 사용자 ID 초기화
@@ -138,13 +142,19 @@ const VideoChat: React.FC = () => {
               video: true,
               audio: true,
             });
+            if (localVideoRef.current) {
+              localVideoRef.current.srcObject = localStream;
+            }
             localStream.getTracks().forEach(track => {
               pc.addTrack(track, localStream);
             });
             console.log("🎥 로컬 스트림 추가 완료");
+            if (localVideoRef.current) {
+              localVideoRef.current.srcObject = localStream;
+            }
           } catch (err) {
             console.error("❌ getUserMedia 실패:", err);
-          }
+          }          
 
           // ice candidate 설정
           pc.onicecandidate = (event) => {
@@ -180,6 +190,12 @@ const VideoChat: React.FC = () => {
                   });
                   peerConnectionRef.current = remotePc;
 
+                  remotePc.ontrack = (event) => {
+                    console.log('📺 상대방 트랙 수신:', event.streams);
+                    if (remoteVideoRef.current) {
+                      remoteVideoRef.current.srcObject = event.streams[0];
+                    }
+                  };
                   // ice candidate 설정
                   remotePc.onicecandidate = (event) => {
                     if (event.candidate) {
@@ -250,15 +266,41 @@ const VideoChat: React.FC = () => {
     }, [jwt]);
 
 
-  return (
-    <div>
-      <h2>🔧 WebRTC 테스트</h2>
-      <button onClick={() => {       
-        connectWebSocket();
-      }}>
-        📤 Offer 보내기
-      </button>
+
+return (
+  <div className="col-span-6 w-full h-full flex flex-col gap-4 p-6 bg-white rounded-xl shadow-md">
+    <h2 className="text-2xl font-bold mb-2">🎥 WebRTC 화상채팅</h2>
+
+    <div className="flex flex-col gap-4 flex-1 overflow-hidden">
+      {/* 상대방 비디오 */}
+      <div className="flex-1 bg-black rounded-lg overflow-hidden">
+        <video
+          ref={remoteVideoRef}
+          autoPlay
+          playsInline
+          className="w-full h-full object-contain"
+        />
+      </div>
+
+      {/* 내 비디오 */}
+      <div className="flex-1 bg-black rounded-lg overflow-hidden">
+        <video
+          ref={localVideoRef}
+          autoPlay
+          playsInline
+          muted
+          className="w-full h-full object-contain"
+        />
+      </div>
     </div>
-  );
-};
+  </div>
+);
+
+
+
+
+
+
+
+}
 export default VideoChat;
