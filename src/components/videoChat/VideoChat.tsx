@@ -132,6 +132,20 @@ const VideoChat: React.FC = () => {
           });
           peerConnectionRef.current = pc;
 
+          // ✅ local stream 추가
+          try {
+            const localStream = await navigator.mediaDevices.getUserMedia({
+              video: true,
+              audio: true,
+            });
+            localStream.getTracks().forEach(track => {
+              pc.addTrack(track, localStream);
+            });
+            console.log("🎥 로컬 스트림 추가 완료");
+          } catch (err) {
+            console.error("❌ getUserMedia 실패:", err);
+          }
+
           // ice candidate 설정
           pc.onicecandidate = (event) => {
             if (event.candidate) {
@@ -190,7 +204,7 @@ const VideoChat: React.FC = () => {
                     );
                   }              
                   break;
-                case 'candidate':
+                case 'candidate':                  
                   if (peerConnectionRef.current) {
                     try {
                       await peerConnectionRef.current.addIceCandidate(
