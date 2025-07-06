@@ -120,10 +120,7 @@ const VideoChat: React.FC = () => {
         webSocketFactory: () => socket,
         connectHeaders: {
           Authorization: addBearer(jwt), // JWT 토큰을 헤더에 추가
-        },
-        debug: (str) => {
-          console.log(new Date(), str);
-        },
+        },    
         onConnect: async () => {
           console.log("✅ WebSocket 연결 성공");
           connectedRef.current = true; // 연결 상태 업데이트
@@ -149,6 +146,8 @@ const VideoChat: React.FC = () => {
               pc.addTrack(track, localStream);
             });
             console.log("🎥 로컬 스트림 추가 완료");
+            console.log("나의 localStream:", localStream);
+            console.log("나의 pc:", pc);
             if (localVideoRef.current) {
               localVideoRef.current.srcObject = localStream;
             }
@@ -182,6 +181,7 @@ const VideoChat: React.FC = () => {
               switch (data.type) {
                 case 'offer':
                   console.log('📥 offer 수신:', data.sdp);
+
                   // 1. PeerConnection 생성 (응답자)
                   const remotePc = new RTCPeerConnection({
                     iceServers: [
@@ -190,27 +190,47 @@ const VideoChat: React.FC = () => {
                   });
                   peerConnectionRef.current = remotePc;
 
+                  // 2. 로컬 스트림 확보 및 등록
+                  try {
+                    const localStream = await navigator.mediaDevices.getUserMedia({
+                      video: true,
+                      audio: true,
+                    });
+
+                    if (localVideoRef.current) {
+                      localVideoRef.current.srcObject = localStream;
+                    }
+
+                    localStream.getTracks().forEach((track) => {
+                      remotePc.addTrack(track, localStream); // ✅ 반드시 등록
+                    });
+                    console.log("🎥 로컬 스트림 추가 완료 (응답자)");
+                    console.log("localStream:", localStream);
+                  } catch (err) {
+                    console.error("❌ getUserMedia 실패:", err);
+                  }
+
+                  // 3. 상대방 트랙 수신 핸들링
                   remotePc.ontrack = (event) => {
                     console.log('📺 상대방 트랙 수신:', event.streams);
                     if (remoteVideoRef.current) {
                       remoteVideoRef.current.srcObject = event.streams[0];
                     }
                   };
-                  // ice candidate 설정
+
+                  // 4. ICE 후보 수집
                   remotePc.onicecandidate = (event) => {
                     if (event.candidate) {
-                        sendSignal('candidate', { candidate: event.candidate });
-                      }
-                    };
+                      sendSignal('candidate', { candidate: event.candidate });
+                    }
+                  };
 
-                  // 2. 받은 offer 설정
+                  // 5. offer 설정 및 answer 생성/전송
                   await remotePc.setRemoteDescription(new RTCSessionDescription(data.sdp));
-
-                  // 3. answer 생성 및 전송
                   const answer = await remotePc.createAnswer();
                   await remotePc.setLocalDescription(answer);
                   sendSignal('answer', { sdp: answer });
-                  break;            
+                  break;           
 
                 case 'answer':
                   console.log('📥 answer 수신:', data.sdp);
@@ -218,7 +238,9 @@ const VideoChat: React.FC = () => {
                     await peerConnectionRef.current.setRemoteDescription(
                       new RTCSessionDescription(data.sdp)
                     );
-                  }              
+                  }  
+                  
+                              
                   break;
                 case 'candidate':                  
                   if (peerConnectionRef.current) {
