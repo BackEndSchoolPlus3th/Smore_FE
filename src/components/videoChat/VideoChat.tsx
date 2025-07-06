@@ -12,7 +12,7 @@ const addBearer = (token: string) => {
     return token.startsWith('Bearer ') ? token : `Bearer ${token}`;
 };
 
-/** JWT 디코딩하여 사용자 ID(subject) 추출 */
+/** JWT 디코딩하여 사용자 ID(subject) 추출! */
 const getUserIdFromToken = (token: string): string => {
     try {
         if (!token || token === '') {

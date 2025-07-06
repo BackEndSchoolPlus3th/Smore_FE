@@ -1,0 +1,283 @@
+[33mcommit 31c32676763bb5a743ad4a3fb35bea4363b0b71b[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfeature/#110-webRTC[m[33m, [m[1;31morigin/feature/#110-webRTC[m[33m)[m
+Author:     seokyoung <nsy7160@gmail.com>
+AuthorDate: 2025-07-06
+Commit:     seokyoung <nsy7160@gmail.com>
+CommitDate: 2025-07-06
+
+    feat:webRTC-remotevideo-Error
+
+[33mcommit 3fd251cbaf51635ab4d506ddd08f557374805d60[m
+Author:     seokyoung <nsy7160@gmail.com>
+AuthorDate: 2025-07-06
+Commit:     seokyoung <nsy7160@gmail.com>
+CommitDate: 2025-07-06
+
+    feat:webSocket-isInitiator
+
+[33mcommit 9705a818adc40179dfcaed65ad1c00985c82a860[m
+Author:     seokyoung <nsy7160@gmail.com>
+AuthorDate: 2025-07-06
+Commit:     seokyoung <nsy7160@gmail.com>
+CommitDate: 2025-07-06
+
+    feat:webSocket 연결
+
+[33mcommit 30a10193e904da7b8bc3f2a908346c175f939c17[m
+Author:     seokyoung <nsy7160@gmail.com>
+AuthorDate: 2025-07-06
+Commit:     seokyoung <nsy7160@gmail.com>
+CommitDate: 2025-07-06
+
+    feat:webSocket
+
+[33mcommit 0d86c642bcf98a0eae3a77f3a74cecc88f1fcdc2[m
+Author:     seokyoung <nsy7160@gmail.com>
+AuthorDate: 2025-07-02
+Commit:     seokyoung <nsy7160@gmail.com>
+CommitDate: 2025-07-02
+
+    feat:webRTC
+
+[33mcommit 27d78f9be768c0499cf35e7c711813142bcefd83[m
+Author:     seokyoung <nsy7160@gmail.com>
+AuthorDate: 2025-07-02
+Commit:     seokyoung <nsy7160@gmail.com>
+CommitDate: 2025-07-02
+
+    feat:webRTC-icecandidate
+
+[33mcommit 5a2a404d29183faeca5402fc5f880501220849f4[m
+Author:     seokyoung <nsy7160@gmail.com>
+AuthorDate: 2025-07-02
+Commit:     seokyoung <nsy7160@gmail.com>
+CommitDate: 2025-07-02
+
+    feat:webRTC-offer&answer
+
+[33mcommit ad6f1004e92c0e8cb0594fdc03e4d3d50fde3390[m
+Author:     seokyoung <nsy7160@gmail.com>
+AuthorDate: 2025-07-02
+Commit:     seokyoung <nsy7160@gmail.com>
+CommitDate: 2025-07-02
+
+    feat:websocket
+
+[33mcommit b8a65d67dc2c1a52165ec92e1b30607a5dd75c16[m
+Author:     seokyoung <nsy7160@gmail.com>
+AuthorDate: 2025-06-29
+Commit:     seokyoung <nsy7160@gmail.com>
+CommitDate: 2025-06-29
+
+    feat:videochat-websocket-test
+
+[33mcommit 1f960de00c06f962f9db57fa39b42e3bc5f1e89a[m
+Author:     seokyoung <nsy7160@gmail.com>
+AuthorDate: 2025-04-12
+Commit:     seokyoung <nsy7160@gmail.com>
+CommitDate: 2025-04-12
+
+    feat:webRTC
+
+[33mcommit 6ad0723cd627f8aaa8a0c389efe336bcd74b9f92[m
+Author:     seokyoung <nsy7160@gmail.com>
+AuthorDate: 2025-04-05
+Commit:     seokyoung <nsy7160@gmail.com>
+CommitDate: 2025-04-05
+
+    feat:videoChat_url
+
+[33mcommit 4a4b97ff16c15eb78f5b22bad6fda3ca2efc12ee[m
+Author:     seokyoung <nsy7160@gmail.com>
+AuthorDate: 2025-04-05
+Commit:     seokyoung <nsy7160@gmail.com>
+CommitDate: 2025-04-05
+
+    initialCommit
+
+[33mcommit 80b768effb7dca532f4d621712b5da3e7d4d6c92[m[33m ([m[1;31morigin/feature/#11-Livekit[m[33m, [m[1;32mfeature/#11-Livekit[m[33m)[m
+Merge: ed89f9d b4f3b77
+Author:     seokyoung <nsy7160@gmail.com>
+AuthorDate: 2025-03-19
+Commit:     seokyoung <nsy7160@gmail.com>
+CommitDate: 2025-03-19
+
+    merge
+
+[33mcommit ed89f9d5fd2284aa5e1ca903f16d9035b0ca9c4c[m
+Author:     seokyoung <nsy7160@gmail.com>
+AuthorDate: 2025-03-19
+Commit:     seokyoung <nsy7160@gmail.com>
+CommitDate: 2025-03-19
+
+    m
+
+[33mcommit b4f3b77ba723bfcdb92bf20c8dedca33e139ee7c[m[33m ([m[1;31morigin/develop[m[33m, [m[1;32mdevelop[m[33m)[m
+Author:     seobin-moon <seo_0605@naver.com>
+AuthorDate: 2025-03-17
+Commit:     seobin-moon <seo_0605@naver.com>
+CommitDate: 2025-03-17
+
+    채팅 프로필, 닉네임 새로고침시에 반영되는 문제 해결
+
+[33mcommit b12634e1c054e5c98ba144ae6e9da9d9edafd6dd[m
+Author:     문서빈 <72489502+seobin-moon@users.noreply.github.com>
+AuthorDate: 2025-03-17
+Commit:     GitHub <noreply@github.com>
+CommitDate: 2025-03-17
+
+    Update Sidebar.tsx
+    
+    Update Sidebar
+
+[33mcommit 3341282c1b5c3c6dde952b45f1523484a3c9d80c[m
+Merge: d32df41 fca707e
+Author:     SHIN JOONG KEUN <116917985+shjk0531@users.noreply.github.com>
+AuthorDate: 2025-03-17
+Commit:     GitHub <noreply@github.com>
+CommitDate: 2025-03-17
+
+    Merge branch 'main' into develop
+
+[33mcommit d32df4166caa25e99dab137c7e748831b272bcdb[m
+Merge: f42458e c2b5924
+Author:     seobin-moon <seo_0605@naver.com>
+AuthorDate: 2025-03-17
+Commit:     seobin-moon <seo_0605@naver.com>
+CommitDate: 2025-03-17
+
+    Merge branch 'develop' of https://github.com/BackEndSchoolPlus3th/Smore_FE into develop
+
+[33mcommit fca707e5a486cd836e151f17bb49c99370710eee[m
+Author:     shjk0531 <shinjk0531@gmail.com>
+AuthorDate: 2025-03-17
+Commit:     shjk0531 <shinjk0531@gmail.com>
+CommitDate: 2025-03-17
+
+    fix: code refactoring 3
+
+[33mcommit f42458e67abb222ce4abfc11d5b524d7a9fca766[m
+Author:     seobin-moon <seo_0605@naver.com>
+AuthorDate: 2025-03-17
+Commit:     seobin-moon <seo_0605@naver.com>
+CommitDate: 2025-03-17
+
+    채팅 ui 수정
+
+[33mcommit 3955b93eeab2fc65a8a249582fcd32f0b0a2042c[m
+Author:     shjk0531 <shinjk0531@gmail.com>
+AuthorDate: 2025-03-17
+Commit:     shjk0531 <shinjk0531@gmail.com>
+CommitDate: 2025-03-17
+
+    fix: code refactoring 2
+
+[33mcommit 6428fee18eab8802df4c390904eea311d95d77c5[m
+Author:     shjk0531 <shinjk0531@gmail.com>
+AuthorDate: 2025-03-17
+Commit:     shjk0531 <shinjk0531@gmail.com>
+CommitDate: 2025-03-17
+
+    fix: code refactoring
+
+[33mcommit c2b5924b985de0bf348b6973e2f6966bc1f51d53[m
+Author:     shjk0531 <shinjk0531@gmail.com>
+AuthorDate: 2025-03-17
+Commit:     shjk0531 <shinjk0531@gmail.com>
+CommitDate: 2025-03-17
+
+    feature: recruitement card, env
+
+[33mcommit 24ed9fec11a976ca8050045695a6db602b65350f[m
+Author:     shjk0531 <shinjk0531@gmail.com>
+AuthorDate: 2025-03-17
+Commit:     shjk0531 <shinjk0531@gmail.com>
+CommitDate: 2025-03-17
+
+    feature: gitignore
+
+[33mcommit 137c1653072b8c6252cc56d772f9525a551e187f[m
+Author:     shjk0531 <shinjk0531@gmail.com>
+AuthorDate: 2025-03-16
+Commit:     shjk0531 <shinjk0531@gmail.com>
+CommitDate: 2025-03-16
+
+    feature: loing ui2
+
+[33mcommit 9d581eff0c7f421c4a595ff14a3d5455bb562097[m
+Author:     shjk0531 <shinjk0531@gmail.com>
+AuthorDate: 2025-03-16
+Commit:     shjk0531 <shinjk0531@gmail.com>
+CommitDate: 2025-03-16
+
+    feature: login form
+
+[33mcommit be2a99e29653fb4ebf2e43685be8c7f13a76c4ed[m
+Author:     shjk0531 <shinjk0531@gmail.com>
+AuthorDate: 2025-03-16
+Commit:     shjk0531 <shinjk0531@gmail.com>
+CommitDate: 2025-03-16
+
+    feature: font size
+
+[33mcommit a144ee9f35e9d778c68f998cacf37e26f107db85[m
+Author:     shjk0531 <shinjk0531@gmail.com>
+AuthorDate: 2025-03-16
+Commit:     shjk0531 <shinjk0531@gmail.com>
+CommitDate: 2025-03-16
+
+    fix: setIsCustomRecommended2
+
+[33mcommit c729bdb7d376a3ac12ed821a4633e6a84d30b483[m
+Author:     shjk0531 <shinjk0531@gmail.com>
+AuthorDate: 2025-03-16
+Commit:     shjk0531 <shinjk0531@gmail.com>
+CommitDate: 2025-03-16
+
+    fix: setIsCustomRecommended error
+
+[33mcommit ee082d0af06c2f39b5b0ad5e1812816575c224d1[m
+Author:     shjk0531 <shinjk0531@gmail.com>
+AuthorDate: 2025-03-16
+Commit:     shjk0531 <shinjk0531@gmail.com>
+CommitDate: 2025-03-16
+
+    feature: setIsCustomRecommended
+
+[33mcommit 2431d57360eae158a7b655eec53553802db4b2df[m
+Merge: 9a0661c bb3d3c1
+Author:     shjk0531 <shinjk0531@gmail.com>
+AuthorDate: 2025-03-16
+Commit:     shjk0531 <shinjk0531@gmail.com>
+CommitDate: 2025-03-16
+
+    Merge remote-tracking branch 'origin/feature/#107-recruitment-article-edit' into develop
+
+[33mcommit bb3d3c104e3595b4fbca77e1fa9bb39bd711ebd4[m
+Author:     shjk0531 <shinjk0531@gmail.com>
+AuthorDate: 2025-03-16
+Commit:     shjk0531 <shinjk0531@gmail.com>
+CommitDate: 2025-03-16
+
+    feature: ui update final????
+
+[33mcommit 9a0661c536303502e1f3f9b9e356529229fb0118[m
+Merge: 665a12a 6bd9013
+Author:     SHIN JOONG KEUN <116917985+shjk0531@users.noreply.github.com>
+AuthorDate: 2025-03-16
+Commit:     GitHub <noreply@github.com>
+CommitDate: 2025-03-16
+
+    Merge pull request #110 from BackEndSchoolPlus3th/feature/#107-recruitment-article-edit
+    
+    feature: ui final???
+
+[33mcommit 6bd9013c8b01a5e4d2693fb099b0b21fb59f8f4c[m
+Author:     shjk0531 <shinjk0531@gmail.com>
+AuthorDate: 2025-03-16
+Commit:     shjk0531 <shinjk0531@gmail.com>
+CommitDate: 2025-03-16
+
+    feature: ui final???
+
+[33mcommit 665a12a56442afba82a151472346f157f59890c8[m
+Merge: e9
