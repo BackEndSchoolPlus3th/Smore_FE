@@ -50,13 +50,15 @@ const VideoChat: React.FC = () => {
   const connectedRef = useRef<boolean>(false); // STOMP 연결 상태
   const [jwt,setJwt] = useState<string>(() => {                      // JWT 토큰 상태
     const token = localStorage.getItem('accessToken') || '';
-    console.log("비디오채팅 JWT 토큰:", token);
+    // console.log("비디오채팅 JWT 토큰:", token);
     return token;
   }); 
   const roomId = 'test-room'; // 테스트용 roomId
   const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);    
+  const [isInitiator, setIsInitiator] = useState<boolean>(false);
+
 
   // 현재 사용자 ID 초기화
   const [currentUserId, setCurrentUserId] = useState<string>(() => {
@@ -114,13 +116,69 @@ const VideoChat: React.FC = () => {
       onConnect: async () => {
         console.log("✅ WebSocket 연결 성공");
         connectedRef.current = true; // 연결 상태 업데이트  
-      },})
+        
+        // 1. PeerConnection 생성
+        const pc = new RTCPeerConnection({
+          iceServers: [
+            { urls: 'stun:stun.l.google.com:19302' }, // 공개 STUN 서버
+          ]
+        });
+        peerConnectionRef.current = pc;
+        console.log('🖥️ PeerConnection 생성 완료');
+
+        // ✅ local stream 추가
+        try {
+          const localStream = await navigator.mediaDevices.getUserMedia({
+            video: true,
+            audio: true,
+          });
+          if (localVideoRef.current) {
+            localVideoRef.current.srcObject = localStream;
+          }
+          localStream.getTracks().forEach(track => {
+            pc.addTrack(track, localStream);
+          });
+          console.log("🎥 나의 로컬 스트림 추가 완료");
+          console.log("나의 localStream:", localStream);
+          console.log("typeof localStream:", typeof localStream);
+          console.log("나의 pc:", pc);
+          console.log("typeof pc:", typeof pc);
+          if (localVideoRef.current) {
+            localVideoRef.current.srcObject = localStream;
+          }
+        } catch (err) {
+          console.error("❌ getUserMedia 실패:", err);
+        }          
+
+      stompClientRef.current?.subscribe(`/topic/signal/${roomId}`, async (message) => {
+        try {
+          const data = JSON.parse(message.body);
+          console.log("📩 서버에서 받은 메시지:", data);
+
+          // ✅ userCount 기준으로 initiator 판단
+          if (data.userCount === 1) {
+            setIsInitiator(true);
+            console.log("🟢 나는 첫 번째 참가자입니다 (isInitiator: true)");
+          } else {
+            setIsInitiator(false);
+            console.log("🟡 나는 두 번째 참가자입니다 (isInitiator: false)");
+          }  
+        } catch (error) {
+          console.error('❌ 메시지 파싱 오류:', error);
+    }
+  });
+  sendSignal('join', {userId: currentUserId}); // 방 참여 신호 전송
+      }
+  })
         stompClientRef.current.activate();
       };
 
 
+
 useEffect(() => {
   connectWebSocket();
+
+  
 
     return () => {
       if (stompClientRef.current) {
