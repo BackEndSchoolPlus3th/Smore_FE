@@ -5,6 +5,8 @@ import { jwtDecode } from 'jwt-decode';
 import { Client } from '@stomp/stompjs';
 import { current } from "@reduxjs/toolkit";
 
+
+
 /** JWT에 Bearer 접두어 추가 */
 const addBearer = (token: string) => {
     return token.startsWith('Bearer ') ? token : `Bearer ${token}`;
@@ -45,6 +47,7 @@ const getUserIdFromToken = (token: string): string => {
     }
 };
 
+
 const VideoChat: React.FC = () => {
   const stompClientRef = useRef<Client | null>(null); // STOMP 클라이언트
   const connectedRef = useRef<boolean>(false); // STOMP 연결 상태
@@ -53,11 +56,11 @@ const VideoChat: React.FC = () => {
     // console.log("비디오채팅 JWT 토큰:", token);
     return token;
   }); 
-  const roomId = 'test-room'; // 테스트용 roomId
+  const roomId = 'test-room1'; // 테스트용 roomId
   const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);    
-  const [isInitiator, setIsInitiator] = useState<boolean>(false);
+  const pendingCandidates: RTCIceCandidate[] = []; // 지연된 ICE 후보 저장
 
 
   // 현재 사용자 ID 초기화
@@ -107,7 +110,9 @@ const VideoChat: React.FC = () => {
       undefined,
       { xhrWithCredentials: true } as any
     );
-
+    /** 
+     웹 소켓 연결 설정
+     **/
     stompClientRef.current = new Client({
       webSocketFactory: () => socket,
       connectHeaders: {
@@ -126,7 +131,47 @@ const VideoChat: React.FC = () => {
         peerConnectionRef.current = pc;
         console.log('🖥️ PeerConnection 생성 완료');
 
-        // ✅ local stream 추가
+        // ICE 후보 수집 핸들러 추가
+        pc.onicecandidate = (event) => {
+          if (event.candidate) {
+            console.log("📨 ICE 후보 전송:", event.candidate);
+            sendSignal('candidate', { candidate: event.candidate });
+          }
+        };
+
+        let hasRemoteStream = false;
+
+        pc.ontrack = (event) => {
+          if (hasRemoteStream) return;
+          hasRemoteStream = true;
+
+          const inboundStream = new MediaStream();
+          event.streams[0].getTracks().forEach((track) => {
+            inboundStream.addTrack(track);
+          });
+
+          if (remoteVideoRef.current) {
+            remoteVideoRef.current.srcObject = inboundStream;
+
+            setTimeout(() => {
+              const video = remoteVideoRef.current;
+              if (video) {
+                const canvas = document.createElement('canvas');
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                const ctx = canvas.getContext('2d');
+                if (ctx) {
+                  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                  const data = canvas.toDataURL();
+                  console.log("🖼️ 캡처된 영상 프레임:", data.slice(0, 100), '...');
+                }
+              }
+            }, 3000);
+
+          }
+        };
+
+        // 2. local stream 추가
         try {
           const localStream = await navigator.mediaDevices.getUserMedia({
             video: true,
@@ -148,30 +193,71 @@ const VideoChat: React.FC = () => {
           }
         } catch (err) {
           console.error("❌ getUserMedia 실패:", err);
-        }          
+        }       
 
-      stompClientRef.current?.subscribe(`/topic/signal/${roomId}`, async (message) => {
-        try {
-          const data = JSON.parse(message.body);
-          console.log("📩 서버에서 받은 메시지:", data);
+        /** 
+        STOMP 구독 설정
+        **/
+        stompClientRef.current?.subscribe(`/topic/signal/${roomId}`, async (message) => {
+          try {
+            const data = JSON.parse(message.body);
+            console.log("📩 서버에서 받은 메시지:", data);
 
-          // ✅ userCount 기준으로 initiator 판단
-          if (data.userCount === 1) {
-            setIsInitiator(true);
-            console.log("🟢 나는 첫 번째 참가자입니다 (isInitiator: true)");
-          } else {
-            setIsInitiator(false);
-            console.log("🟡 나는 두 번째 참가자입니다 (isInitiator: false)");
-          }  
-        } catch (error) {
-          console.error('❌ 메시지 파싱 오류:', error);
-    }
-  });
-  sendSignal('join', {userId: currentUserId}); // 방 참여 신호 전송
-      }
-  })
-        stompClientRef.current.activate();
-      };
+            switch (data.type) {
+              case 'offer':              
+                await pc.setRemoteDescription(new RTCSessionDescription(data.sdp));
+                const answer = await pc.createAnswer();
+                await pc.setLocalDescription(answer);
+                sendSignal('answer', { sdp: answer });
+
+                // ✅ offer 이후 지연된 ICE 후보 처리
+                for (const candidate of pendingCandidates) {
+                  await pc.addIceCandidate(candidate);
+                  console.log("📥 지연된 ICE 후보 추가 완료:", candidate);
+                }
+                pendingCandidates.length = 0;                
+                break;
+
+              case 'answer':
+                if (pc.signalingState !== 'stable') {
+                  await pc.setRemoteDescription(new RTCSessionDescription(data.sdp));
+                  console.log("📥 answer 적용 완료");
+                  for (const candidate of pendingCandidates) {
+                    await pc.addIceCandidate(candidate);
+                    console.log("📥 지연된 ICE 후보 추가 완료:", candidate);
+                  }
+                  pendingCandidates.length = 0;
+                } else {
+                  console.warn("⚠️ 이미 stable 상태이므로 answer 무시");
+                }
+                break;
+
+              case 'candidate':
+                if (data.candidate) {
+                  try {
+                    await pc.addIceCandidate(new RTCIceCandidate(data.candidate));
+                    console.log("📥 ICE 후보 추가 완료:", data.candidate);
+                  } catch (err) {
+                    console.error("❌ ICE 후보 추가 실패:", err);
+                  }
+                }
+                break;
+
+              case 'join':
+                if (currentUserId > data.userId) {
+                  const offer = await pc.createOffer();
+                  await pc.setLocalDescription(offer);
+                  sendSignal('offer', { sdp: offer });
+                  break;
+                }
+            }
+                  } catch (error) {
+                    console.error('❌ 메시지 파싱 오류:', error);            
+                  }});
+      sendSignal('join', {userId: currentUserId});      
+    }})
+          stompClientRef.current.activate();
+        };
 
 
 
@@ -202,7 +288,7 @@ return (
         <video
           ref={remoteVideoRef}
           autoPlay
-          playsInline
+          playsInline 
           className="w-full h-full object-contain"
         />
       </div>
