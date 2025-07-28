@@ -93,7 +93,7 @@ export class RoomStore {
             this.roomId = roomId;
             this.status = Status.Ing;
 
-            const websocketUrl = 'ws://localhost:8080/webmedia-ws';
+            const websocketUrl = 'ws://localhost:8090/webmedia-ws';
             const client = new WebMediaClient(this._onMessage);
 
             try {

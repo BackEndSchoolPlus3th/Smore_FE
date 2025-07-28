@@ -1,5 +1,4 @@
-import { Stack, TextField } from '@mui/material';
-import { LoadingButton } from '@mui/lab';
+import { Button, Stack, TextField } from '@mui/material'
 import { useState } from 'react';
 
 interface RoomConnectorProps {
@@ -37,15 +36,13 @@ export function RoomConnector({ joining, onJoin }: RoomConnectorProps) {
                 value={roomId}
                 onChange={handleChangeRoomId}
             />
-            <LoadingButton
-                variant="contained"
-                style={{ flex: 0 }}
-                loading={joining}
-                disabled={roomIdInvalid}
+            <Button 
+                variant='contained' 
+                style={{flex:0}}
+                loading={joining} 
+                disabled={roomIdInvalid} 
                 onClick={handleClickJoin}
-            >
-                입 장
-            </LoadingButton>
+                >입 장</Button>
         </Stack>
     );
 }
