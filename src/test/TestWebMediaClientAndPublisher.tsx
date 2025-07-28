@@ -68,7 +68,11 @@ const TestWebMediaClientAndPublisher: React.FC = () => {
       setMessages(prev => [...prev, `📡 송출 시작됨: ${JSON.stringify(result)}`]);
     } catch (err) {
       console.error('❌ 송출 실패:', err);
-      setMessages(prev => [...prev, `❌ 송출 실패: ${err.message}`]);
+      if (err instanceof Error) {
+        setMessages(prev => [...prev, `❌ 송출 실패: ${err.message}`]);
+      } else {
+        setMessages(prev => [...prev, `❌ 송출 실패: 알 수 없는 에러`]);
+      }
     }
   };
 

@@ -122,56 +122,56 @@ const MicDeviceSelector: React.FC<MicDeviceSelectorProps> = ({
     }
   };
 
-const startAnimation = () => {
-/* 브라우저 보안 정책과 사용자 경험측면 고려했을 때, 
-        사용자 인터랙션(onClick={startAnimation}) 후에 audioContext 생성이 적합
-        브라우저의 자동 음성/소리 재생 차단 정책 회피할 수 있음
-        리소스를 아끼고, 필요할 때만 AudioContext를 만들기 위함
-        */
-  if (!audioContextRef.current) {
-    audioContextRef.current = new AudioContext();
-  }
-
-  const audioContext = audioContextRef.current;
-  if (audioContext.state === "suspended") {
-    audioContext
-      .resume()
-      .then(() => {
-        configureAudioNode();
-        window.requestAnimationFrame(captureAudio);
-        setAnimationStarted(true);
-      })
-      .catch(() => {
-        audioContext.close();
-        audioContextRef.current = null;
-        setAnimationStarted(false);
-      });
-  } else if (audioContext.state === "running") {
-    configureAudioNode();
-    window.requestAnimationFrame(captureAudio);
-    setAnimationStarted(true);
-  } else {
-    console.log("AudioContext is not in a valid state to start animation.", audioContext.state);
-  }
-};
-
-const captureAudio = () => {
-  if (audioContextRef.current) {
-    if (analyserNodeRef.current) {
-      const bufferLen = analyserNodeRef.current.frequencyBinCount;
-      const buffer = new Uint8Array(bufferLen);
-	// 소리의 주파수별 세기를 숫자로 뽑아오는 함수
-      analyserNodeRef.current.getByteFrequencyData(buffer);
-      drawAudioData(buffer, bufferLen);
-    } else {
-      drawAudioData(null, 0);
+  const startAnimation = () => {
+    /* 브라우저 보안 정책과 사용자 경험측면 고려했을 때, 
+            사용자 인터랙션(onClick={startAnimation}) 후에 audioContext 생성이 적합
+            브라우저의 자동 음성/소리 재생 차단 정책 회피할 수 있음
+            리소스를 아끼고, 필요할 때만 AudioContext를 만들기 위함
+            */
+    if (!audioContextRef.current) {
+      audioContextRef.current = new AudioContext();
     }
 
-    window.requestAnimationFrame(captureAudio);
-  } else {
-    console.log("Animation 중지");
-  }
-};
+    const audioContext = audioContextRef.current;
+    if (audioContext.state === "suspended") {
+      audioContext
+        .resume()
+        .then(() => {
+          configureAudioNode();
+          window.requestAnimationFrame(captureAudio);
+          setAnimationStarted(true);
+        })
+        .catch(() => {
+          audioContext.close();
+          audioContextRef.current = null;
+          setAnimationStarted(false);
+        });
+    } else if (audioContext.state === "running") {
+      configureAudioNode();
+      window.requestAnimationFrame(captureAudio);
+      setAnimationStarted(true);
+    } else {
+      console.log("AudioContext is not in a valid state to start animation.", audioContext.state);
+    }
+  };
+
+  const captureAudio = () => {
+    if (audioContextRef.current) {
+      if (analyserNodeRef.current) {
+        const bufferLen = analyserNodeRef.current.frequencyBinCount;
+        const buffer = new Uint8Array(bufferLen);
+        // 소리의 주파수별 세기를 숫자로 뽑아오는 함수
+        analyserNodeRef.current.getByteFrequencyData(buffer);
+        drawAudioData(buffer, bufferLen);
+      } else {
+        drawAudioData(null, 0);
+      }
+
+      window.requestAnimationFrame(captureAudio);
+    } else {
+      console.log("Animation 중지");
+    }
+  };
 
   const drawAudioData = (buffer: Uint8Array | null, bufferLen: number) => {
     if (canvasRef.current) {

@@ -13,7 +13,7 @@ type Transaction = {
 
 type MessageCallback = (container: MessageContainer) => void;
 
-const DefaultMessageCallback: MessageCallback = () => {};
+const DefaultMessageCallback: MessageCallback = () => { };
 
 export class WebMediaClient {
   private _nextMessageId: number;
@@ -34,13 +34,13 @@ export class WebMediaClient {
     this.client = null;
   }
 
-/*
-     이벤트 핸들러 말고 promise 사용해서 구현
-     이벤트 핸들러 쓰게 되면 요청 전송, 응답 수신이 분리되어 코드 작성이 어려움
-     한번에 작성하기 위해서 promise 사용
-
-     무언가의 응답이 아닌 서버에서 이벤트발생으로 보내는 메세지 수신은 이벤트 핸들러 사용
-    */
+  /*
+       이벤트 핸들러 말고 promise 사용해서 구현
+       이벤트 핸들러 쓰게 되면 요청 전송, 응답 수신이 분리되어 코드 작성이 어려움
+       한번에 작성하기 위해서 promise 사용
+  
+       무언가의 응답이 아닌 서버에서 이벤트발생으로 보내는 메세지 수신은 이벤트 핸들러 사용
+      */
   connect = (websocketUrl: string, roomId: string): Promise<void> => {
     return new Promise((resolve, reject) => {
       this._addTransaction("connect", resolve, reject);
@@ -71,12 +71,12 @@ export class WebMediaClient {
           message,
         };
 
-// _addTransaction은 반드시 send보다 먼저 실행
+        // _addTransaction은 반드시 send보다 먼저 실행
         if (isTransaction) {
           this._addTransaction(messageId, resolve, reject);
         }
 
-// 스트링으로 변환해서 전송
+        // 스트링으로 변환해서 전송
         this.client.send(JSON.stringify(request));
 
         if (!isTransaction) {
@@ -114,7 +114,7 @@ export class WebMediaClient {
 
   private _onMessage = (event: MessageEvent) => {
     if (event.data) {
-// Json 객체로 
+      // Json 객체로 
       const container: MessageContainer = JSON.parse(event.data);
       const transaction = this._getTransaction(container.messageId);
 
@@ -142,7 +142,7 @@ export class WebMediaClient {
     }, TransactionTimeout);
   };
 
-// 해당 트랜잭션을 꺼내면서 Transaction Map에서 제거
+  // 해당 트랜잭션을 꺼내면서 Transaction Map에서 제거
   private _getTransaction = (key: string): Transaction | undefined => {
     const transaction = this._transactionMap[key];
     if (transaction) {

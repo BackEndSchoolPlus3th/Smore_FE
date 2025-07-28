@@ -1,6 +1,9 @@
 import { useEffect, RefObject } from 'react';
 
-export function useVideoStream(videoRef: RefObject<HTMLVideoElement>, stream: MediaStream | null) {
+export function useVideoStream(
+  videoRef: RefObject<HTMLVideoElement | null >,
+  stream: MediaStream | null
+) {
   useEffect(() => {
     if (stream) {
       if (videoRef.current) {
