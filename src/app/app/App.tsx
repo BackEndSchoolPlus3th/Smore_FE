@@ -4,6 +4,7 @@ import '../ui/markdownStyle.css';
 import '../ui/scrollbar.css';
 import '../ui/text.css';
 
+
 import {
     ChatPage,
     LoginPage,
@@ -40,6 +41,7 @@ function App() {
                             <Route path="/mypage/*" element={<MyPage />} />
                             <Route path="/error" element={<ErrorPage />} />
                             <Route path="/*" element={<RecruitmentPage />} />
+
                         </Routes>
                     </div>
                 </div>
