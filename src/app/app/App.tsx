@@ -4,6 +4,9 @@ import '../ui/markdownStyle.css';
 import '../ui/scrollbar.css';
 import '../ui/text.css';
 
+import TestWebMediaClientAndPublisher from '../../test/TestWebMediaClientAndPublisher'
+import TestWebMediaSubscriber from '../../test/TestWebMediaSubscriber';
+
 
 import {
     ChatPage,
@@ -41,6 +44,10 @@ function App() {
                             <Route path="/mypage/*" element={<MyPage />} />
                             <Route path="/error" element={<ErrorPage />} />
                             <Route path="/*" element={<RecruitmentPage />} />
+
+                            // test
+                            <Route path="/test-clientPublisher" element={<TestWebMediaClientAndPublisher />} />
+                            <Route path="/test-TestWebMediaSubscriber" element={<TestWebMediaSubscriber />} />
 
                         </Routes>
                     </div>

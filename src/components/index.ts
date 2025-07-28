@@ -42,5 +42,4 @@ export { default as RecruitmentDetailBoard } from './recruitment/boards/Recruitm
 export { default as RecruitmentListBoard } from './recruitment/boards/RecruitmentListBoard';
 
 
-// Test
-// export { default as TestClient } from './videoChat/TestClient'; 
+
