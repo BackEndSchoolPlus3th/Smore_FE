@@ -28,6 +28,7 @@ export class RoomStore {
     user: any;
     anotherUser: any;
 
+
     publishStatus: string;
     publisher: ReturnType<typeof WebMediaPublisher> | null;
     publishStream: MediaStream | null;
@@ -49,6 +50,8 @@ export class RoomStore {
         this.streamUrl = null;
         this.user = null;
         this.anotherUser = null;
+
+        
 
         this.publishStatus = Status.None;
         this.publisher = null;
@@ -86,6 +89,10 @@ export class RoomStore {
 
     get isJoinSuccess() {
         return this.status === Status.Success;
+    }
+
+    setRoomId(roomId : string) {
+        return this.roomId = roomId;
     }
 
     join = flow(function* (this: RoomStore, roomId: string) {
@@ -246,7 +253,7 @@ export class RoomStore {
         this.subscribeStream = null;
     }
 
-    // webMedia Client 생성 시 파라미터로
+    // webMedia Client 생성 시 파라미터로 사용
     _onMessage = (container: any) => {
         console.log('메세지 수신', container);
         const { type, message } = container;

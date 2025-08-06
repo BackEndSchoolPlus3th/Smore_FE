@@ -6,24 +6,32 @@ import { RoomConnector } from './RoomConnector';
 import { useStore } from '../../features/videoChat/stores/StoreContext';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import "./VideoChat.css";
 
 const VideoChatLanding = () => {
     const { roomStore } = useStore();
+    console.log('VideoChatLanding roomStore ===', roomStore);
     const {
         camDisabled,
         selectedCamId,
         micDisabled,
         selectedMicId,
         isJoining,
-        isJoinSuccess
+        isJoinSuccess,
+        roomId,
     } = roomStore;
     const navigate = useNavigate();
 
+    // 스터디 이름 가져와서 url로
     useEffect(() => {
-        if (isJoinSuccess) {
-            navigate('/video-chat/room');
+        if (isJoinSuccess && roomId) {
+            console.log(roomId)
+            // navigate('/video-chat');
+        } else {
+            console.log('no roomId')
+            navigate('/chat')
         }
-    }, [isJoinSuccess, navigate]);
+    }, [isJoinSuccess, navigate, roomId]);
 
     const handleChangeCamDisabled = (disabled: boolean) => {
         roomStore.setCamDisabled(disabled);
