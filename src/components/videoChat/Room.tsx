@@ -64,7 +64,7 @@ const Room: React.FC = () => {
                     ref={remoteVideoRef}
                     autoPlay 
                     muted
-                    
+                    playsInline
                     className="w-full h-full object-contain"
                     />
                 </div>
