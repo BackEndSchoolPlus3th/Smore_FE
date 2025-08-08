@@ -49,8 +49,9 @@ function App() {
                             // test
                             <Route path="/test-clientPublisher" element={<TestWebMediaClientAndPublisher />} />
                             <Route path="/test-TestWebMediaSubscriber" element={<TestWebMediaSubscriber />} />
-                            <Route path="/video-chat" element={<VideoChatLanding />} />
-                            <Route path="/video-chat/room" element={<Room />} />
+                            <Route path="/video-chat/selectDevice/:studyId" element={<VideoChatLanding />} />
+                            <Route path="/video-chat/room/:roomId" element={<Room />} />
+                           
 
                         </Routes>
                     </div>

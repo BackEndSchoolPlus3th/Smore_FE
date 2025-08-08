@@ -31,7 +31,8 @@ const ChatBoard: React.FC<ChatBoardProps> = ({ selectedRoom }) => {
         }
         
         setTimeout(() => {
-        navigate(`/video-chat/${studyId}`);
+        navigate(`/video-chat/selectDevice/${studyId}`);
+        console.log('[VideoChatLanding] 컴포넌트 마운트됨');
         }, 0);
     };
 

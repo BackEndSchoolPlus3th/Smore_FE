@@ -1,16 +1,17 @@
 import { observer } from 'mobx-react-lite';
-import { Stack } from '@mui/material';
+import { Stack,Button } from '@mui/material';
 import CamDeviceSelector from './CamDeviceSelector';
 import MicDeviceSelector from './MicDeviceSelector';
-import { RoomConnector } from './RoomConnector';
 import { useStore } from '../../features/videoChat/stores/StoreContext';
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import "./VideoChat.css";
+import { useNavigate,useParams } from 'react-router-dom';
+
 
 const VideoChatLanding = () => {
     const { roomStore } = useStore();
-    console.log('VideoChatLanding roomStore ===', roomStore);
+    // console.log('VideoChatLanding roomStore ===', roomStore);
+    const { study_id: studyId } = useParams();
+    
     const {
         camDisabled,
         selectedCamId,
@@ -22,16 +23,13 @@ const VideoChatLanding = () => {
     } = roomStore;
     const navigate = useNavigate();
 
-    // 스터디 이름 가져와서 url로
+    // 스터디 아이디 가져와서 화상채팅방으로
     useEffect(() => {
         if (isJoinSuccess && roomId) {
-            console.log(roomId)
-            // navigate('/video-chat');
-        } else {
-            console.log('no roomId')
-            navigate('/chat')
-        }
-    }, [isJoinSuccess, navigate, roomId]);
+            console.log("videoChatRoom에서 roomId = ",roomId)
+            navigate(`/video-chat/room/${roomId}`);
+
+         }}, [isJoinSuccess, navigate]);
 
     const handleChangeCamDisabled = (disabled: boolean) => {
         roomStore.setCamDisabled(disabled);
@@ -49,46 +47,70 @@ const VideoChatLanding = () => {
         roomStore.setSelectedMicId(deviceId);
     };
 
-    const handleJoin = (roomId: string) => {
+    const handleJoin = () => {
+        if(roomId) {
         roomStore.join(roomId);
+        } else {
+            navigate('/');
+        }
     };
 
     return (
-        <Stack
-            direction={{ xs: 'column', md: 'row' }}
-            spacing={2}
-            sx={{ justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}
-        >
-            <Stack
-                direction="column"
-                spacing={2}
-                sx={{ justifyContent: 'center', alignItems: 'center', padding: '16px' }}
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white">
+            <div
+                className="w-full max-w-md flex flex-col gap-4 p-6 rounded-xl shadow-lg"
+                style={{
+                fontFamily: 'system-ui, sans-serif',
+                color: '#1a202c',
+                lineHeight: '1.5',
+                }}
             >
-                <h1>Web MediaStream Study Project</h1>
-                <h1>Join the web Meeting</h1>
-            </Stack>
-            <Stack
-                direction="column"
-                spacing={1}
-                sx={{ justifyContent: 'center', alignItems: 'stretch', width: '400px' }}
-            >
-                <CamDeviceSelector
+                <Stack
+                direction={{ xs: 'column', md: 'column' }}
+                spacing={3}
+                sx={{
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    minHeight: '80vh', // 살짝 줄임
+                }}
+                >
+                <h1 className="text-2xl font-bold text-center mb-4">
+                    화상 채팅 방에 입장하기</h1>
+                {/* 디바이스 선택기 */}
+                <Stack direction="column" spacing={2} sx={{ width: '100%' }}>
+                    <CamDeviceSelector
                     disabled={camDisabled}
                     deviceId={selectedCamId}
                     onDisabledChanged={handleChangeCamDisabled}
                     onDeviceIdChanged={handleChangeSelectedCamId}
-                />
+                    />
 
-                <MicDeviceSelector
+                    <MicDeviceSelector
                     disabled={micDisabled}
                     deviceId={selectedMicId}
                     onDisabledChanged={handleChangeMicDisabled}
                     onDeviceIdChanged={handleChangeSelectedMicId}
-                />
+                    />
+                </Stack>
 
-                <RoomConnector joining={isJoining} onJoin={handleJoin} />
-            </Stack>
-        </Stack>
+                {/* 입장 버튼 */}
+                <Button
+                    variant="contained"
+                    onClick={handleJoin}
+		    loading={isJoining}
+                    style={{
+                    textTransform: 'none',
+                    fontSize: '1rem',
+                    fontWeight: 600,
+                    fontFamily: 'system-ui, sans-serif',
+                    marginTop: '1rem',
+                    }}
+                >
+                    입 장
+                </Button>
+                </Stack>
+            </div>
+        </div>
     );
 };
 
