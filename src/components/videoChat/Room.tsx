@@ -54,54 +54,33 @@ const Room: React.FC = () => {
     };
 
     return (
-        <div style={{ position: 'relative', width: '100%', height: '100vh' }}>
-            <video
-                ref={remoteVideoRef}
-                autoPlay
-                muted
-                style={{
-                    position: 'absolute',
-                    left: '0px',
-                    top: '0px',
-                    width: '100%',
-                    height: '100%',
-                    background: 'black',
-                    objectFit: 'contain',
-                }}
-            />
-            <video
-                ref={localVideoRef}
-                autoPlay
-                muted
-                style={{
-                    position: 'absolute',
-                    right: '24px',
-                    bottom: '24px',
-                    width: '35%',
-                    height: '35%',
-                    background: 'transparent',
-                    objectFit: 'contain',
-                }}
-            />
+        <div className="col-span-6 w-full h-full flex flex-col gap-4 p-6 bg-white rounded-xl shadow-md">
+             <h2 className="text-2xl font-bold mb-2">🎥 WebRTC 화상채팅</h2>
 
-            <Stack
-                direction="row"
-                spacing={1}
-                sx={{ justifyContent: 'flex-end', alignItems: 'center', position: 'absolute', top: '16px', right: '16px' }}
-            >
-                <IconButton
-                    disabled={!subscribeStream}
-                    style={{ color: !subscribeStream ? 'grey' : isMuted ? 'red' : 'lightgrey' }}
-                    onClick={toggleMuted}
-                >
-                    {isMuted ? <VolumeOffIcon /> : <VolumeUpIcon />}
-                </IconButton>
+            <div className="flex flex-col gap-4 flex-1 overflow-hidden">
+                {/* 상대방 비디오 */}
+                <div className="flex-1 bg-black rounded-lg overflow-hidden">
+                    <video
+                    ref={remoteVideoRef}
+                    autoPlay 
+                    muted
+                    
+                    className="w-full h-full object-contain"
+                    />
+                </div>
 
-                <IconButton style={{ color: 'lightgrey' }} onClick={handleClickExit}>
-                    <ExitToAppIcon />
-                </IconButton>
-            </Stack>
-        </div>
+                {/* 내 비디오 */}
+                <div className="flex-1 bg-black rounded-lg overflow-hidden">
+                    <video
+                    ref={localVideoRef}
+                    autoPlay 
+                    
+                    muted
+                    className="w-full h-full object-contain"
+                    />
+                </div>
+                </div>
+            </div>
     );
 };
 
