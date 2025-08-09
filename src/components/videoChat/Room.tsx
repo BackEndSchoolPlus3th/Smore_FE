@@ -54,8 +54,20 @@ const Room: React.FC = () => {
     };
 
     return (
-        <div className="col-span-6 w-full h-full flex flex-col gap-4 p-6 bg-white rounded-xl shadow-md">
-             <h2 className="text-2xl font-bold mb-2">🎥 WebRTC 화상채팅</h2>
+        <div className="col-span-12 w-full h-full flex flex-col item-center justify-center gap-4 p-6 bg-white rounded-xl shadow-md relative">
+            <h2 className="text-2xl font-bold mb-2">스터디 화상채팅</h2>
+            <Stack direction="row" spacing={1} 
+                   sx={{justifyContent: 'flex-end', alignItems: 'center',
+                        position: 'absolute', top: '16px', right: '16px'}}>
+                <IconButton disabled={!subscribeStream} style={{color: !subscribeStream ? 'grey' : (isMuted ? 'red' : 'lightgrey')}} 
+                            onClick={toggleMuted}>
+                    <VolumeUpIcon />
+                </IconButton>
+
+                <IconButton style={{color: 'lightgrey'}} onClick={handleClickExit}>
+                    <ExitToAppIcon />
+                </IconButton>
+            </Stack>
 
             <div className="flex flex-col gap-4 flex-1 overflow-hidden">
                 {/* 상대방 비디오 */}
@@ -67,9 +79,16 @@ const Room: React.FC = () => {
                     playsInline
                     className="w-full h-full object-contain"
                     />
+                    <video ref={localVideoRef} 
+                    autoPlay 
+                    muted
+                    playsInline
+                    style={{position: 'absolute',
+                           right: '24px', bottom: '24px', width: '35%', height: '35%',
+                           background: 'transparent', objectFit: 'contain'}} />
                 </div>
 
-                {/* 내 비디오 */}
+                {/* 내 비디오
                 <div className="flex-1 bg-black rounded-lg overflow-hidden">
                     <video
                     ref={localVideoRef}
@@ -78,7 +97,7 @@ const Room: React.FC = () => {
                     muted
                     className="w-full h-full object-contain"
                     />
-                </div>
+                </div> */}
                 </div>
             </div>
     );

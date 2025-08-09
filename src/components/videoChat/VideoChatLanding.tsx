@@ -10,7 +10,7 @@ import { useNavigate,useParams } from 'react-router-dom';
 const VideoChatLanding = () => {
     const { roomStore } = useStore();
     // console.log('VideoChatLanding roomStore ===', roomStore);
-    const { study_id: studyId } = useParams();
+    // const { study_id: studyId } = useParams();
     
     const {
         camDisabled,
