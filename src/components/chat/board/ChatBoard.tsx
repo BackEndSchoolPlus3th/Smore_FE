@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Video } from 'lucide-react';
 import { useParams } from 'react-router-dom';
 import Chat from '../Chat';
+import { useStore } from '../../../features/videoChat/stores/StoreContext'; 
 
 type ChatRoom = {
     roomId: string; // 백엔드에서 roomId(Long)을 받아오면 문자열로 변환
@@ -14,14 +15,25 @@ interface ChatBoardProps {
     selectedRoom: ChatRoom | null;
 }
 
+
 const ChatBoard: React.FC<ChatBoardProps> = ({ selectedRoom }) => {
     const { study_id: studyId, chat_type: chatType } = useParams();
     const navigate = useNavigate();
+    const { roomStore } = useStore();
+    console.log('ChatBoard roomStore ===', roomStore);
 
     // 비디오 채팅 버튼 클릭 시
-    const handleVideoChat = () => {
-        console.log('현재 선택된 채팅방:', studyId);
-        navigate(`/chat/video/${studyId}`);
+    const handleVideoChat = () => {        
+        console.log('현재 선택된 채팅방:', studyId);        
+        if (studyId) {
+            roomStore.setRoomId(studyId);
+            console.log('roomStore.roomId:', roomStore.roomId);
+        }
+        
+        setTimeout(() => {
+        navigate(`/video-chat/selectDevice/${studyId}`);
+        console.log('[VideoChatLanding] 컴포넌트 마운트됨');
+        }, 0);
     };
 
     return (
@@ -33,6 +45,7 @@ const ChatBoard: React.FC<ChatBoardProps> = ({ selectedRoom }) => {
                         ? selectedRoom?.roomName
                         : '채팅방을 선택해주세요.'}
                 </h1>
+                {/* 화상 채팅 입장 버튼 */}
                 <button
                     className="p-2 rounded-full hover:bg-gray-200 transition col-span-1 h-fit"
                     onClick={handleVideoChat}

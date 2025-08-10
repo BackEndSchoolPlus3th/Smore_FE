@@ -3,6 +3,15 @@ import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import authReducer from '../../features/auth/model/authSlice'; // default import 사용
 import storage from 'redux-persist/lib/storage'; // localStorage 사용
 import { persistStore, persistReducer } from 'redux-persist';
+import {
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from 'redux-persist';
+
 
 // 루트 리듀서 설정
 const rootReducer = combineReducers({
@@ -19,6 +28,12 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({
     reducer: persistedReducer,
+    middleware: getDefaultMiddleware =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }),
 });
 
 export const persistor = persistStore(store);
