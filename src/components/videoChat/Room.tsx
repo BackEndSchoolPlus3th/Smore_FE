@@ -11,7 +11,7 @@ import { useVideoStream } from '../../features/videoChat/hooks/useVideoStream'
 const Room: React.FC = () => {
     const navigate = useNavigate();
     const { roomStore } = useStore();
-    const { isJoinSuccess, publishStream, subscribeStream } = roomStore;
+    const { isJoinSuccess, publishStream, subscribeStream, roomName } = roomStore;
     const [isMuted, setIsMuted] = useState(true);
     const localVideoRef = useRef<HTMLVideoElement | null>(null);
     const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
@@ -55,7 +55,9 @@ const Room: React.FC = () => {
 
     return (
         <div className="col-span-12 w-full h-full flex flex-col item-center justify-center gap-4 p-6 bg-white rounded-xl shadow-md relative">
-            <h2 className="text-2xl font-bold mb-2">스터디 화상채팅</h2>
+            <h2 className="text-2xl font-bold mb-2">{roomStore.roomName && (
+        <span className="ml-2 text-gray-600">({roomStore.roomName})</span>
+      )}</h2>
             <Stack direction="row" spacing={1} 
                    sx={{justifyContent: 'flex-end', alignItems: 'center',
                         position: 'absolute', top: '16px', right: '16px'}}>

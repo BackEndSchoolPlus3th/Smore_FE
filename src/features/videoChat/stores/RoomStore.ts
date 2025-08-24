@@ -21,6 +21,7 @@ export class RoomStore {
     selectedMicId: string;
 
     roomId: string | null;
+    roomName: string | null;
     status: string;
     client: WebMediaClient | null;
     apiUrl: string | null;
@@ -44,6 +45,7 @@ export class RoomStore {
         this.selectedMicId = 'default';
 
         this.roomId = null;
+        this.roomName = null;
         this.status = Status.None;
         this.client = null;
         this.apiUrl = null;
@@ -93,6 +95,10 @@ export class RoomStore {
 
     setRoomId(roomId : string) {
         return this.roomId = roomId;
+    }
+
+    setRoomName(roomName : string) {
+        return this.roomName = roomName;
     }
 
     join = flow(function* (this: RoomStore, roomId: string) {
@@ -238,6 +244,7 @@ export class RoomStore {
         this.selectedMicId = 'default';
 
         this.roomId = null;
+        this.roomName = null;
         this.status = Status.None;
         this.client = null;
         this.apiUrl = null;

@@ -20,7 +20,7 @@ const ChatBoard: React.FC<ChatBoardProps> = ({ selectedRoom }) => {
     const { study_id: studyId, chat_type: chatType } = useParams();
     const navigate = useNavigate();
     const { roomStore } = useStore();
-    console.log('ChatBoard roomStore ===', roomStore);
+    // console.log('ChatBoard roomStore ===', roomStore);
 
     // 비디오 채팅 버튼 클릭 시
     const handleVideoChat = () => {        
