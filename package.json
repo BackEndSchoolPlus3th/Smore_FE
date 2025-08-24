@@ -11,6 +11,8 @@
         "format": "prettier --write ."
     },
     "dependencies": {
+        "@emotion/react": "^11.14.0",
+        "@emotion/styled": "^11.14.1",
         "@fullcalendar/core": "^6.1.15",
         "@fullcalendar/daygrid": "^6.1.15",
         "@fullcalendar/interaction": "^6.1.15",
@@ -18,6 +20,9 @@
         "@fullcalendar/react": "^6.1.15",
         "@livekit/components-react": "^2.8.1",
         "@livekit/components-styles": "^1.1.4",
+        "@mui/icons-material": "^7.2.0",
+        "@mui/lab": "^7.0.0-beta.14",
+        "@mui/material": "^7.2.0",
         "@react-icons/all-files": "^4.1.0",
         "@reduxjs/toolkit": "^2.6.0",
         "@stomp/stompjs": "^7.0.0",
@@ -30,6 +35,8 @@
         "livekit-client": "^2.9.5",
         "lodash": "^4.17.21",
         "lucide-react": "^0.477.0",
+        "mobx": "^6.13.7",
+        "mobx-react-lite": "^4.1.0",
         "react": "^19.0.0",
         "react-cookie": "^7.2.2",
         "react-dom": "^19.0.0",
@@ -42,6 +49,9 @@
         "react-syntax-highlighter": "^15.6.1",
         "redux": "^5.0.1",
         "redux-persist": "^6.0.0",
+        "socket": "^0.14.77",
+        "socket.io": "^4.8.1",
+        "socket.io-client": "^4.8.1",
         "sockjs-client": "^1.6.1"
     },
     "devDependencies": {
@@ -50,6 +60,7 @@
         "@types/lodash": "^4.17.16",
         "@types/react": "^19.0.8",
         "@types/react-dom": "^19.0.3",
+        "@types/react-redux": "^7.1.34",
         "@types/react-syntax-highlighter": "^15.5.13",
         "@types/sockjs-client": "^1.5.4",
         "@vitejs/plugin-react": "^4.3.4",

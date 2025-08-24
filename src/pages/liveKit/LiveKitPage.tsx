@@ -7,10 +7,10 @@ import {
     Room,
     RoomEvent,
 } from 'livekit-client';
-import './VideoChatPage.css';
+import './LiveKitPage.css';
 import VideoComponent from '../../components/chat/livekit/VideoComponent';
 import AudioComponent from '../../components/chat/livekit/AudioComponent';
-import { getToken } from '../../features/videoChat/getToken';
+import { getToken } from '../../features/liveKit/getToken';
 
 type TrackInfo = {
     trackPublication: RemoteTrackPublication;

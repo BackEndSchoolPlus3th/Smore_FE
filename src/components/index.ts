@@ -27,14 +27,19 @@ export { default as StudyRecruitmentEditBoard } from './study/board/recruitment/
 // Chat
 export { default as ChatPageForm } from './chat/form/ChatPageForm';
 export { default as ChatBoard } from './chat/board/ChatBoard';
+export { default as LivekitBoard } from './chat/livekit/LivekitBoard';
+export { default as VideoChat } from './videoChat/VideoChat';
 
 // article
 export { default as CommentForm } from './article/commnet/CommentForm';
 
-export { default as VideoChatBoard } from './chat/board/VideoChatBoard';
+
 export { default as Sidebar } from './chat/Sidebar';
 
 // Recruitment
 export { default as RecruitmentForm } from './recruitment/form/RecruitmentForm';
 export { default as RecruitmentDetailBoard } from './recruitment/boards/RecruitmentDetailBoard';
 export { default as RecruitmentListBoard } from './recruitment/boards/RecruitmentListBoard';
+
+
+

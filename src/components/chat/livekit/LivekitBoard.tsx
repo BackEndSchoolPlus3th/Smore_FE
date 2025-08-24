@@ -7,9 +7,11 @@ import {
     Room,
     RoomEvent,
 } from 'livekit-client';
-import VideoComponent from '../livekit/VideoComponent';
-import AudioComponent from '../livekit/AudioComponent';
-import { getToken } from '../../../features/videoChat/getToken';
+
+import '../../../pages/liveKit/LiveKitPage.css';
+import VideoComponent from './VideoComponent';
+import AudioComponent from './AudioComponent';
+import { getToken } from '../../../features/liveKit/getToken';
 import { CancleButton } from '../../../shared';
 
 type TrackInfo = {
@@ -40,7 +42,7 @@ function configureUrls() {
     }
 }
 
-function VideoChatBoard() {
+function LivekitChatBoard() {
     const [room, setRoom] = useState<Room | undefined>(undefined);
     const [localTrack, setLocalTrack] = useState<LocalVideoTrack | undefined>(
         undefined
@@ -153,9 +155,10 @@ function VideoChatBoard() {
                             track={remoteTrack.trackPublication.audioTrack!}
                         />
                     )
+                     
                 )}
             </div>
         </div>
     );
 }
-export default VideoChatBoard;
+export default LivekitChatBoard;

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { apiClient } from '../../shared';
-import { SquareArrowRight, SquareArrowDown } from 'lucide-react';
-import { gt, transform } from 'lodash';
+
+import { useStore } from '../../features/videoChat/stores/StoreContext';
 
 type ChatRoom = {
     roomId: string; // 백엔드에서 roomId(Long)을 받아오면 문자열로 변환
@@ -16,6 +16,8 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ selectedRoom, onRoomSelect }) => {
+    const { roomStore } = useStore();
+
     // URL 파라미터에서 study_id와 chat_type을 모두 추출 (chat_type을 chatType으로 alias)
     const { chat_type: chatType } = useParams<{ chat_type?: string }>();
     const navigate = useNavigate();
@@ -76,8 +78,12 @@ const Sidebar: React.FC<SidebarProps> = ({ selectedRoom, onRoomSelect }) => {
                     `/api/v1/chatrooms/group/${room.studyId}`,
                     {
                         roomId: room.roomId,
-                    }
-                );
+                    },                    
+                );  
+                roomStore.setRoomId(String(room.studyId))
+                roomStore.setRoomName(room.roomName)
+                // console.log('사이드 바 설정 roomId, roomName:', roomStore.roomId, roomStore.roomName);
+
                 if (response.status === 200) {
                     onRoomSelect(room);
                     navigate(`/chat/${type}/${room.studyId}`);

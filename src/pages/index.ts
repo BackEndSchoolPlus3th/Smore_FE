@@ -5,7 +5,7 @@ export { default as MyPage } from './member/myPage/MyPage';
 
 // 에러 페이지
 export { default as ErrorPage } from './error/ErrorPage';
-export { default as VideoChatPage } from './videoChat/VideoChatPage';
+export { default as LiveKitPage } from './liveKit/LiveKitPage';
 
 // 회원가입 페이지
 export { default as SignupPage } from './member/auth/signup/SignupPage';
