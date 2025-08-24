@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { apiClient } from '../../shared';
+
 import { useStore } from '../../features/videoChat/stores/StoreContext';
 
 type ChatRoom = {
@@ -82,6 +83,7 @@ const Sidebar: React.FC<SidebarProps> = ({ selectedRoom, onRoomSelect }) => {
                 roomStore.setRoomId(String(room.studyId))
                 roomStore.setRoomName(room.roomName)
                 // console.log('사이드 바 설정 roomId, roomName:', roomStore.roomId, roomStore.roomName);
+
                 if (response.status === 200) {
                     onRoomSelect(room);
                     navigate(`/chat/${type}/${room.studyId}`);

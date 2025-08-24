@@ -4,6 +4,9 @@ import { Client } from '@stomp/stompjs';
 import { jwtDecode } from 'jwt-decode';
 import { apiClient, SubmitButton } from '../../shared';
 
+// import { useParams } from 'react-router-dom';
+
+
 interface Participant {
     memberId: number;
     memberName: string;
@@ -98,7 +101,20 @@ const Chat: React.FC<ChatProps> = ({ roomId, chatType }) => {
     /** 참여자 목록 (닉네임, 프로필이미지 등) */
     const [participants, setParticipants] = useState<Participant[]>([]);
 
+
     // localStorage에서 토큰 초기화
+
+    // URL 파라미터 (필요시 사용)
+    // const { study_id } = useParams();
+
+    // senderId를 받아 참여자 객체 반환
+    const findParticipantById = (id: string): Participant | null => {
+        const p = participants.find((p) => String(p.memberId) === id);
+        return p || null;
+    };
+
+    // localStorage에서 토큰 상태 관리 (초기화)
+
     const [jwt, setJwt] = useState<string>(() => {
         const storedToken = localStorage.getItem('accessToken') || '';
         console.log('초기 토큰 로드:', storedToken.substring(0, 20) + '...');
@@ -256,7 +272,7 @@ const Chat: React.FC<ChatProps> = ({ roomId, chatType }) => {
         setMessages(loaded);
     }, [rawMessages, participants, currentUserId]);
 
-    /** Refresh Token 갱신 후 재연결 */
+
     const refreshAccessTokenAndReconnect = async () => {
         const refreshToken = getRefreshToken();
         if (!refreshToken) {
