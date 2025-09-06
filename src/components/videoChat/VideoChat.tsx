@@ -5,6 +5,8 @@ import { jwtDecode } from 'jwt-decode';
 import { Client } from '@stomp/stompjs';
 import { current } from "@reduxjs/toolkit";
 
+
+// 사용 안함
 /** JWT에 Bearer 접두어 추가 */
 const addBearer = (token: string) => {
     return token.startsWith('Bearer ') ? token : `Bearer ${token}`;
