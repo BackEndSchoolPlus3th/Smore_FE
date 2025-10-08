@@ -1,7 +1,7 @@
 import { flow, makeAutoObservable } from 'mobx';
 import { WebMediaPublisher } from '../WebMediaPublisher';
 import { WebMediaSubscriber } from '../WebMediaSubscriber';
-import { WebMediaClient } from '../WebMediaClient';
+import { WebMediaClient } from '../LegacyWebMediaClient';
 
 
 

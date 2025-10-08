@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { WebMediaClient } from '../features/videoChat/WebMediaClient';
+import { WebMediaClient } from '../features/videoChat/LegacyWebMediaClient';
 import { WebMediaPublisher } from '../features/videoChat/WebMediaPublisher';
 
 // WebMediaClient, WebMediaPublisher 테스트

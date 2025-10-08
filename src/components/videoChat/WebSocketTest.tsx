@@ -36,6 +36,35 @@ const WebSocketTest = () => {
         console.log('📩 recv:', msg.body);
         });
 
+        // stompClient.publish({
+        //     destination: '/app/vc/1',
+        //     body: JSON.stringify({ 
+        //         messageId: '01',
+        //         roomId: '1',
+        //         userId: '1',
+        //         sentAt: new Date().toISOString(),
+        //         type: 'joinRequestPayload',
+        //         payload: { 
+
+        //          }
+        //     }),
+        // });
+
+        // stompClient.publish({
+        //     destination: '/app/vc/1',
+        //     body: JSON.stringify({ 
+        //         messageId: '01',
+        //         roomId: '1',
+        //         userId: '1',
+        //         sentAt: new Date().toISOString(),
+        //         type: 'publishReportPayload',
+        //         payload: { 
+        //             published: true
+        //          }
+        //     }),
+        // });
+
+
         stompClient.publish({
             destination: '/app/vc/1',
             body: JSON.stringify({ 
@@ -43,12 +72,15 @@ const WebSocketTest = () => {
                 roomId: '1',
                 userId: '1',
                 sentAt: new Date().toISOString(),
-                type: 'joinRequestPayload',
+                type: 'leaveRequestPayload',
                 payload: { 
-
                  }
             }),
         });
+
+
+
+        
         };
         stompClient.activate();
         clientRef.current = stompClient;
