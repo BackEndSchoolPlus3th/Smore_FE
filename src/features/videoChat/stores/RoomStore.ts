@@ -1,8 +1,8 @@
 import { flow, makeAutoObservable } from 'mobx';
 import { WebMediaPublisher } from '../WebMediaPublisher';
 import { WebMediaSubscriber } from '../WebMediaSubscriber';
-import { WebMediaClient } from '../LegacyWebMediaClient';
-
+import { LegacyWebMediaClient } from '../LegacyWebMediaClient';
+import { WebMediaClient } from '../WebMediaClient';
 
 
 const Status = {
