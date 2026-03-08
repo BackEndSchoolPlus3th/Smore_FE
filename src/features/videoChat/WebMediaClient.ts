@@ -62,14 +62,22 @@ export class WebMediaClient {
       this._addTransaction('connect', resolve, reject);
       this.roomId = roomId;
 
-      // URL 파라미터는 사용하지 않음(요구사항). 헤더로만 토큰 전달.
+      
+
       const socket = new SockJS(websocketUrl);
 
-      const c = new Client({
+
+      const config: any = {
         webSocketFactory: () => socket as any,
-        connectHeaders: token ? { [this._authHeaderName]: `Bearer ${token}` } : {},
-        debug: this._debug ? (s) => console.log('[STOMP]', s) : undefined,
-      });
+        connectHeaders: token ? { 'Authorization':`Bearer ${token}`} : {},
+        xhrWithCredentials: true
+      };
+
+      if (this._debug === true){
+        config.debug = (s:string) => console.log('[STOMP]', s);
+      }
+
+      const c  = new Client(config);      
 
       c.onConnect = () => {
         this.connected = true;

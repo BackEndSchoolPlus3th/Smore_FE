@@ -27,7 +27,7 @@ export { default as StudyRecruitmentEditBoard } from './study/board/recruitment/
 // Chat
 export { default as ChatPageForm } from './chat/form/ChatPageForm';
 export { default as ChatBoard } from './chat/board/ChatBoard';
-export { default as LivekitBoard } from './chat/livekit/LivekitBoard';
+// export { default as LivekitBoard } from './chat/livekit/LivekitBoard';
 export { default as VideoChat } from './videoChat/VideoChat';
 
 

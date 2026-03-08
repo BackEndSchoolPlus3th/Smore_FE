@@ -1,7 +1,7 @@
 import { flow, makeAutoObservable } from 'mobx';
 import { WebMediaPublisher } from '../WebMediaPublisher';
 import { WebMediaSubscriber } from '../WebMediaSubscriber';
-import { LegacyWebMediaClient } from '../LegacyWebMediaClient';
+// import { LegacyWebMediaClient } from '../../../legacy/components/LegacyWebMediaClient';
 import { WebMediaClient } from '../WebMediaClient';
 
 
@@ -106,7 +106,8 @@ export class RoomStore {
             this.roomId = roomId;
             this.status = Status.Ing;
 
-            const websocketUrl = 'ws://localhost:8090/webmedia-ws';
+            // const websocketUrl = 'ws://localhost:8090/webmedia-ws';
+            const websocketUrl = 'http://localhost:8090/webmedia-ws';
             const client = new WebMediaClient(this._onMessage);
 
             try {
