@@ -105,11 +105,10 @@ export class RoomStore {
         if (this.status !== Status.Ing && this.status !== Status.Success) {
             this.roomId = roomId;
             this.status = Status.Ing;
-
             // const websocketUrl = 'ws://localhost:8090/webmedia-ws';
             const websocketUrl = 'http://localhost:8090/webmedia-ws';
             const client = new WebMediaClient(this._onMessage);
-
+            console.dir(client);
             try {
                 yield client.connect(websocketUrl, roomId);
                 this.client = client;
