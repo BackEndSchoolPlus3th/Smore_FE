@@ -101,7 +101,7 @@ export class RoomStore {
         return this.roomName = roomName;
     }
 
-    join = flow(function* (this: RoomStore, roomId: string) {
+    join = flow(function* (this: RoomStore, roomId: string, token: string) {
         if (this.status !== Status.Ing && this.status !== Status.Success) {
             this.roomId = roomId;
             this.status = Status.Ing;
@@ -110,7 +110,7 @@ export class RoomStore {
             const client = new WebMediaClient(this._onMessage);
             console.dir(client);
             try {
-                yield client.connect(websocketUrl, roomId);
+                yield client.connect(websocketUrl, roomId,token);
                 this.client = client;
 
                 const message = yield this._sendJoinMessage();

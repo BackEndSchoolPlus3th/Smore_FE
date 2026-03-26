@@ -48,8 +48,10 @@ const VideoChatLanding = () => {
     };
 
     const handleJoin = () => {
-        if(roomId) {
-        roomStore.join(roomId);
+        const token = localStorage.getItem('accessToken');
+        console.log(`token ${token}`)
+        if(roomId && token) {
+            roomStore.join(roomId,token);
         } else {
             navigate('/');
         }
