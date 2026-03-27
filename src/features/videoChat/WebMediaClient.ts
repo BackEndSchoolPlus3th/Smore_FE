@@ -32,6 +32,7 @@ export class WebMediaClient {
 
   // public 프로퍼티는 Legacy와 동일하게 유지
   public roomId: string | null = null;
+  public userId: string | null = null;
   public connected = false;
   public client: WebSocket | null = null; // (STOMP 내부에서 쓰므로 여기선 사용하지 않지만 인터페이스 유지)
 
@@ -58,10 +59,11 @@ export class WebMediaClient {
    *  - roomId: 방 ID
    *  - token?: 액세스 토큰 (헤더로만 보냄)
    */
-  connect = (websocketUrl: string, roomId: string, token?: string): Promise<void> => {
+  connect = (websocketUrl: string, roomId: string, userId: string, token?: string): Promise<void> => {
     return new Promise((resolve, reject) => {
       this._addTransaction('connect', resolve, reject);
       this.roomId = roomId;
+      this.userId = userId;
       this._currentToken = token;
       this._stomp = new Client({
         webSocketFactory: () => new SockJS(
@@ -133,7 +135,7 @@ export class WebMediaClient {
       const outbound = {
         messageId,
         roomId: this.roomId,
-        userId: '1', // 필요 시 채워 넣으세요
+        userId: this.userId,
         sentAt: new Date().toISOString(),
         type,
         payload: message,   // ← Legacy의 message를 서버 규약 payload로 매핑

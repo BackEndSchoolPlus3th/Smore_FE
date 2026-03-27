@@ -26,6 +26,7 @@ export class RoomStore {
     client: WebMediaClient | null;
     apiUrl: string | null;
     streamUrl: string | null;
+    userId: string | null = null;
     user: any;
     anotherUser: any;
 
@@ -50,6 +51,7 @@ export class RoomStore {
         this.client = null;
         this.apiUrl = null;
         this.streamUrl = null;
+        this.userId = null;
         this.user = null;
         this.anotherUser = null;
 
@@ -101,7 +103,7 @@ export class RoomStore {
         return this.roomName = roomName;
     }
 
-    join = flow(function* (this: RoomStore, roomId: string, token: string) {
+    join = flow(function* (this: RoomStore, roomId: string, userId: string, token: string) {
         if (this.status !== Status.Ing && this.status !== Status.Success) {
             this.roomId = roomId;
             this.status = Status.Ing;
@@ -110,16 +112,18 @@ export class RoomStore {
             const client = new WebMediaClient(this._onMessage);
             console.dir(client);
             try {
-                yield client.connect(websocketUrl, roomId,token);
+                yield client.connect(websocketUrl, roomId, userId, token);
                 this.client = client;
 
                 const message = yield this._sendJoinMessage();
                 console.log('Join 성공', message);
+                console.log("저장 전 최종 확인:", message.userId);
 
-                this.apiUrl = message.apiUrl;
-                this.streamUrl = message.streamUrl;
-                this.user = message.userId;
-                this.anotherUser = message.anotherUser;
+                this.apiUrl = message.payload.apiUrl;
+                this.streamUrl = message.payload.streamUrl;
+                this.userId = message.userId;
+                this.user = message.payload.user;
+                this.anotherUser = message.payload.anotherUser;
 
                 this.status = Status.Success;
 
@@ -143,6 +147,12 @@ export class RoomStore {
 
     publish = flow(function* (this: RoomStore) {
         console.log("Publish 함수 진입 시도!");
+        console.log("Publish 진입 시 현재 상태:", {
+        client: !!this.client,
+        status: this.status,
+        user: this.user,      // 객체가 들어있는지 확인
+        userId: this.userId   // ID가 들어있는지 확인
+        });
 
         if (!(this.client && this.isJoinSuccess && this.user)) {
         console.log("Step 1.5: 조건 미충족", {
@@ -155,7 +165,7 @@ export class RoomStore {
         if (
             this.client &&
             this.isJoinSuccess &&
-            this.user &&
+            this.userId &&
             this.publishStatus !== Status.Ing &&
             this.publishStatus !== Status.Success
         ) {
@@ -189,7 +199,7 @@ export class RoomStore {
                     const session = yield this.publisher.publish(
                         this.publishStream,
                         this.roomId!,
-                        this.user.userId
+                        this.userId
                     );
                     console.log('Publish 성공', session);
                     yield this._reportPublishedChange(true);
@@ -283,11 +293,25 @@ export class RoomStore {
             const { user } = message;
             this.anotherUser = user;
             if (this.anotherUser.published) this.subscribe();
-        } else if (type === 'UserStateChangedEvent') {
-            const { userId, published } = message;
-            if (this.anotherUser?.userId === userId) {
-                this.anotherUser = { ...this.anotherUser, published };
-                if (published) this.subscribe();
+        } else if (type === 'publishEventPayload') {
+            const senderId = message?.userId || message.payload?.userId || this.userId;
+            const published = message?.published ?? message.payload?.published;
+
+            console.log("확인된 SenderId:", senderId);
+            console.log("확인된 UserId:", this.userId);
+            console.log("확인된 Published:", published);
+            
+            if (!this.anotherUser || String(this.anotherUser.userId) === senderId) {
+                this.anotherUser = { 
+                        ...(this.anotherUser || {}), 
+                        userId: senderId, 
+                        published: published 
+                    };
+                
+                if (published){ 
+                    console.log("상대방 구독 시작")
+                    this.subscribe();
+                }
                 else {
                     this.subscribeStream?.getTracks().forEach((track) => track.stop());
                     this.subscriber?.close();
@@ -314,13 +338,13 @@ export class RoomStore {
         console.log("Try_send_message")
         const response = yield this.client!.sendMessage(request, 'joinRequestPayload', true);
         console.log("실제 응답 데이터 구조:", response);
-        if (response.type === 'joinResponsePayload') return response.message;
+        if (response.type === 'joinResponsePayload' ||response.type === 'joinEventPayload'  ) return response;
         if (response.type === 'errorResponsePayload') throw new Error(`응답코드 (${response.message.errorCode})`);
         throw new Error('응답코드 (알 수 없는 응답)');
     });
 
     _reportPublishedChange = flow(function* (this: RoomStore, published: boolean) {
         const request = { published };
-        yield this.client!.sendMessage(request, 'UserPublishedChangeReport', false);
+        yield this.client!.sendMessage(request, 'publishReportPayload', false);
     });
 }

@@ -5,9 +5,45 @@ import MicDeviceSelector from './MicDeviceSelector';
 import { useStore } from '../../features/videoChat/stores/StoreContext';
 import { useEffect } from 'react';
 import { useNavigate,useParams } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
 
 
 const VideoChatLanding = () => {
+    /** JWT 디코딩하여 사용자 ID(subject) 추출 */
+    const getUserIdFromToken = (token: string): string => {
+        try {
+            if (!token || token === '') {
+                console.warn('JWT 토큰이 비어있습니다.');
+                return 'anonymous';
+            }
+            const actualToken = token.startsWith('Bearer ')
+                ? token.substring(7)
+                : token;
+            const decoded: any = jwtDecode(actualToken);
+            console.log('JWT 디코딩 결과:', decoded);
+    
+            if (!decoded) {
+                console.error('JWT 디코딩 결과가 없습니다.');
+                return 'anonymous';
+            }
+            if (!decoded.sub) {
+                console.error('JWT에서 sub 필드를 찾을 수 없습니다:', decoded);
+                if (decoded.userId) {
+                    return String(decoded.userId);
+                } else if (decoded.id) {
+                    return String(decoded.id);
+                }
+                return 'anonymous';
+            }
+            console.log('현재 로그인 사용자 ID(JWT sub 필드):', decoded.sub);
+            return String(decoded.sub);
+        } catch (error) {
+            console.error('JWT 디코딩 실패:', error);
+            console.error('토큰 값:', token.substring(0, 20) + '...');
+            return 'anonymous';
+        }
+    };
+
     const { roomStore } = useStore();
     // console.log('VideoChatLanding roomStore ===', roomStore);
     // const { study_id: studyId } = useParams();
@@ -50,8 +86,10 @@ const VideoChatLanding = () => {
     const handleJoin = () => {
         const token = localStorage.getItem('accessToken');
         console.log(`token ${token}`)
+        
         if(roomId && token) {
-            roomStore.join(roomId,token);
+            const userId =getUserIdFromToken(token)
+            roomStore.join(roomId,userId, token);
         } else {
             navigate('/');
         }
