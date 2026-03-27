@@ -118,7 +118,7 @@ export class RoomStore {
 
                 this.apiUrl = message.apiUrl;
                 this.streamUrl = message.streamUrl;
-                this.user = message.user;
+                this.user = message.userId;
                 this.anotherUser = message.anotherUser;
 
                 this.status = Status.Success;
@@ -142,6 +142,16 @@ export class RoomStore {
     });
 
     publish = flow(function* (this: RoomStore) {
+        console.log("Publish 함수 진입 시도!");
+
+        if (!(this.client && this.isJoinSuccess && this.user)) {
+        console.log("Step 1.5: 조건 미충족", {
+            client: !!this.client,
+            isJoinSuccess: this.isJoinSuccess,
+            user: !!this.user
+        });
+        return;
+    }
         if (
             this.client &&
             this.isJoinSuccess &&
@@ -150,6 +160,7 @@ export class RoomStore {
             this.publishStatus !== Status.Success
         ) {
             try {
+                console.log("Step 2: getUserMedia 요청 전");
                 this.publishStatus = Status.Ing;
 
                 // 초기화
@@ -168,9 +179,11 @@ export class RoomStore {
                 };
 
                 this.publishStream = yield navigator.mediaDevices.getUserMedia(constraints);
+                console.log("Step 3: getUserMedia 성공", this.publishStream?.id);
                 if (this.publishStream) {
                     //apiUrl! (non-null assertion) : "이 값은 무조건 null이 아님"
                     this.publisher = WebMediaPublisher(this.apiUrl!, this.streamUrl!);
+                    console.log("Step 4: Publisher 객체 생성 완료, 실제 publish 호출 직전");
 
                     // publisher 로컬 변수 생성 안되어 있고, 클래스 인스턴스 변수(this.publisher) 접근해야 하니까
                     const session = yield this.publisher.publish(
