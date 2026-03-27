@@ -138,16 +138,24 @@ export class WebMediaClient {
         type,
         payload: message,   // ← Legacy의 message를 서버 규약 payload로 매핑
       };
+      console.dir(outbound);
 
       if (isTransaction) {
         this._addTransaction(messageId, resolve, reject);
+        console.log(`[DEBUG] 트랜잭션 등록 완료: ${messageId}`);
       }
 
-      this._stomp.publish({
-        destination: `${this._appPrefix}/${this.roomId}`,
-        body: JSON.stringify(outbound),
-        headers: this._currentToken ? { [this._authHeaderName]: `Bearer ${this._currentToken}` } : {},
-      });
+      try {
+            this._stomp!.publish({
+                destination: `${this._appPrefix}/${this.roomId}`,
+                body: JSON.stringify(outbound),
+                headers: this._currentToken ? { [this._authHeaderName]: `Bearer ${this._currentToken}` } : {},
+            });
+            console.log('[DEBUG] STOMP Publish 완료');
+        } catch (e) {
+            console.error('[DEBUG] Publish 실패:', e);
+            return reject(e);
+        }
 
       if (!isTransaction) {
         resolve(null);
@@ -166,13 +174,14 @@ export class WebMediaClient {
   private _onStompMessage = (msg: IMessage) => {
     try {
       const body = msg.body ? JSON.parse(msg.body) : null;
+      console.log("[STOMP 수신 Raw]:", body.type, body.messageId);
       if (!body) return;
 
       // 서버에서 온 원본은 { payload } 형식.
       // Legacy 호환을 위해 message로 **복제 매핑**해서 넘겨줍니다.
       const legacyContainer: MessageContainer = {
         ...body,
-        message: body.payload, // ← 핵심: 수신도 message로 매핑
+        message: body.message || body.payload, // ← 핵심: 수신도 message로 매핑
       };
 
       const t = this._getTransaction(legacyContainer.messageId);

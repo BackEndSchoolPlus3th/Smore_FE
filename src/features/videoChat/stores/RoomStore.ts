@@ -122,6 +122,7 @@ export class RoomStore {
                 this.anotherUser = message.anotherUser;
 
                 this.status = Status.Success;
+
             } catch (error) {
                 console.log('Join 실패', error);
                 this.client?.close();
@@ -297,10 +298,11 @@ export class RoomStore {
 
     _sendJoinMessage = flow(function* (this: RoomStore) {
         const request = { roomId: this.roomId };
-        const response = yield this.client!.sendMessage(request, 'JoinRequest', true);
-
-        if (response.type === 'JoinResponse') return response.message;
-        if (response.type === 'ErrorResponse') throw new Error(`응답코드 (${response.message.errorCode})`);
+        console.log("Try_send_message")
+        const response = yield this.client!.sendMessage(request, 'joinRequestPayload', true);
+        console.log("실제 응답 데이터 구조:", response);
+        if (response.type === 'joinResponsePayload') return response.message;
+        if (response.type === 'errorResponsePayload') throw new Error(`응답코드 (${response.message.errorCode})`);
         throw new Error('응답코드 (알 수 없는 응답)');
     });
 
