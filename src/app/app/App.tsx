@@ -6,7 +6,6 @@ import '../ui/text.css';
 
 import Room from '../../components/videoChat/Room'
 import VideoChatLanding from '../../components/videoChat/VideoChatLanding'
-import WebSocketTest from '../../components/videoChat/WebSocketTest'
 import WebMediaClientPlayground from '../../features/videoChat/WebMediaClientPlayground';
 
 import {
@@ -51,7 +50,6 @@ function App() {
                             <Route path="/video-chat/room/:roomId" element={<Room />} />
 
                             // test
-                            <Route path="/video-chat/test" element={<WebSocketTest />} />
                             <Route path="/video-chat/webMedia-test" element={<WebMediaClientPlayground />} />
 
 

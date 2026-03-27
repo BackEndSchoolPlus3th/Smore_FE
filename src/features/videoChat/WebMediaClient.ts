@@ -32,6 +32,7 @@ export class WebMediaClient {
 
   // public 프로퍼티는 Legacy와 동일하게 유지
   public roomId: string | null = null;
+  public userId: string | null = null;
   public connected = false;
   public client: WebSocket | null = null; // (STOMP 내부에서 쓰므로 여기선 사용하지 않지만 인터페이스 유지)
 
@@ -42,6 +43,7 @@ export class WebMediaClient {
   private _appPrefix: string;
   private _authHeaderName: string;
   private _debug: boolean;
+  private _currentToken?: string;
 
   constructor(messageCallback: MessageCallback = DefaultMessageCallback, opts: Options = {}) {
     this._messageCallback = messageCallback;
@@ -57,44 +59,53 @@ export class WebMediaClient {
    *  - roomId: 방 ID
    *  - token?: 액세스 토큰 (헤더로만 보냄)
    */
-  connect = (websocketUrl: string, roomId: string, token?: string): Promise<void> => {
+  connect = (websocketUrl: string, roomId: string, userId: string, token?: string): Promise<void> => {
     return new Promise((resolve, reject) => {
       this._addTransaction('connect', resolve, reject);
       this.roomId = roomId;
+      this.userId = userId;
+      this._currentToken = token;
+      this._stomp = new Client({
+        webSocketFactory: () => new SockJS(
+          token ? `${websocketUrl}?token=${token}` : websocketUrl,
+          undefined,
+          { xhrWithCredentials: true } as any
+        ) as any,
 
-      // URL 파라미터는 사용하지 않음(요구사항). 헤더로만 토큰 전달.
-      const socket = new SockJS(websocketUrl);
-
-      const c = new Client({
-        webSocketFactory: () => socket as any,
         connectHeaders: token ? { [this._authHeaderName]: `Bearer ${token}` } : {},
-        debug: this._debug ? (s) => console.log('[STOMP]', s) : undefined,
+
+        debug: this._debug 
+            ? (msg: string) => console.log('[STOMP]', msg) 
+            : () => {},      // 연결 성공 시
+        onConnect: () => {
+          this.connected = true;
+          console.log(`[STOMP] Connected. Subscribing to room: ${roomId}`);
+          this._stomp?.subscribe(
+            `${this._topicPrefix}/${roomId}`,
+            this._onStompMessage,
+            this._currentToken ? {[this._authHeaderName]: `Bearer ${this._currentToken}`} : {}
+          );
+          const connectTransaction = this._getTransaction('connect');
+          if (connectTransaction) {
+            connectTransaction.resolve();
+            console.log('[STOMP] Connect transaction resolved.');
+          }
+        },
+
+        // 에러 발생 시
+        onStompError: (frame) => {
+          const err = new Error(frame.headers['message'] || 'STOMP error');
+          this._getTransaction('connect')?.reject(err);
+        },
+
+        onWebSocketClose: () => {
+          this.connected = false;
+        }
       });
 
-      c.onConnect = () => {
-        this.connected = true;
-        // 방 토픽 구독
-        c.subscribe(`${this._topicPrefix}/${roomId}`, this._onStompMessage);
-
-        // connect 트랜잭션 완료
-        this._getTransaction('connect')?.resolve();
-      };
-
-      c.onStompError = (frame) => {
-        const err = new Error(frame.body || frame.headers['message'] || 'STOMP error');
-        this._getTransaction('connect')?.reject(err);
-      };
-
-      c.onWebSocketClose = () => {
-        this.connected = false;
-      };
-
-      c.activate();
-      this._stomp = c;
-
-      // Legacy의 this.client는 raw WebSocket이었지만
-      // 여기선 STOMP 내부 소켓이므로 null 유지(인터페이스만 보존)
-      this.client = null;
+      // 실행!
+      this._stomp.activate();
+      // this.client = null;
     });
   };
 
@@ -124,20 +135,29 @@ export class WebMediaClient {
       const outbound = {
         messageId,
         roomId: this.roomId,
-        userId: '', // 필요 시 채워 넣으세요
+        userId: this.userId,
         sentAt: new Date().toISOString(),
         type,
         payload: message,   // ← Legacy의 message를 서버 규약 payload로 매핑
       };
+      console.dir(outbound);
 
       if (isTransaction) {
         this._addTransaction(messageId, resolve, reject);
+        console.log(`[DEBUG] 트랜잭션 등록 완료: ${messageId}`);
       }
 
-      this._stomp.publish({
-        destination: `${this._appPrefix}/${this.roomId}`,
-        body: JSON.stringify(outbound),
-      });
+      try {
+            this._stomp!.publish({
+                destination: `${this._appPrefix}/${this.roomId}`,
+                body: JSON.stringify(outbound),
+                headers: this._currentToken ? { [this._authHeaderName]: `Bearer ${this._currentToken}` } : {},
+            });
+            console.log('[DEBUG] STOMP Publish 완료');
+        } catch (e) {
+            console.error('[DEBUG] Publish 실패:', e);
+            return reject(e);
+        }
 
       if (!isTransaction) {
         resolve(null);
@@ -156,13 +176,14 @@ export class WebMediaClient {
   private _onStompMessage = (msg: IMessage) => {
     try {
       const body = msg.body ? JSON.parse(msg.body) : null;
+      console.log("[STOMP 수신 Raw]:", body.type, body.messageId);
       if (!body) return;
 
       // 서버에서 온 원본은 { payload } 형식.
       // Legacy 호환을 위해 message로 **복제 매핑**해서 넘겨줍니다.
       const legacyContainer: MessageContainer = {
         ...body,
-        message: body.payload, // ← 핵심: 수신도 message로 매핑
+        message: body.message || body.payload, // ← 핵심: 수신도 message로 매핑
       };
 
       const t = this._getTransaction(legacyContainer.messageId);

@@ -93,6 +93,7 @@ const Chat: React.FC<ChatProps> = ({ roomId, chatType }) => {
     const chatEndRef = useRef<HTMLDivElement>(null);
     const stompClient = useRef<Client | null>(null);
     const connectionActive = useRef<boolean>(false);
+    const isUnmounting = useRef(false);
 
     /** 최종 메시지 리스트 */
     const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -389,6 +390,11 @@ const Chat: React.FC<ChatProps> = ({ roomId, chatType }) => {
                 connectionActive.current = false;
             },
             onDisconnect: () => {
+                if (isUnmounting.current){
+                    connectionActive.current = false;
+                    return;
+                }
+
                 console.log('⚠️ 웹소켓 연결 끊김! 5초 후 재연결 시도...');
                 connectionActive.current = false;
                 setTimeout(connectWebSocket, 5000);
@@ -414,11 +420,13 @@ const Chat: React.FC<ChatProps> = ({ roomId, chatType }) => {
             connectWebSocket();
         }
         return () => {
+            isUnmounting.current = true;
             if (stompClient.current) {
                 console.log('컴포넌트 언마운트 - 웹소켓 연결 종료');
                 stompClient.current.deactivate();
                 stompClient.current = null;
                 connectionActive.current = false;
+                
             }
         };
     }, [roomId, jwt, currentUserId]);

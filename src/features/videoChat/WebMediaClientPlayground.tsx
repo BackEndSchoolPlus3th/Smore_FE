@@ -1,7 +1,7 @@
 // WebMediaClientPlayground.tsx
 import React, { useMemo, useRef, useState } from 'react';
-import { WebMediaClient, MessageContainer } from './WebMediaClient'; // 방금 만든 STOMP 버전
-// import 경로는 프로젝트 구조에 맞게 수정
+import { WebMediaClient, MessageContainer } from './WebMediaClient'; // STOMP 버전
+
 
 export default function WebMediaClientPlayground() {
   const [logs, setLogs] = useState<string[]>([]);

@@ -15,6 +15,7 @@ export function WebMediaPublisher(apiUrl: string, streamUrl: string): WebMediaPu
 
   // this.publisher.publish(this.publishStream, this.roomId, this.user.userId);
   self.publish = async (stream: MediaStream, appId: string, feedId: string): Promise<any> => {
+    console.log("Publish 시작 - Stream 상태:", stream.active, stream.id); // 확인용
     if (self.pc) {
       self.pc.addTransceiver("audio", { direction: "sendonly" });
       self.pc.addTransceiver("video", { direction: "sendonly" });
@@ -31,7 +32,7 @@ export function WebMediaPublisher(apiUrl: string, streamUrl: string): WebMediaPu
 
       const offer = await self.pc.createOffer();
       await self.pc.setLocalDescription(offer);
-
+      console.log('offer = ',offer);
       const session = await new Promise<any>((resolve, reject) => {
         const fullApiUrl = `${self.apiUrl}/rtc/v1/publish/`;
         const fullStreamUrl = `${self.streamUrl}/${appId}/${feedId}`;
